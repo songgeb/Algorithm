@@ -208,7 +208,7 @@ void addToTail(ListNode **pHead, int value) {
 void deleteListNode(ListNode **pHead, int value) {
     //若空链表则返回
     //找到待删除节点的前一个节点，让它的next赋值为待删除节点的next
-    if (*pHead == NULL)
+    if (pHead == NULL || *pHead == NULL)
         return;
     ListNode *pNode = *pHead;
     if (pNode->value == value) {
@@ -229,6 +229,36 @@ void deleteListNode(ListNode **pHead, int value) {
     printList(pHead);
 }
 
+//从尾到头输出链表
+//o(n)时间复杂度
+void printListReversely(ListNode **pHead) {
+    //使用尾插法构造一个新的链表，再正序输出
+    //不破坏原链表
+    if (pHead == NULL || *pHead == NULL)
+        return;
+    ListNode *pNode = *pHead;
+    
+    ListNode *newListHead = (ListNode *)malloc(sizeof(ListNode));
+    newListHead->value = pNode->value;
+    newListHead->next = NULL;
+    
+    pNode = pNode->next;
+    while(pNode != NULL) {
+        ListNode *newNode = (ListNode *)malloc(sizeof(ListNode));
+        newNode->value = pNode->value;
+        newNode->next = newListHead;
+        
+        newListHead = newNode;
+        pNode = pNode->next;
+    }
+    
+    printf("翻转后结果->");
+    printList(&newListHead);
+    
+    printf("原链表->");
+    printList(pHead);
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
@@ -241,14 +271,16 @@ int main(int argc, const char * argv[]) {
 //        replaceBlank();
 //        reOrder();
         ListNode *list;
-        addToTail(&list, 7);
-        addToTail(&list, 8);
-        addToTail(&list, 9);
-        addToTail(&list, 10);
+//        addToTail(&list, 7);
+//        addToTail(&list, 8);
+//        addToTail(&list, 9);
+//        addToTail(&list, 10);
         
-        deleteListNode(&list, 10);
-        deleteListNode(&list, 7);
-        deleteListNode(&list, 9);
+        printListReversely(&list);
+        
+//        deleteListNode(&list, 10);
+//        deleteListNode(&list, 7);
+//        deleteListNode(&list, 9);
     }
     return 0;
 }
