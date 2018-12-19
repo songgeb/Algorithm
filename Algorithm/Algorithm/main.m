@@ -259,6 +259,27 @@ void printListReversely(ListNode **pHead) {
     printList(pHead);
 }
 
+//递归的反向输出链表
+//o(n)
+//当链表太大时，栈调用次数太多，影响性能
+void printListReversely_Recursively(ListNode **pHead) {
+    if (pHead == NULL || *pHead == NULL) {
+        return;
+    }
+    printListReversely(&((*pHead)->next));
+    printf("%d ", (*pHead)->value);
+}
+
+//递归反向打印链表的循环实现
+//不会。。。。。。。
+#warning 不知道咋写了
+void printListReversely_Loop(ListNode **pHead) {
+    if (pHead == NULL || *pHead == NULL) {
+        return;
+    }
+    
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
@@ -271,10 +292,10 @@ int main(int argc, const char * argv[]) {
 //        replaceBlank();
 //        reOrder();
         ListNode *list;
-//        addToTail(&list, 7);
-//        addToTail(&list, 8);
-//        addToTail(&list, 9);
-//        addToTail(&list, 10);
+        addToTail(&list, 7);
+        addToTail(&list, 8);
+        addToTail(&list, 9);
+        addToTail(&list, 10);
         
         printListReversely(&list);
         
