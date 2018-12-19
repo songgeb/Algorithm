@@ -11,17 +11,7 @@
 void foo(int value, int a[4][4]);
 void findInMatrix(int);
 
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        // insert code here...
-        NSLog(@"Hello, World!");
-        srand((unsigned) time(NULL));
-        int toFindValue = rand() % 20;
-        findInMatrix(toFindValue);
-    }
-    return 0;
-}
-
+//MARK: - 二维数组整数中查找某值
 void findInMatrix(int value) {
     int rows = 4;
     int columns = 4;
@@ -61,24 +51,93 @@ void foo(int value, int a[4][4]) {
     Boolean success = false;
     while (findRows != 0 && findColumns != 0) {
         int rightTopValue = a[4 - findRows][findColumns - 1];
-        printf("当前值-->%d\n", rightTopValue);
         if (value == rightTopValue) {
-            printf("已找到，位置是第%d行, 第%d列\n", 4 - findRows + 1, findColumns);
             success = true;
             break;
-        }
-        
-        if (rightTopValue > value) {
+        } else if (rightTopValue > value) {
             findColumns -= 1;
-            printf("最右列没有用!\n");
-        }
-        
-        if (rightTopValue < value) {
+        } else {
             findRows -= 1;
-            printf("最上行没有用!\n");
         }
     }
     if (!success) {
         printf("没找到啊!\n");
     }
+}
+
+//MARK: - 替换字符串中的空格为%20（假定数组有足够空间存放替换的字符）
+//o(n)复杂度
+void replaceBlank() {
+    char str[100] = "";
+    printf("替换前-->%s\n", str);
+    //遍历一遍字符串，记录空格数
+    //声明两个指针，一个在原字符串结尾处end，一个在替换后字符串结尾处copyPosition
+    //end往前走，如果不是空格，则copy到copyPosition，copyPosition也往前进1；如果是空格，则copyPostion改为%20，继续迁移；直到end和copyPosition重合
+    char *end = str;
+    int blankCount = 0;
+    while (*end != '\0') {
+        if (*end == ' ') {
+            blankCount ++;
+        }
+        end ++;
+    }
+    char *copyPosition = end + blankCount * 2;
+    while (end < copyPosition) {
+        if (*end == ' ') {
+            *copyPosition = '0';
+            *(copyPosition - 1) = '2';
+            *(copyPosition - 2) = '%';
+            copyPosition -= 3;
+        } else {
+            *copyPosition = *end;
+            copyPosition --;
+        }
+        end --;
+    }
+    printf("替换后结果->%s\n", str);
+}
+
+//o(n^2)时间复杂度
+void replaceBlankPoorly() {
+//    char str[100] = "ni na me niubi za bu shangtian ne?";
+    char str[100] = " 6";
+    printf("替换前->%s\n", str);
+    //开始遍历字符串，当遇到空格时，后面的字符向后移两个位置
+    char *p = str;
+    while (*p != '\0') {
+        if (*p == ' ') {
+            //先找到末尾
+            char *end = p;
+            while (*end != '\0') {
+                end ++;
+            }
+            //复制数据
+            char *copyPosition = end + 2;
+            while (end != p) {
+                *copyPosition = *end;
+                copyPosition--;
+                end--;
+            }
+            *p = '%';
+            *(p+1) = '2';
+            *(p+2) = '0';
+        }
+        p++;
+    }
+    printf("替换后结果是-->%s\n", str);
+}
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // insert code here...
+        NSLog(@"Hello, World!");
+        //        srand((unsigned) time(NULL));
+        //        int toFindValue = rand() % 20;
+        //        findInMatrix(toFindValue);
+        
+//        replaceBlankPoorly();
+        replaceBlank();
+    }
+    return 0;
 }
