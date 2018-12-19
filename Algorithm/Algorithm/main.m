@@ -166,6 +166,69 @@ void reOrder() {
     printf("\n");
 }
 
+//MARK: - 链表
+typedef struct ListNode {
+    int value;
+    struct ListNode *next;
+} ListNode;
+
+void printList(ListNode **pHead) {
+    //打印链表
+    ListNode *pNode = *pHead;
+    while (pNode != NULL) {
+        printf("%d ", pNode->value);
+        pNode = pNode->next;
+    }
+    printf("\n");
+}
+
+void addToTail(ListNode **pHead, int value) {
+    //如果pHead是空就结束
+    //创建一个新的节点
+    //若*pHead == NULL说明是空链表，要给*pHead赋值。结束
+    //若不是空链表，则找到链表最后一个节点，将新节点接上
+    if (pHead == NULL) { return; }
+    ListNode *node = (ListNode *)malloc(sizeof(ListNode));
+    node->value = value;
+    node->next = NULL;
+    
+    if (*pHead == NULL) {
+        *pHead = node;
+    } else {
+        ListNode *pNode = *pHead;
+        while (pNode->next != NULL) {
+            pNode = pNode->next;
+        }
+        pNode->next = node;
+    }
+
+    printList(pHead);
+}
+
+void deleteListNode(ListNode **pHead, int value) {
+    //若空链表则返回
+    //找到待删除节点的前一个节点，让它的next赋值为待删除节点的next
+    if (*pHead == NULL)
+        return;
+    ListNode *pNode = *pHead;
+    if (pNode->value == value) {
+        //头结点
+        *pHead = pNode->next;
+    } else {
+        //非头结点
+        while(pNode->next != NULL) {
+            if (pNode->next->value == value) {
+                ListNode *toDeleteNode = pNode->next;
+                pNode->next = toDeleteNode->next;
+                free(toDeleteNode);
+                break;
+            }
+            pNode = pNode->next;
+        }
+    }
+    printList(pHead);
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
@@ -176,7 +239,16 @@ int main(int argc, const char * argv[]) {
         
 //        replaceBlankPoorly();
 //        replaceBlank();
-        reOrder();
+//        reOrder();
+        ListNode *list;
+        addToTail(&list, 7);
+        addToTail(&list, 8);
+        addToTail(&list, 9);
+        addToTail(&list, 10);
+        
+        deleteListNode(&list, 10);
+        deleteListNode(&list, 7);
+        deleteListNode(&list, 9);
     }
     return 0;
 }
