@@ -127,6 +127,44 @@ void replaceBlankPoorly() {
     printf("替换后结果是-->%s\n", str);
 }
 
+//a1、a2两个数组，排好序的，a1有足够空间放下a2。先要求a2合并到a1中，仍然排好序
+//假定按照升序排列
+//o(n)复杂度
+void reOrder() {
+    int a1[10] = {8, 9, 10, 11, 13};
+    int a2[5] = {1, 3, 11, 13, 17};
+    //先遍历一遍a2，记录元素个数，算出合并后的总个数
+    //三个下标，一个指向合并后的最后的位置copyPosition，一个指向原a1有内容的最后的位置a1End，一个指向原a2有内容的最后的位置a2End
+    //1. 比较a2End和a1End
+    //2. 若a2End >= a1End，则a2End复制到copyPosition，a2End前移，copyPosition前移，重复1步骤
+    //3. 若a2End < a1End，则a1End复制到copyPosition，a1End前移，copyPosition前移，重复1步骤
+    //4. 重复1、2、3步骤，直到a1End或a2End没办法再往前移
+    //5. 最后，若a2还有剩余，则将剩余部分，一个个复制到a1中
+    
+    //省去计算元素个数代码，时间复杂度为o(n)
+    int a1End = 4;
+    int a2End = 4;
+    int copyPosition = 9;
+    
+    while (a1End >= 0 && a2End >= 0) {
+        if (a2[a2End] >= a1[a1End]) {
+            a1[copyPosition] = a2[a2End--];
+        } else {
+            a1[copyPosition] = a1[a1End--];
+        }
+        copyPosition --;
+    }
+    
+    while (a2End >= 0 && copyPosition >= 0) {
+        a1[copyPosition--] = a2[a2End--];
+    }
+    
+    printf("合并后结果-->");
+    for (int i = 0; i < 10; i++) {
+        printf("%d ", a1[i]);
+    }
+    printf("\n");
+}
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -137,7 +175,8 @@ int main(int argc, const char * argv[]) {
         //        findInMatrix(toFindValue);
         
 //        replaceBlankPoorly();
-        replaceBlank();
+//        replaceBlank();
+        reOrder();
     }
     return 0;
 }
