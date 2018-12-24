@@ -280,6 +280,112 @@ void printListReversely_Loop(ListNode **pHead) {
     
 }
 
+//MARK: - 🌲相关
+struct BinaryTree {
+    int value;
+    struct BinaryTree *left;
+    struct BinaryTree *right;
+} BinaryTreeNode;
+
+//根据前序和中序，重构二叉树
+//无重复值前提下
+void constructBinaryTree(int *preorder, int *middleorder, int length) {
+    //1. 根据前序，找到第一个根节点，再去中序中，找根节点对应记录左边的元素个数，即为左子树节点的中序序列
+    //2. 根据上面的元素个数n，前序中，从第二个节点开始的这n个元素即为左子树的先序序列
+    //使用类似1、2的方法，也能找到右子树的中序、先序序列
+    //这样递归找下去，一边输出一边打印
+    if (length <= 0) {
+        return;
+    }
+    
+    int rootNodeValue = *preorder;
+    int leftSubTreeNodeCount = 0;
+    int rightSubTreeNodeCount = 0;
+    int *leftSubTreeMiddleorder = NULL;
+    int *rightSubTreeMiddleorder = NULL;
+    
+    int *leftSubTreePreorder = NULL;
+    int *rightSubTreePreorder = NULL;
+
+    int *ptr = middleorder;
+    for (int i = 0; i < length; i++) {
+        if (rootNodeValue == *(ptr)) {
+            break;
+        }
+        ptr++;
+        leftSubTreeNodeCount ++;
+    }
+    
+    if (leftSubTreeNodeCount > 0) {
+        leftSubTreeMiddleorder = middleorder;
+        leftSubTreePreorder = preorder + 1;
+    }
+    
+    rightSubTreeNodeCount = length - leftSubTreeNodeCount - 1;
+    if (rightSubTreeNodeCount > 0) {
+        rightSubTreeMiddleorder = ptr + 1;
+        rightSubTreePreorder = preorder + leftSubTreeNodeCount + 1;
+    }
+    
+    //current
+    printf("根节点-->%d\n", rootNodeValue);
+    //left
+    if (leftSubTreeNodeCount > 0) {
+        printf("构建%d的左子树\n", rootNodeValue);
+        constructBinaryTree(leftSubTreePreorder, leftSubTreeMiddleorder, leftSubTreeNodeCount);
+        printf("%d的左子树完成\n", rootNodeValue);
+    }
+    
+    //right
+    if (rightSubTreeNodeCount > 0) {
+        printf("构建%d的右子树\n", rootNodeValue);
+        constructBinaryTree(rightSubTreePreorder, rightSubTreeMiddleorder, rightSubTreeNodeCount);
+        printf("%d的右子树完成\n", rootNodeValue);
+    }
+}
+
+void testBinaryTree() {
+    int preorder[] = {1, 2, 4, 7};
+    int middleorder[] = {1, 2, 4, 7};
+    
+    constructBinaryTree(preorder, middleorder, 4);
+}
+
+//两个栈实现一个队列
+//C语言无stack，使用Java实现
+//public static class MyQueue {
+//    //始终保持stack1有内容
+//    //仅在delete时，stack2才有内容
+//    public static MyQueue queue() {
+//        return new MyQueue();
+//    }
+//    //用于addTail
+//    private Stack<Integer> stack1 = new Stack<Integer>();
+//    //用于删除head
+//    private Stack<Integer> stack2 = new Stack<Integer>();
+//    
+//    public void addTail(Integer value) {
+//        stack1.push(value);
+//    }
+//    
+//    public Integer deleteHead() {
+//        if (stack1.isEmpty()) {
+//            return -1;
+//        }
+//        stack2.clear();
+//        while (!stack1.isEmpty()) {
+//            stack2.push(stack1.pop());
+//        }
+//        Integer value = stack2.pop();
+//        
+//        //还原stack1
+//        while (!stack2.isEmpty()) {
+//            stack1.push(stack2.pop());
+//        }
+//        return value;
+//    }
+//}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
@@ -291,17 +397,18 @@ int main(int argc, const char * argv[]) {
 //        replaceBlankPoorly();
 //        replaceBlank();
 //        reOrder();
-        ListNode *list;
-        addToTail(&list, 7);
-        addToTail(&list, 8);
-        addToTail(&list, 9);
-        addToTail(&list, 10);
-        
-        printListReversely(&list);
+//        ListNode *list;
+//        addToTail(&list, 7);
+//        addToTail(&list, 8);
+//        addToTail(&list, 9);
+//        addToTail(&list, 10);
+//
+//        printListReversely(&list);
         
 //        deleteListNode(&list, 10);
 //        deleteListNode(&list, 7);
 //        deleteListNode(&list, 9);
+        testBinaryTree();
     }
     return 0;
 }
