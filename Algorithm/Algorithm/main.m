@@ -363,27 +363,23 @@ void testBinaryTree() {
 //    private Stack<Integer> stack1 = new Stack<Integer>();
 //    //用于删除head
 //    private Stack<Integer> stack2 = new Stack<Integer>();
-//    
+//
 //    public void addTail(Integer value) {
 //        stack1.push(value);
 //    }
-//    
-//    public Integer deleteHead() {
-//        if (stack1.isEmpty()) {
-//            return -1;
-//        }
-//        stack2.clear();
-//        while (!stack1.isEmpty()) {
-//            stack2.push(stack1.pop());
-//        }
-//        Integer value = stack2.pop();
-//        
-//        //还原stack1
-//        while (!stack2.isEmpty()) {
-//            stack1.push(stack2.pop());
-//        }
-//        return value;
+//
+//public Integer deleteHead() {
+//    if (!stack2.isEmpty()) {
+//        return stack2.pop();
 //    }
+//    if (stack1.isEmpty()) {
+//        return -1;
+//    }
+//    while (!stack1.isEmpty()) {
+//        stack2.push(stack1.pop());
+//    }
+//    return stack2.pop();
+//}
 //}
 
 int main(int argc, const char * argv[]) {
