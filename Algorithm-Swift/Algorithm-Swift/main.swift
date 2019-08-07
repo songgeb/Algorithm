@@ -78,5 +78,8 @@ func mergeSort() {
     
 }
 // 链表
-LinkedList().palindromeTest()
+//LinkedList().palindromeTest()
+
+// 队列
+QueueTest.testCircularQueue()
 
