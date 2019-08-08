@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC8C131422F95B9900C484CD /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C131322F95B9900C484CD /* Queue.swift */; };
+		CC8C131622FBD21900C484CD /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C131522FBD21900C484CD /* Sort.swift */; };
 		CCA00A4922EE844E00822759 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA00A4822EE844E00822759 /* LinkedList.swift */; };
 		CCBBB51321ECC5A400533FC2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBBB51221ECC5A400533FC2 /* main.swift */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		CC8C131322F95B9900C484CD /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		CC8C131522FBD21900C484CD /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		CCA00A4822EE844E00822759 /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 		CCBBB50F21ECC5A400533FC2 /* Algorithm-Swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Algorithm-Swift"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCBBB51221ECC5A400533FC2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				CCBBB51221ECC5A400533FC2 /* main.swift */,
 				CCA00A4822EE844E00822759 /* LinkedList.swift */,
 				CC8C131322F95B9900C484CD /* Queue.swift */,
+				CC8C131522FBD21900C484CD /* Sort.swift */,
 			);
 			path = "Algorithm-Swift";
 			sourceTree = "<group>";
@@ -126,6 +129,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCBBB51321ECC5A400533FC2 /* main.swift in Sources */,
+				CC8C131622FBD21900C484CD /* Sort.swift in Sources */,
 				CC8C131422F95B9900C484CD /* Queue.swift in Sources */,
 				CCA00A4922EE844E00822759 /* LinkedList.swift in Sources */,
 			);
