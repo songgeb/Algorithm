@@ -66,17 +66,6 @@ func insertionSort() {
 
 //insertionSort()
 
-// MARK: - 归并排序
-
-// MARK: 原地归并排序的抽象实现
-
-// 将整个数组拷贝到辅助数组中
-// 将辅助数组中的数据以中间为准分成两部分
-// 开始和中间两个指针同时遍历
-// 哪一段小，就把值放回原数组中
-func mergeSort() {
-    
-}
 // 链表
 //LinkedList().palindromeTest()
 
@@ -86,5 +75,7 @@ func mergeSort() {
 // 排序
 //Sort.testBubbleSort()
 //Sort.testInsertionSort()
-Sort.testSelectionSort()
+//Sort.testSelectionSort()
+//Sort.testMergeSort()
+Sort.testPartition()
 
