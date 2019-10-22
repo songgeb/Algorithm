@@ -77,5 +77,7 @@ func insertionSort() {
 //Sort.testInsertionSort()
 //Sort.testSelectionSort()
 //Sort.testMergeSort()
-Sort.testPartition()
+//Sort.testPartition()
+
+Search.testBinarySearch()
 
