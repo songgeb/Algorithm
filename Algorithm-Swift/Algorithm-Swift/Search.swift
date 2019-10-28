@@ -10,7 +10,8 @@ import Foundation
 
 // MARK: - 二分查找
 
-func bbsearch(_ array: inout [Int], targetValue: Int) -> Int {
+/// 非递归二分查找
+func bbsearch(_ array: inout [Int], targetValue: Int) -> Int? {
   var low = 0
   var high = array.count - 1
   
@@ -26,16 +27,16 @@ func bbsearch(_ array: inout [Int], targetValue: Int) -> Int {
     }
   }
   
-  return -1
+  return nil
 }
 
-// 递归二分查找
-func brsearch(_ array: inout [Int], targetValue: Int, low: Int, high: Int) -> Int {
+/// 递归二分查找
+func brsearch(_ array: inout [Int], targetValue: Int, low: Int, high: Int) -> Int? {
   //停止条件
-  if low > high { return -1 }
+  if low > high { return nil }
   let mid = low + ((high - low) >> 1)
   let midValue = array[mid]
-  let result: Int
+  let result: Int?
   if targetValue == midValue {
     return mid
   } else if targetValue < midValue {
@@ -46,7 +47,7 @@ func brsearch(_ array: inout [Int], targetValue: Int, low: Int, high: Int) -> In
   return result
 }
 
-// 二分查找，查找第一个、最后一个值等于给定值的元素--自己拙劣的实现
+/// 二分查找，查找第一个、最后一个值等于给定值的元素--自己拙劣的实现
 func bsearchFirst(_ arr: inout [Int], targetValue: Int, low: Int, high: Int, isFirst: Bool) -> Int? {
   // 1. 先按照通常二分查找的路子找到给定值元素，若找不到则返回nil
   // 2. 若找到后，则继续以找到的位置-1为high，low不变，继续二分查找的找，若找不到，则说明是第一个等于给定值的
@@ -157,8 +158,25 @@ func bsearch_optimize2(_ arr: inout [Int], targetValue: Int, low: Int, high: Int
   
   return nil
 }
+/// 二分查找旋转有序数组中某个给定值
+func bsearch_rotatearray(_ arr: inout [Int], targetValue: Int, low: Int, high: Int) -> Int? {
+  // 先通过二分查找，找到分界点，即最小值，然后再分别在两个有序数组中继续用二分查找
+  // 此处假定没有重复数
+  guard let minIndex = bsearch_findmin(&arr, low: low, high: high) else {
+    return nil
+  }
+  
+  if let leftIndex = brsearch(&arr, targetValue: targetValue, low: 0, high: minIndex - 1) {
+    return leftIndex
+  } else if let rightIndex = brsearch(&arr, targetValue: targetValue, low: minIndex, high: high) {
+    return rightIndex
+  } else {
+    return nil
+  }
+}
 
 func bsearch_findmin(_ arr: inout [Int], low: Int, high: Int) -> Int? {
+  if arr.count == 0 { return nil }
   // 用二分查找循环有序数组中的最小值
   // 循环有序数组是这样的  [4, 5, 6, 1, 2, 3]，可能存在重复值，比如[1, 1, 1, 1, 0, 1]
   // 使用二分查找可以将时间复杂度降到logn
@@ -198,8 +216,8 @@ class Search {
 //    let index = brsearch(&array, targetValue: 456, low: 0, high: 7)
 //    let index = bsearchFirst(&array, targetValue: 8, low: 0, high: array.count - 1, isFirst: true)
 //    let index = bsearch_optimize2(&array, targetValue: 8, low: 0, high: 9)
-    var ax = [5,4,3,2,1]
-    let index = bsearch_findmin(&ax, low: 0, high: 4)
+    var ax = [3,4,5,1,2]
+    let index = bsearch_rotatearray(&ax, targetValue: 2, low: 0, high: 4)
     print(index)
   }
 }
