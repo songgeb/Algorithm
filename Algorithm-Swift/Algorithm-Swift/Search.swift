@@ -158,6 +158,34 @@ func bsearch_optimize2(_ arr: inout [Int], targetValue: Int, low: Int, high: Int
   return nil
 }
 
+func bsearch_findmin(_ arr: inout [Int], low: Int, high: Int) -> Int? {
+  // 用二分查找循环有序数组中的最小值
+  // 循环有序数组是这样的  [4, 5, 6, 1, 2, 3]，可能存在重复值，比如[1, 1, 1, 1, 0, 1]
+  // 使用二分查找可以将时间复杂度降到logn
+  
+  // 算法
+  // 既然是二分法，我们尝试用中间值midValue与其他值比，那么与哪个值比较呢？
+  // 先来比较一下左边界值leadingValue
+  // 如果midValue < leadingValue，那midValue可能是最小值，但不可能是在mid右边的范围，应该去左边的范围去找，right = mid
+  // 如果midValue > leadingValue，那midValue肯定不是最小值，但在mid右边的范围，left = mid + 1
+  // 如果midValue == leadingValue，既可能在左边也可能在右边，也可能是midValue本身，此时去掉leading即可，即left = leading + 1
+  var left = low
+  var right = high
+  while left < right {
+    let mid = left + (right - left) >> 1
+    let midValue = arr[mid]
+    let trailingValue = arr[right]
+    if midValue < trailingValue {
+      right = mid
+    } else if midValue > trailingValue {
+      left = mid + 1
+    } else {
+      right -= 1
+    }
+  }
+  return left
+}
+
 class Search {
   static func testBinarySearch() {
     var array = [1, 3, 4, 5, 8, 8, 8, 8, 8, 18]
@@ -169,7 +197,9 @@ class Search {
 //    let index = bbsearch(&array, targetValue: 45)
 //    let index = brsearch(&array, targetValue: 456, low: 0, high: 7)
 //    let index = bsearchFirst(&array, targetValue: 8, low: 0, high: array.count - 1, isFirst: true)
-    let index = bsearch_optimize2(&array, targetValue: 8, low: 0, high: 9)
+//    let index = bsearch_optimize2(&array, targetValue: 8, low: 0, high: 9)
+    var ax = [5,4,3,2,1]
+    let index = bsearch_findmin(&ax, low: 0, high: 4)
     print(index)
   }
 }
