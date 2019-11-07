@@ -221,3 +221,13 @@ class Search {
     print(index)
   }
 }
+
+func fuck(_ m: Int) {
+  var n = m
+  var a = 1
+  let block = { [a] in
+    var xx = a
+  }
+  
+  
+}

@@ -44,7 +44,7 @@ func selectionSort() {
 
 // MARK: 插入排序
 
-func insertionSort() {
+public func insertionSort() {
     print("插入排序")
     //1. 从第一个元素起（第二个也可以），想办法将它插入到前面的序列中，因为前面序列已经是有序的了
     //2. 如何插入到前面的有序序列呢？和它前一个比较，如果比前面的小，就和前面的交换，直到比前面的大
@@ -79,5 +79,6 @@ func insertionSort() {
 //Sort.testMergeSort()
 //Sort.testPartition()
 
-Search.testBinarySearch()
+//Search.testBinarySearch()
+testMergeFunction()
 

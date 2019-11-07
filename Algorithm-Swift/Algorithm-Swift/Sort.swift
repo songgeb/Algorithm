@@ -266,3 +266,43 @@ class Sort {
     print(result)
   }
 }
+
+func sb_merge(_ array: [Int], p: Int, q: Int, r: Int) -> [Int] {
+  var i = p
+  var j = r + 1
+  var tmp = Array(repeating: 0, count: 10)
+  var index = 0
+  while i <= r && j <= q {
+    let left = array[i]
+    let right = array[j]
+    if left <= right {
+      tmp.append(left)
+      i += 1
+    } else {
+      tmp.append(right)
+      j += 1
+    }
+    index += 1
+  }
+  
+  while i <= r {
+    tmp.append(array[i])
+    i += 1
+    index += 1
+  }
+  
+  while j <= q {
+    tmp.append(array[j])
+    j += 1
+    index += 1
+  }
+  
+  return tmp
+}
+
+func testMergeFunction() {
+  let array = [4, 8, 12, 21, 30, 2, 3, 8, 19]
+  
+  let result = sb_merge(array, p: 0, q: 8, r: 4)
+  print(result)
+}
