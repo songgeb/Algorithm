@@ -80,5 +80,7 @@ public func insertionSort() {
 //Sort.testPartition()
 
 //Search.testBinarySearch()
-testMergeFunction()
+//testMergeFunction()
+
+Tree.testTree()
 

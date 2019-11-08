@@ -102,6 +102,10 @@ class CircularQueue {
     self.tail = 0
   }
   
+  func isEmpty() -> Bool {
+    return head == tail
+  }
+  
   func enqueue(_ item: Int) -> Bool {
     if (tail + 1) % length == head {
       print("循环队列满了!")
