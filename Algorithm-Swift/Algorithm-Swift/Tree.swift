@@ -57,6 +57,15 @@ class Tree {
     return node33
   }
   
+  /// 求树的最大高度
+  /// - Parameter root:
+  class func maxDepth(root: TreeNode?) -> Int {
+    // 递归实现
+    // maxDepth(root) = max(maxDepth(root.left), maxDepth(root.right))
+    guard let root = root else { return -1 }
+    return max(maxDepth(root: root.left), maxDepth(root: root.right)) + 1
+  }
+  
   class func findRecursively(value: Int, root: TreeNode?) -> TreeNode? {
     guard let root = root else { return nil }
     if value < root.val {
@@ -270,14 +279,12 @@ class Tree {
     let root = Tree.createATree()
 //    let node = findRecursively(value: 19, root: root)
 //    let node = find(val: 19, root: root)
-    midOrder(root: root)
-//    insert(val: 100, root: root)
-    print("我勒个去")
 //    midOrder(root: root)
-    deleteNodeOptimize(val: 33, root: root)
+//    insert(val: 100, root: root)
+    print(maxDepth(root: root))
+//    midOrder(root: root)
+//    deleteNodeOptimize(val: 33, root: root)
 //    deleteNode(val: 13, root: root)
-    
-    print(root.val)
     
 //    midOrder(root: root)
   }

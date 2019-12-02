@@ -13,6 +13,7 @@
 		CC9592462314B97200C34D9B /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9592452314B97200C34D9B /* Search.swift */; };
 		CCA00A4922EE844E00822759 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA00A4822EE844E00822759 /* LinkedList.swift */; };
 		CCBBB51321ECC5A400533FC2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBBB51221ECC5A400533FC2 /* main.swift */; };
+		CCE94E472394A66D00D5000C /* RecursionTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE94E462394A66D00D5000C /* RecursionTree.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,7 @@
 		CCA00A4822EE844E00822759 /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 		CCBBB50F21ECC5A400533FC2 /* Algorithm-Swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Algorithm-Swift"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCBBB51221ECC5A400533FC2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		CCE94E462394A66D00D5000C /* RecursionTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecursionTree.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				CC8C131522FBD21900C484CD /* Sort.swift */,
 				CC9592452314B97200C34D9B /* Search.swift */,
 				CC317D252374384D0027B8D4 /* Tree.swift */,
+				CCE94E462394A66D00D5000C /* RecursionTree.swift */,
 			);
 			path = "Algorithm-Swift";
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC9592462314B97200C34D9B /* Search.swift in Sources */,
+				CCE94E472394A66D00D5000C /* RecursionTree.swift in Sources */,
 				CCBBB51321ECC5A400533FC2 /* main.swift in Sources */,
 				CC8C131622FBD21900C484CD /* Sort.swift in Sources */,
 				CC317D262374384D0027B8D4 /* Tree.swift in Sources */,
