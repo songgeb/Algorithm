@@ -83,5 +83,8 @@ public func insertionSort() {
 //testMergeFunction()
 
 //Tree.testTree()
-RecursionTree.testSplit()
+//RecursionTree.testSplit()
+//Heap.test()
+
+testKth()
 
