@@ -56,35 +56,110 @@ func allRankRecursion(array: [Int], path: inout [Int], used: inout [Bool], count
 }
 
 // MARK: - 8皇后问题
-// 1. 想象一个8*8的棋盘，现在要往其中放8个棋子
-// 2. 要保证最终的结果中，任何一个棋子横向、竖向、对角线方向都只有一个棋子
-// 3. 一共有多少种不同的布棋方案
 
-// 回溯思路解决问题
-// 我们先实现一种最简单的布局
-// 将第一个棋子放到第一排第一列，然后从第二排第一列开始，判断是否可以，不行就移动到下一列，直到最后一行
-var result = [Int]()
 
-/// 判断该坐标下数值是否和result中有冲突
-/// - Parameters:
-///   - row:
-///   - column:
-func isOk(row: Int, column: Int) -> Bool {
-    //
-    return true
-}
+// MARK: - 01背包
+// 对于一组不同重量、不可分割的物品，我们需要选择一些装入背包，在满足背包最大重量限制的前提下，背包中物品总重量的最大值是多少呢？
+// 同上面全排列问题
+// 该问题也可以用回溯法穷举出所有的可能情况，从其中选择使得总重量最大的一个来
 
-func cal8Queens() {
-    if result.count >= 8 { return }
-    for row in 0...7 {
-        for column in 0...7 {
-            if isOk(row: row, column: column) {
-                result[row] = column
-                break
+// [3, 5, 6, 2, 8, 9]
+// 1. 刚开始有多种情况，先找一个，可选可不选，两种情况都得走一下
+// 2. 随着前进，剩余的情况越来越少，等不能再往前走时，就要“回溯”了，回溯到前一个状态，选择另外一种可能
+// 3. 继续从1开始
+
+class Package {
+    static let array = [2, 2, 4, 6, 3]
+    static let capacity = 9
+    static var method: [Int] = []
+    static var max = 0
+    static var maxMethod: [Int] = []
+    
+    static func zhuang(i: Int, cw: Int) {
+        // 第i个物品，装或者不装，未装第i个物品时的重量
+        if i < 0 { return }
+        if i >= array.count {
+            if max < cw {
+                max = cw
+                maxMethod = method
             }
+            return
+        }
+        // 不装
+        zhuang(i: i + 1, cw: cw)
+        // 装
+        if cw + array[i] <= capacity{
+            method.append(array[i])
+            zhuang(i: i + 1, cw: cw + array[i])
+            method.removeLast()
+        }
+        
+    }
+    
+    static var mem: [[Bool]] = [[Bool]].init(repeating: [Bool].init(repeating: false, count: 13), count: 6)
+    /// 增加了备忘录的装法
+    /// - Parameters:
+    ///   - i:
+    ///   - cw:
+    static func zhuang2(i: Int, cw: Int) {
+        if i >= array.count || cw >= capacity {
+            if max < cw {
+                max = cw
+                maxMethod = method
+            }
+            return
+        }
+        
+        if mem[i][cw] { return }
+        // 不装
+        zhuang2(i: i + 1, cw: cw)
+        // 装
+        if cw + array[i] <= capacity{
+            method.append(array[i])
+            zhuang2(i: i + 1, cw: cw + array[i])
+            method.removeLast()
         }
     }
+    
+    /// 动态规划解决背包问题
+    /// 所谓动态规划，就是依靠上一步的结果，制定下一步的策略，将当前一步的所有情况标记出来，通过技巧规避掉重复项
+    /// 联想到二维数组，去重的01背包问题
+    /// 想象一个二维数组，行数表示物品数量，列数表示重量，列数最大不超过背包总重量
+    /// 假设物品重量是[2,2]，a[0][0] = 1，表示第一个物品不放入背包时重量为0，a[0][2]=1表示第一个物品放入了背包，重量是2
+    
+    static var states: [[Bool]] = [[Bool]].init(repeating: [Bool].init(repeating: false, count: 10), count: 5)
+    static func zhuang3() {
+        // 先对第一个物品做特殊处理
+        // 不装
+        states[0][0] = true
+        // 装
+        states[0][array[0]] = true
+        
+        // 从第二个物品到结束
+        for i in 1..<array.count {
+            for j in 0...capacity {
+                // 只用关前面已装或未装的
+                if states[i - 1][j] {
+                    // 当前i物品，不装的状态
+                    states[i][j] = true
+                    // 当前i物品，装的状态
+                    if j + array[i] <= capacity {
+                        states[i][j + array[i]] = true
+                    }
+                }
+            }
+        }
+        
+        //按行输出结果集
+        for i in 0..<array.count {
+            for j in 0...capacity {
+                print(states[i][j], terminator: " ")
+            }
+            print("")
+        }
+    }
+    
+    static func test() {
+        zhuang3()
+    }
 }
-
-
-// 01背包
