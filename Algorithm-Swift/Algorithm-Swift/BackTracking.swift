@@ -133,7 +133,9 @@ class Package {
         // 不装
         states[0][0] = true
         // 装
-        states[0][array[0]] = true
+        if array[0] > capacity {
+            states[0][array[0]] = true
+        }
         
         // 从第二个物品到结束
         for i in 1..<array.count {
@@ -159,7 +161,24 @@ class Package {
         }
     }
     
+    /// 使用一位数组实现动态规划实现01背包
+    static var states4: [Bool] = [Bool].init(repeating: false, count: Package.capacity + 1)
+    static func zhuang4() {
+        states4[0] = true
+        if array[0] <= capacity {
+            states4[array[0]] = true
+        }
+        
+        for i in 1..<array.count {
+            for j in stride(from: capacity - array[i], to: 0, by: -1) {
+                if states4[j] { states4[j + array[i]] = true }
+            }
+        }
+        
+        print(states4)
+    }
+    
     static func test() {
-        zhuang3()
+        zhuang4()
     }
 }
