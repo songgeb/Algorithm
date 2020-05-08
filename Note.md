@@ -23,6 +23,57 @@
 - 找到链表中点
 - 判断链表回文数
 
+#### 哨兵
+当往链表中插入一个节点时
+```
+pNode insertNodeN(pNode head, int pos, int value)
+{
+    int count;
+    pNode temp;
+    pNode prev = head;
+    temp = (pNode)malloc(sizeof(node));
+    temp->data = value;
+    if(head == NULL || pos == 0){
+        temp->next = head;
+        return temp;
+    }
+    for(count = 1; count < pos && prev->next != NULL; count++){
+        prev = prev->next;
+    }
+    temp->next = prev->next;
+    prev->next = temp;      //链
+
+    return head;
+}
+————————————————
+版权声明：本文为CSDN博主「bg2wlj」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/bg2wlj/java/article/details/52300565
+```
+
+那如果我们用**哨兵**，即加入一个空头结点，则可以这样写
+```
+void insertNodeWithSentinelN(const pNode head, int pos, int value)
+{
+    int count;
+    pNode temp;
+    pNode prev = head;
+    temp = (pNode)malloc(sizeof(node));
+    temp->data = value;
+    for(count = 0; count < pos && prev->next != NULL; count++){
+        prev = prev->next;
+    }
+    temp->next = prev->next;
+    prev->next = temp;      //链
+}
+————————————————
+版权声明：本文为CSDN博主「bg2wlj」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/bg2wlj/java/article/details/52300565
+```
+
+哨兵的作用是用一个空节点，让代码逻辑能够统一、简洁明了，不需要额外处理空节点情况
+
+- [带哨兵节点和不带哨兵节点的单链表操作的对比](https://blog.csdn.net/bg2wlj/article/details/52300565)
+
 ### LRU
 > least recently used
 - 最近使用缓存淘汰算法，保留最近使用过的数据
