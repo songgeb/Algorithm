@@ -8,13 +8,21 @@
 
 import Foundation
 
-/// 链表jiedian
-class ListNode {
+/// 链表节点
+class ListNode: Hashable {
+    static func == (lhs: ListNode, rhs: ListNode) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
+    
     var val: Int
     var next: ListNode?
     
     init(_ val: Int) {
         self.val = val
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }
 
@@ -171,11 +179,96 @@ class LinkedList {
         
     }
     
+    /// 单向链表检测是否有环
+    /// - Parameter head:
+    func hasCircle(_ head: ListNode?) -> Bool {
+        print(#function)
+        // 两个指针，一快一慢，都从头结点开始，快的一次走两个节点，慢的一次走一个
+        // 如果有环，因为快指针始终比慢指针快两个节点，所以当慢指针到达环的开始节点时，此时快指针应该在慢指针前面n个节点的位置，n是0或者2的倍数
+        // 继续走下去，快指针就会把慢指针套圈了，n圈后，两个指针必定重合
+        // 当然如果知道链表结束都没有重合，说明没有环
+        if head == nil { return false }
+        if head?.next?.next == nil { return false }
+        var quickNode, slowNode: ListNode?
+        quickNode = head
+        slowNode = head
+        while quickNode != nil {
+            quickNode = quickNode?.next?.next
+            slowNode = slowNode?.next
+            print("快指针->\(quickNode?.val), 慢指针->\(slowNode?.val)")
+            if quickNode?.val == slowNode?.val {
+                return true
+            }
+        }
+        return false
+    }
+    // 检测是否有环，同时返回环开始节点
+    func circleStartNode(_ head: ListNode?) -> ListNode? {
+        // 这是检测环的升级版，不但要检测环，还要知道环的起始节点
+        // 用哈希表或字典来实现
+        // 哈希表的key存储节点，value存储该节点被指向的个数
+        // 遍历链表每个节点，每遍历一个节点，该节点对应的value就加1，value从0开始
+        // 在加1前先判断value是否大于1，若大于1，则表示有两个节点指向了同一个节点，该节点便是环的起始节点
+        var nodeReferenceCounts: [ListNode: Int] = [:]
+        var currentNode = head
+        while currentNode != nil {
+            guard let node = currentNode else { return nil }
+            if let count = nodeReferenceCounts[node] {
+                if count == 1 { return node }
+            } else {
+                nodeReferenceCounts[node] = 1
+            }
+            currentNode = currentNode?.next
+        }
+        return nil
+    }
+    
+    /// 合并两个有序
+    /// - Parameters:
+    ///   - head1: <#head1 description#>
+    ///   - head2: <#head2 description#>
+    func mergeOrderedList(_ head1: ListNode, _ head2: ListNode) {
+        
+    }
+    
+    func createCircleList() -> List {
+        let list = List()
+        list.appendToTail(1)
+        list.appendToTail(2)
+//        return list
+        // 2个节点，全是环
+        list.tail?.next = list.head
+        return list
+        // 大于两个节点，全是环
+//        list.appendToTail(3)
+//        list.tail?.next = list.head
+//        return list
+        // 部分环
+        // 1->2->3->4->5->6->7---->4
+//        list.appendToTail(3)
+//        let node = ListNode(4)
+//        list.tail?.next = node
+//        list.tail = node
+//        list.appendToTail(5)
+//        list.appendToTail(6)
+//        list.appendToTail(7)
+//        list.tail?.next = node
+//        return list
+    }
+    
+    /// 检测回文数测试
     func palindromeTest() {
         let data = [1, 2, 1]
         print("初始链表->\(data)")
         let list = createLinkedList(data)
         palindromeByRecursion(list.head)
+    }
+    
+    func testCircleDetetor() {
+//        let list = createLinkedList(data)
+        let list = createCircleList()
+//        print(hasCircle(list.head))
+        print(circleStartNode(list.head)?.val)
     }
 }
 

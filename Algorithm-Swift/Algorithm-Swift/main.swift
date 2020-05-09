@@ -90,5 +90,6 @@ public func insertionSort() {
 
 //allRank(array: [3, 1, 2, 4, 5])
 
-Package.test()
+//Package.test()
+LinkedList().testCircleDetetor()
 
