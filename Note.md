@@ -19,12 +19,19 @@
  单链表、双链表、循环链表
 
 ### 单链表
+
+以下单链表的操作要熟练写出
+
 - 链表原地翻转
 - 找到链表中点
 - 判断链表回文数
+- 链表环路检测及环起点计算
+- 有序链表合并
+- 删除链表倒数第n个结点
 
 #### 哨兵
 当往链表中插入一个节点时
+
 ```
 pNode insertNodeN(pNode head, int pos, int value)
 {
@@ -76,6 +83,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 
 ### LRU
 > least recently used
+
 - 最近使用缓存淘汰算法，保留最近使用过的数据
 - 为什么做缓存？
   - 通常缓存是将一些常访问的数据存放到**内存**中，以后再用时直接在这里获取，而避免了每次都去磁盘中取数据，磁盘的IO比较耗时

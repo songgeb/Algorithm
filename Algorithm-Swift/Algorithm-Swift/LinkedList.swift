@@ -263,8 +263,76 @@ class LinkedList {
     /// - Parameters:
     ///   - head1:
     ///   - head2:
-    func mergeOrderedList(_ head1: ListNode, _ head2: ListNode) {
+    func mergeOrderedList(_ head1: ListNode?, _ head2: ListNode?) -> ListNode? {
+        // 合并两个有序的链表
+        // 新开辟一个链表，两个链表，给两个指针，分别指向当前链表已遍历的最小的值
+        // 若两个指针有一个没遍历到结束，就执行while循环，选择最小值追加到新开辟的链表中
+        // while结束后，可能有个链表还剩一部分，把这一部分追加到新链表中
         
+        // check, head1或head2为空时，ok
+        // 其中一个链表只有一个结点，ok
+        // 其他情况，ok
+        var p1, p2: ListNode?
+        p1 = head1
+        p2 = head2
+        
+        let list = List()
+        while let p1value = p1?.val, let p2value = p2?.val {
+            if p1value > p2value {
+                list.appendToTail(p2value)
+                p2 = p2?.next
+            } else {
+                list.appendToTail(p1value)
+                p1 = p1?.next
+            }
+        }
+        
+        if p1 != nil {
+            while let p1Value = p1?.val {
+                list.appendToTail(p1Value)
+                p1 = p1?.next
+            }
+        }
+        
+        if p2 != nil {
+            while let p2Value = p2?.val {
+                list.appendToTail(p2Value)
+                p2 = p2?.next
+            }
+        }
+        
+        return list.head
+    }
+    
+    /// 单链表删除倒数第n个结点
+    /// - Parameter n:
+    func deletePenultimateNthNode(_ n: Int, _ head: ListNode?) -> ListNode? {
+        if head == nil { return nil }
+        if n <= 0 { return nil }
+        // 两个指针，一前一后，两个指针间隔n-1个结点
+        // 前面指针在起点开始，大家一起走，后面的指针走到最后一个结点时，停止前进，此时前面的指针就是倒数第n个了
+        
+        //check，head为空时，ok
+        //n是0的情况，ok
+        //n是1的情况，ok
+        var front, rear: ListNode?
+        front = head
+        rear = front
+        
+        var count = 1
+        while count < n {
+            rear = rear?.next
+            count += 1
+        }
+        
+        if rear == nil { return nil }
+        
+        while rear?.next != nil {
+            front = front?.next
+            rear = rear?.next
+        }
+        
+        return front
     }
     
     func createCircleList() -> List {
@@ -307,6 +375,15 @@ class LinkedList {
 //        print(hasCircle(list.head))
 //        print(circleStartNode(list.head)?.val)
         print(circleStartNodeByPointer(list.head)?.val)
+    }
+    
+    func testDeletion() {
+        let data = [1, 2, 1, 4, 5, 7, 3, 9]
+        print("初始链表->\(data)")
+        let list = createLinkedList(data)
+        
+        let deleteNode = deletePenultimateNthNode(8, list.head)
+        print(deleteNode?.val)
     }
 }
 
