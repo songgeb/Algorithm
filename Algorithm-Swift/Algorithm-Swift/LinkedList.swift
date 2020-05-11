@@ -202,7 +202,7 @@ class LinkedList {
         }
         return false
     }
-    // 检测是否有环，同时返回环开始节点
+    // 哈希表检测是否有环，同时返回环开始节点
     func circleStartNode(_ head: ListNode?) -> ListNode? {
         // 这是检测环的升级版，不但要检测环，还要知道环的起始节点
         // 用哈希表或字典来实现
@@ -223,10 +223,46 @@ class LinkedList {
         return nil
     }
     
+    /// 快慢指针实现检测链表环，同时返回环的起点
+    /// - Parameter head:
+    /// - Returns:
+    func circleStartNodeByPointer(_ head: ListNode?) -> ListNode? {
+        // check
+        if head == nil { return nil }
+        // 空节点时--ok  1个节点时，ok
+        // 2个节点且是环时，ok
+        // 一快一慢指针，快的走两步，慢的走一步，当两个相寓了就说明有环
+        var quickNode, slowNode: ListNode?
+        quickNode = head
+        slowNode = head
+        
+        var hasCircle = false
+        while quickNode != nil {
+            quickNode = quickNode?.next?.next
+            slowNode = slowNode?.next
+            if quickNode != nil, quickNode == slowNode { // 注意nil情况
+                hasCircle = true
+                break
+            }
+        }
+        
+        if !hasCircle { return nil }
+        
+        // 有了环后，将其中一个指针弄回到起始位置，两个指针一步一步走，相遇了就是环起点
+        // 其内在的数学逻辑可以参考github
+        slowNode = head
+        while slowNode != quickNode {
+            slowNode = slowNode?.next
+            quickNode = quickNode?.next
+        }
+        
+        return slowNode
+    }
+    
     /// 合并两个有序
     /// - Parameters:
-    ///   - head1: <#head1 description#>
-    ///   - head2: <#head2 description#>
+    ///   - head1:
+    ///   - head2:
     func mergeOrderedList(_ head1: ListNode, _ head2: ListNode) {
         
     }
@@ -235,25 +271,26 @@ class LinkedList {
         let list = List()
         list.appendToTail(1)
         list.appendToTail(2)
+        // 没有环
 //        return list
         // 2个节点，全是环
-        list.tail?.next = list.head
-        return list
+//        list.tail?.next = list.head
+//        return list
         // 大于两个节点，全是环
 //        list.appendToTail(3)
 //        list.tail?.next = list.head
 //        return list
         // 部分环
         // 1->2->3->4->5->6->7---->4
-//        list.appendToTail(3)
-//        let node = ListNode(4)
-//        list.tail?.next = node
-//        list.tail = node
-//        list.appendToTail(5)
-//        list.appendToTail(6)
-//        list.appendToTail(7)
-//        list.tail?.next = node
-//        return list
+        list.appendToTail(3)
+        let node = ListNode(4)
+        list.tail?.next = node
+        list.tail = node
+        list.appendToTail(5)
+        list.appendToTail(6)
+        list.appendToTail(7)
+        list.tail?.next = node
+        return list
     }
     
     /// 检测回文数测试
@@ -268,7 +305,8 @@ class LinkedList {
 //        let list = createLinkedList(data)
         let list = createCircleList()
 //        print(hasCircle(list.head))
-        print(circleStartNode(list.head)?.val)
+//        print(circleStartNode(list.head)?.val)
+        print(circleStartNodeByPointer(list.head)?.val)
     }
 }
 
