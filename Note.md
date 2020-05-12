@@ -108,6 +108,9 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 	- 当表达式结束后，检查一下运算符栈，若没有清空，则把剩下的计算一下，最后两个栈都空了就
 	![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/stack_expression.jpg)
 
+### 相关习题
+- 校验给定的两个入栈、出栈序列是否正确
+
 ## 二分查找
  
 - ip地址可以用32位整数来表示，每个ip段最大值是255，8位就够了

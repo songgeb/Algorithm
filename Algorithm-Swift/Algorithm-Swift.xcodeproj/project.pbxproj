@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC317D262374384D0027B8D4 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC317D252374384D0027B8D4 /* Tree.swift */; };
+		CC3E44562469865600F0CA85 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3E44552469865500F0CA85 /* Stack.swift */; };
 		CC8C131422F95B9900C484CD /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C131322F95B9900C484CD /* Queue.swift */; };
 		CC8C131622FBD21900C484CD /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C131522FBD21900C484CD /* Sort.swift */; };
 		CC9592462314B97200C34D9B /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9592452314B97200C34D9B /* Search.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		CC317D252374384D0027B8D4 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
+		CC3E44552469865500F0CA85 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		CC8C131322F95B9900C484CD /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		CC8C131522FBD21900C484CD /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		CC9592452314B97200C34D9B /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 				CCE94E462394A66D00D5000C /* RecursionTree.swift */,
 				CCE94E4823960D0400D5000C /* Heap.swift */,
 				CCE7A4C4240148A300DF70FC /* BackTracking.swift */,
+				CC3E44552469865500F0CA85 /* Stack.swift */,
 			);
 			path = "Algorithm-Swift";
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 				CCE7A4C5240148A300DF70FC /* BackTracking.swift in Sources */,
 				CCE94E4923960D0400D5000C /* Heap.swift in Sources */,
 				CC8C131622FBD21900C484CD /* Sort.swift in Sources */,
+				CC3E44562469865600F0CA85 /* Stack.swift in Sources */,
 				CC317D262374384D0027B8D4 /* Tree.swift in Sources */,
 				CC8C131422F95B9900C484CD /* Queue.swift in Sources */,
 				CCA00A4922EE844E00822759 /* LinkedList.swift in Sources */,
