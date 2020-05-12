@@ -52,7 +52,7 @@ class Solution {
         // 2. 每次push完了，check下p对应的值，若栈顶内容和p相等，则进行一次pop，p指针前进，继续执行2，直到栈顶内容和p对应值不相等，或者栈已空
         // 3. 1、2两步即为模拟的全过程，全过程结束后，检查若栈仍不空，说明两个序列有问题
         var p = 0
-        let stack = Stack()
+        let stack = Stack(100)
         for value in pushed {
             stack.push(value)
             while p < popped.count, !stack.isEmpty,
