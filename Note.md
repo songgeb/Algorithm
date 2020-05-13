@@ -152,6 +152,12 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 ### 分治的排序
 快排和归并排序
 
+#### 归并排序示意图
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/mergesort.jpg)
+
+#### 快排示意图
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/quicksort.jpg)
+
 #### 习题
 - O(n)时间内找到一个无序数组中第K大的值
 	-  为什么用快排来做时间复杂度符合要求？
