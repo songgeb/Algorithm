@@ -306,3 +306,71 @@ func testMergeFunction() {
   let result = sb_merge(array, p: 0, q: 8, r: 4)
   print(result)
 }
+
+
+class SolutionS {
+    func sortArray(_ nums: [Int]) -> [Int] {
+        if nums.count <= 1 { return nums }
+        // 准备用插入排序实现一把
+        // 所谓插入排序，即从数组第二个开始遍历，认为前面的都是排好序的区域，将每个遍历的元素插入到前面有序的序列中
+        // 第一层遍历从第1个元素(c)开始，从前往后，对于这个元素，内层遍历是，从它前面一个元素p开始从后往前遍历
+        // 一旦遇到c < p，则将p往后移
+        // 内层循环结束后，位置也移动好了，将c放到新位置
+        // for i in stride(from: 1, to: nums.count, by: 1) {
+        //     let c = nums[i]
+        //     var cTargetIndex = i
+        //     for j in stride(from: i - 1, to: -1, by: -1) {
+        //         let p = nums[j]
+        //         if c < p {
+        //             nums[j+1] = p
+        //             cTargetIndex = j
+        //         } else {
+        //             break
+        //         }
+        //     }
+        //     nums[cTargetIndex] = c
+        // }
+        // return nums
+
+        // 使用归并排序排一把
+        // 归并核心思想是分治，如何分治，怎么分，一分为二，然后合并，递归的一分为二，直到无法分为止
+        // 递推公式是：mergeSort([p, r]) = mergeSort(p, q) merge mergeSort(q+1, r)
+        // 终止条件是：p <= r，说明只剩下一个元素了，就没必要再一分为二了
+        // 注意，这里面有个merge方法，需要额外空间，所以不是原地排序
+        // 排完序，再将数据拷贝到nums中
+        var nums = nums
+        quickSort(&nums, 0, nums.count - 1)
+        return nums
+    }
+
+    func quickSort(_ nums: inout [Int], _ p: Int, _ r: Int) {
+        if p >= r { return }
+        let q = partition(&nums, p, r)
+        quickSort(&nums, p, q - 1)
+        quickSort(&nums, q + 1, r)
+    }
+    /// 分区，选择一个数组中的数，让所有小于他的值都在左边，所有大于他的值都在右边，返回这个值所在的下标
+    func partition(_ nums: inout [Int], _ p: Int, _ r: Int) -> Int {
+        // 这个算法是需要技巧的
+        // 通常我们选择最后一个作为分界点值pivot
+        // 至于如何分区，可能只能死记硬背了。。。。这个技巧确实不好想
+        // i和j两个指针，从头开始一直到r-1结束
+        // i左边的元素表示都是比pivot小的值，或者说已经分好区的值，同样i右边的表示比pivot大的值
+        // i和j的工作就是，随着往后移，要一点点将未处理的元素都处理一边
+        // 具体是，j走在前面，当发现j处的元素比pivot小时，不是移动j的元素，而是和i处的元素进行交换，这样相比移动元素比较高效，交换完之后已处理的元素多了一个，所以i也要往前进了
+        // 最后要将r位置的元素和i位置元素交换
+        let pivot = nums[r]
+        var i, j: Int
+        i = p
+        j = p
+        while j <= r - 1 {
+            if nums[j] <= pivot {
+                nums.swapAt(j, i)
+                i += 1
+            }
+            j += 1
+        }
+        nums.swapAt(i, r)
+        return i
+    }
+}

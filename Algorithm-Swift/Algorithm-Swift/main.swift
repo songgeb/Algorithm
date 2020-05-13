@@ -93,7 +93,5 @@ public func insertionSort() {
 //Package.test()
 //LinkedList().testCircleDetetor()
 //LinkedList().testDeletion()
-let n = 9
-print(Recursion().testStep(n))
-print(Recursion().testStep1(n))
+SolutionS().sortArray([5, 2, 3, 1])
 
