@@ -137,9 +137,9 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 |选择排序|O(n<sup>2</sup>)、O(n<sup>2</sup>)、O(n<sup>2</sup>)|是|否|
 |归并排序|O(nlogn)|否|是|
 |快速排序|O(nlogn)、O(n<sup>2</sup>)、O(nlogn)|是|否|
-|计数排序|||
-|基数排序|||
-|桶排序|||
+|桶排序|O(n)|否|是|
+|计数排序|O(n)|否|是|
+|基数排序|O(n)|否|是|
 
 ### 基于比较的排序
 冒泡、插入和选择排序
@@ -151,6 +151,11 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 
 ### 分治的排序
 快排和归并排序
+
+- 归并和快排都能做到平均O(nlogn)的时间复杂度
+- 而且归并由于无论好与坏，都要进行归并，所以时间复杂度是稳定的O(nlogn)
+- 但快排在最坏的情况下，分区不均匀时，时间复杂度会退化为O(n<sup>2</sup>)
+- 但实际应用中，快排应用更多，因为归并排序为了合并需要额外的O(n)的空间复杂度
 
 #### 归并排序示意图
 ![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/mergesort.jpg)
