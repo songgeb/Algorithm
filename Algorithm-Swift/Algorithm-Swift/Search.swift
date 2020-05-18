@@ -204,6 +204,36 @@ func bsearch_findmin(_ arr: inout [Int], low: Int, high: Int) -> Int? {
   return left
 }
 
+/// 用二分查找法计算一个正整数的平方根，精确到小数点后6位
+///
+/// - Parameter n:
+func sqrt(_ n: Int) -> Double {
+    // 二分查找大约值
+    // 使用介值定理可知，对于y = x^2这个连续的函数，如果找到x=m1, x=m2使得m1^2小于n，m2^2大于n，那一定存在一个值m使得m^2等于n
+    if n < 1 { return -1 }
+    var low: Double = 1
+    var high: Double = Double(n)
+    
+    while low <= high {
+        let middle = low + (high - low) / 2
+        print("low->\(low), high->\(high)")
+        let square = middle * middle
+        let xx = abs(square - Double(n))
+        print("square->\(square)   abs->\(xx)")
+        if xx <= 1e-12 {
+            return middle
+        } else if square - Double(n) > 1e-12 {
+            high = middle - 1e-6
+        } else {
+            // Double(n) - square > 1e-6
+            low = middle + 1e-6
+        }
+        print("after----------")
+        print("low->\(low), high->\(high)")
+    }
+    return -1
+}
+
 class Search {
   static func testBinarySearch() {
     var array = [1, 3, 4, 5, 8, 8, 8, 8, 8, 18]
@@ -220,14 +250,4 @@ class Search {
     let index = bsearch_rotatearray(&ax, targetValue: 2, low: 0, high: 4)
     print(index)
   }
-}
-
-func fuck(_ m: Int) {
-  var n = m
-  var a = 1
-  let block = { [a] in
-    var xx = a
-  }
-  
-  
 }
