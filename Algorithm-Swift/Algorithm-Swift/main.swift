@@ -95,8 +95,5 @@ public func insertionSort() {
 //LinkedList().testDeletion()
 //SolutionS().sortArray([5, 2, 3, 1])
 //print(sqrt(6))
-if let result = Other().ipToInt("256.1.0.0") {
-    print(result)
-    print(Other().intToIPStr(result))
-}
+print(findValue([4, 5, 6, 1, 2, 3], 3))
 

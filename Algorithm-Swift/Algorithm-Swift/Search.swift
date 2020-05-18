@@ -204,6 +204,116 @@ func bsearch_findmin(_ arr: inout [Int], low: Int, high: Int) -> Int? {
   return left
 }
 
+/// 在循环有序数组中查找某个元素，用二分查找
+func findValue(_ nums: [Int], _ targetValue: Int) -> Int? {
+    if nums.count <= 1 { return nil }
+    //思路1
+    // 遍历数组，找到循环临界点，将数组分为两个有序数组
+    // 记住这两个有序数组的最小值
+    // 根据这两个最小值判定，放到这两个数组中其中一个中去寻找
+    // 时间复杂度O(n)
+//    var firstMinIndex: Int?
+//    var secondMinIndex: Int?
+//
+//    firstMinIndex = 0
+//    for (index, value) in nums.enumerated() {
+//        if index != 0 {
+//            if nums[index] < nums[index - 1] {
+//                secondMinIndex = index
+//                break
+//            }
+//        }
+//    }
+//
+//    guard let smIndex = secondMinIndex,
+//          let fmIndex = firstMinIndex
+//    else {
+//        return nil
+//    }
+//    // 分成两个数组来处理
+    func binarySearch(_ low: Int, _ high: Int, _ targetValue: Int) -> Int? {
+        var low = low
+        var high = high
+        while low <= high {
+            let middle = low + (high - low) >> 1
+            let middleValue = nums[middle]
+            if targetValue == middleValue {
+                return middle
+            } else if targetValue > middleValue {
+                low = middle + 1
+            } else {
+                high = middle - 1
+            }
+        }
+        return nil
+    }
+//
+//    if targetValue >= nums[fmIndex] {
+//        return binarySearch(fmIndex, smIndex - 1)
+//    } else {
+//        return binarySearch(smIndex, nums.count - 1)
+//    }
+    
+    // 思路2
+    // 1. 取middle值，如果nums[0] <= nums[middle]，说明[0, middle]有序，[middle+1, end]循环
+    // 如果nums[0] > nums[middle]，说明[middle+1, end]有序，[0, middle]循环
+    // 总之经过上面操作后，肯定会得出两个子数组的情况
+    // 2. 如果目标值在有序数组中，直接用二分查找找下去
+    // 3. 如果目标值在循环数组中，则继续按照1、2、3的顺序继续操作
+    // 中间可能会有找不到的情况
+    
+    // 先用递归实现
+    // 递归表达式，就是上面的1、2、3个逻辑
+    // 终止条件是，start > end
+//    func goon(_ start: Int, _ end: Int) -> Int? {
+//        if start > end { return nil }
+//
+//        let middle = start + (end - start) >> 1
+//        if nums[start] <= nums[middle] {
+//            // [start middle]有序
+//            if targetValue >= nums[start], targetValue <= nums[middle] {
+//                return binarySearch(start, middle, targetValue)
+//            } else {
+//                // [middle + 1, end]循环
+//                return goon(middle + 1, end)
+//            }
+//        } else {
+//            // [middle + 1, end]有序
+//            if targetValue >= nums[middle + 1], targetValue <= nums[end] {
+//                return binarySearch(middle + 1, end, targetValue)
+//            } else {
+//                // [start, middle]循环
+//                return goon(start, middle)
+//            }
+//        }
+//    }
+//    return goon(0, nums.count - 1)
+    
+    // 思路2，非递归实现一把
+    // 感觉do while结构更合适
+    var start = 0, end = nums.count - 1
+    repeat {
+        let middle = start + (end - start) >> 1
+        if nums[start] <= nums[middle] {
+            // [start, middle]有序
+            if targetValue >= nums[start], targetValue <= nums[middle] {
+                return binarySearch(start, middle, targetValue)
+            } else {
+                // 去[middle + 1, end]中找
+                start = middle + 1
+            }
+        } else {
+            // [start, middle]是循环，[middle+1, end]有序
+            if targetValue >= nums[middle + 1], targetValue <= nums[end] {
+                return binarySearch(middle + 1, end, targetValue)
+            } else {
+                end = middle
+            }
+        }
+    } while start <= end
+    return nil
+}
+
 /// 用二分查找法计算一个正整数的平方根，精确到小数点后6位
 ///
 /// - Parameter n:
