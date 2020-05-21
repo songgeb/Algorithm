@@ -95,5 +95,7 @@ public func insertionSort() {
 //LinkedList().testDeletion()
 //SolutionS().sortArray([5, 2, 3, 1])
 //print(sqrt(6))
-print(findValue([4, 5, 6, 1, 2, 3], 3))
+//print(findValue([4, 5, 6, 1, 2, 3], 3))
+//RecursionTree.testSplit()
+Solution1().permuteUnique([1, 2, 1])
 

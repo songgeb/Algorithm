@@ -65,3 +65,58 @@ class Recursion {
     }
     
 }
+
+class Solution1 {
+    func permuteUnique(_ nums: [Int]) -> [[Int]] {
+        var track = [Int]()
+        var used = [Bool](repeating: false, count: nums.count)
+        var res = [[Int]]()
+        backtrack(nums.sorted(), track: &track, used: &used, res: &res)
+        return res
+    }
+    
+    func backtrack(_ nums: [Int], track: inout [Int], used: inout [Bool], res: inout [[Int]]) {
+        if track.count == nums.count {
+            let r = track
+            res.append(r)
+            return
+        }
+        for (index, num) in nums.enumerated() {
+            if used[index] {
+                continue
+            }
+            /*剪枝
+             这里!used[index - 1]是提前剪枝
+             也可以是used[index - 1],这是发现重复后再剪枝,提前剪枝效率更高
+             */
+            if index > 0 && num == nums[index - 1] && !used[index - 1] {
+                continue
+            }
+            used[index] = true
+            track.append(num)
+            backtrack(nums, track: &track, used: &used, res: &res)
+            track.removeLast()
+            used[index] = false
+        }
+    }
+    
+    func permute(_ nums: [Int]) -> [[Int]] {
+        if nums.count == 0 { return [] }
+        var nums = nums
+        var results: [[Int]] = []
+        /// 固定begin位置元素，对后面的元素进行全排列
+        func action(_ begin: Int) {
+            if begin > nums.count - 1 {
+                results.append(nums)
+                return
+            }
+            for i in begin...nums.count-1 {
+                nums.swapAt(i, begin)
+                action(begin+1)
+                nums.swapAt(i, begin)
+            }
+        }
+        action(0)
+        return results
+    }
+}

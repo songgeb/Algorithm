@@ -57,7 +57,7 @@ class Tree {
     return node33
   }
   
-  /// 求树的最大高度
+  /// 求树的深度（递归实现）
   /// - Parameter root:
   class func maxDepth(root: TreeNode?) -> Int {
     // 递归实现
@@ -94,7 +94,7 @@ class Tree {
     }
     return nil
   }
-  
+  /// 中序遍历
   class func midOrder(root: TreeNode?) {
     guard let root = root else { return }
     midOrder(root: root.left)

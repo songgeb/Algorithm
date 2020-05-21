@@ -27,6 +27,6 @@ class RecursionTree {
   
   /// 测试细胞分裂
   static func testSplit() {
-    print(split(4))
+    print(split(1))
   }
 }
