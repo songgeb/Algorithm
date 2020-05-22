@@ -660,6 +660,20 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 
 ![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacencylist.jpg)
 
+### 搜索
+
+> 大部分搜索问题，搜索场景都可以抽象成图
+
+不管是深搜还是广搜，本质都是搜索算法，用于查找搜索元素的
+
+- 深度优先搜索（Depth-First-Search）
+- 广度优先搜索（Breadth-First-Search）
+
+### 疑问
+1. 深度优先搜索和回溯思想区别是？
+2. 感觉dfs和bfs的时间复杂度分析很不严谨，需要看下更严谨的分析
+3. 图在实践中有哪些应用
+
 ### 习题
 1. 如何存储微博的好友关系，要支持如下功能
 	- 判断用户 A 是否关注了用户 B；
