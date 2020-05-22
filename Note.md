@@ -292,10 +292,25 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 > 从跳表这个知识点开始，我们将接触**动态数据结构**。之前的数据结构都是对静态的数组、链表等结构进行查询等操作，在这过程中并没有动态的插入删除等操作。有些时间复杂度很低的算法在面临动态操作时，时间复杂度就会降低，比如二分查找。后续接触到的数据结构中，就会有即使考虑动态的操作，性能仍很优越的算法和数据结构
  
 - 实现了基于链表的二分查找
-- 为有序的链表添加了多级索引链表
+- 为**有序**的链表添加了多级索引链表
 - 通过查找索引链表再找到原始链表中的数据，相比直接在原始链表中查询要更高效
 
 ![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/Skiplist.jpg)
+
+### 时间复杂度分析
+
+- 如果对原链表每两个节点建立一个索引，那第1级索引链表中有n/2个节点，第2级是n/4个节点
+- 假设建立h级索引，会有n/2<sup>h</sup>个节点
+- 假设h已经是最高级索引，节点有2个
+- 那可以计算出h = log<sub>2</sub>n - 1，那包含原始链表在内，整个跳表的高度是log<sub>2</sub>n
+- 假设在查找时，每级索引访问的节点为m个，则总时间复杂度是O(m*logn)
+- 根据下图可知一个特性，每一级访问节点数不超过3个，所以最终时间复杂度就是O(logn)
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/skiplist-index-3.jpg)
+
+> 当然，上面的时间复杂度分析是以每两个节点建立一个索引为基础计算的。假设选取其他个数节点创建索引也是类似，比如每3个节点的话，跳表高度就是log<sub>3</sub>n，查找时每一级访问节点数不超过4个。最终的时间复杂度仍是O(logn)
+
+#### 所以
 
 - 跳表查数据时间复杂度可以到O(logn)，空间复杂度是O(n)，即索引链表占用的空间
 - 跳表除了缩短了查询的时间复杂度，还由于链表特性能够高效的动态插入、删除
@@ -478,11 +493,12 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
  
 - 将新元素插入到数组最后
 - 从下往上进行堆化
+
 ![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-insert.jpg)
  
 #### 删除堆顶元素
  
-如果直接删除堆顶元素，删除对顶元素从上到下堆化时可能会出现数组空洞
+如果直接删除堆顶元素，删除堆顶元素从上到下堆化时可能会出现数组空洞
 
 ![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-delete-kongdong.jpg) 
 
@@ -587,3 +603,70 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 	要求单机处理，内存1GB
 	
 	
+## 图
+
+### 图的概念
+
+生活中社交关系经常用图结构来表示
+
+#### 无向图
+比如微信中的好友关系，就可以表示为**无向图**
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/undirected-graph.jpg)
+
+- 图中将每个节点叫做**顶点**，可以认为微信中的好友
+- 图中的边叫做**边**，可以认为是好友之间的朋友关系
+- 一个顶点关联多条边，叫做**度**，可以认为是一个微信用户的好友个数
+
+#### 有向图
+
+微博中的好友关系更复杂些，可以用户A可以关注B，但B不一定关注A，用于表示单向关系的图可以是**有向图**
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/directed-graph.jpg)
+
+- 每个顶点有**入度**和**出度**
+- 入度可以认为是顶点表示的用户被关注数
+- 出度表示关注其他人的数量
+
+#### 带权图
+
+QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流很频繁，那对应的亲密度就很高。所以不同用户之间的亲密度可能都不同，可以用**带权图**来表示该关系
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/weighted-graph.jpg)
+
+- 每条边上的数值表示权重，即这里的亲密度
+
+### 图的存储
+
+#### 邻接矩阵
+
+- 本质上是一个二维数组
+	- 对无向图，i和j若有边，则A[i][j]和A[j][i]为1
+	- 有向图，则i和j的先后顺序表示方向
+	- 带权图，则每个元素的值表示权重
+- 缺点明显，浪费空间，对于**稀疏图**尤为如此
+	- 稀疏图是顶点可能很多，但边并不多，比如微信好友关系，大部分人的好友数都不会很多
+- 优点是，获取数据高效，计算方便，使用简单
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacency-matrix.jpg)
+
+#### 邻接表
+
+- 结构上很像使用链表处理冲突的哈希表结构
+- 优点是节省空间
+- 结构更复杂，操作更繁琐了
+- 由于单链表查找速度慢问题，可以进行优化升级
+	- 比如将链表改为更高效支持动态操作的数据结构如二叉平衡查找树、跳表等
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacencylist.jpg)
+
+### 习题
+1. 如何存储微博的好友关系，要支持如下功能
+	- 判断用户 A 是否关注了用户 B；
+	- 判断用户 A 是否是用户 B 的粉丝；
+	- 用户 A 关注用户 B；用户 A 取消关注用户 B；
+	- 根据用户名称的首字母排序，分页获取用户的粉丝列表；
+	- 根据用户名称的首字母排序，分页获取用户的关注列表。
+
+## 疏漏
+1. 平衡二叉查找树部分，印象比较浅，基本没有实践过
