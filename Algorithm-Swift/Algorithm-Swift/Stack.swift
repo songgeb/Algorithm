@@ -6,33 +6,30 @@
 //  Copyright © 2020 Songgeb. All rights reserved.
 //
 
-class Stack {
+class Stack<Element> {
     // 数组实现一个栈结构
     // 提供几个方法
     // push入栈数据、出栈pop、top、isEmpty
-    private var datas: [Int]
-    private let capacity: Int
+    private var datas: [Element]
     
-    init (_ cap: Int) {
-        datas = [Int].init(repeating: -1, count: cap)
-        capacity = cap
+    init () {
+        datas = []
     }
     
     var isEmpty: Bool {
         return datas.isEmpty
     }
     
-    func pop() -> Int? {
+    func pop() -> Element? {
         guard datas.last != nil else { return nil }
         return datas.removeLast()
     }
     
-    func push(_ val: Int) {
-        if datas.count == capacity { return }
+    func push(_ val: Element) {
         datas.append(val)
     }
     
-    func top() -> Int? {
+    func top() -> Element? {
         return datas.last
     }
 }
@@ -52,7 +49,7 @@ class Solution {
         // 2. 每次push完了，check下p对应的值，若栈顶内容和p相等，则进行一次pop，p指针前进，继续执行2，直到栈顶内容和p对应值不相等，或者栈已空
         // 3. 1、2两步即为模拟的全过程，全过程结束后，检查若栈仍不空，说明两个序列有问题
         var p = 0
-        let stack = Stack(100)
+        let stack = Stack<Int>()
         for value in pushed {
             stack.push(value)
             while p < popped.count, !stack.isEmpty,

@@ -141,6 +141,7 @@ class Tree {
         return nil
     }
     
+    // MARK: - 插入删除二叉树节点
     class func insert(val: Int, root: TreeNode) {
         // 递归不容易实现
         // pNode当前节点，初始等于根节点
@@ -341,6 +342,8 @@ class ArrayTree {
     ///  4   5       6     7
     /// 9  11   34
     
+    // MARK: - 递归实现前序、中序遍历二叉树
+    
     /// 前序遍历二叉树的递归实现
     /// print root, preOrder(root->left), preOrder(root->right)
     class func preOrder(root: Int) {
@@ -364,6 +367,7 @@ class ArrayTree {
         midOrder(root: right)
     }
     
+    // MARK: - 递归、非递归按层遍历二叉树
     /// 按层遍历(递归)
     /// 关键点在于，若用递归的话，递归只能一直往深处走，所以需要一个类似res的全局空间，来存储每一层的结果
     /// for root, print root, floorOrder(left),
