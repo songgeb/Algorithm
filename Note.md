@@ -382,7 +382,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
  
 节点的高度、深度、层数
  
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/tree-depth.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/tree-depth.jpg?raw=true)
  
 - 高度：结合生活中的高度，从下往上数，最下面是0
 - 深度：结合生活中水深，从水平面往下，最上面是0
@@ -392,13 +392,13 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 
 #### 遍历二叉树时间复杂度
 
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/binarytree-walkthrough.jpg) 
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/binarytree-walkthrough.jpg?raw=true) 
 
 每个节点遍历两边，所以时间复杂度是O(n)
 
 二叉树的数组存储形式
  
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/tree-array.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/tree-array.jpg?raw=true)
  
 - 根节点存储下标为1
 - 2 * i 是左节点的下标，2 * i + 1是右节点位置
@@ -494,13 +494,13 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 将新元素插入到数组最后
 - 从下往上进行堆化
 
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-insert.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-insert.jpg?raw=true)
  
 #### 删除堆顶元素
  
 如果直接删除堆顶元素，删除堆顶元素从上到下堆化时可能会出现数组空洞
 
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-delete-kongdong.jpg) 
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-delete-kongdong.jpg?raw=true) 
 
 所以这里可以使用一个小技巧，同时从下往上进行堆化
 
@@ -508,7 +508,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 从新的堆顶元素开始，进行堆化
 - 这就相当于删除了堆顶元素
 
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-delete.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/heap-delete.jpg?raw=true)
  
 #### 堆排序
  
@@ -612,7 +612,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 #### 无向图
 比如微信中的好友关系，就可以表示为**无向图**
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/undirected-graph.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/undirected-graph.jpg?raw=true)
 
 - 图中将每个节点叫做**顶点**，可以认为微信中的好友
 - 图中的边叫做**边**，可以认为是好友之间的朋友关系
@@ -622,7 +622,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 
 微博中的好友关系更复杂些，可以用户A可以关注B，但B不一定关注A，用于表示单向关系的图可以是**有向图**
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/directed-graph.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/directed-graph.jpg?raw=true)
 
 - 每个顶点有**入度**和**出度**
 - 入度可以认为是顶点表示的用户被关注数
@@ -632,7 +632,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 
 QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流很频繁，那对应的亲密度就很高。所以不同用户之间的亲密度可能都不同，可以用**带权图**来表示该关系
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/weighted-graph.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/weighted-graph.jpg?raw=true)
 
 - 每条边上的数值表示权重，即这里的亲密度
 
@@ -648,7 +648,7 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 	- 稀疏图是顶点可能很多，但边并不多，比如微信好友关系，大部分人的好友数都不会很多
 - 优点是，获取数据高效，计算方便，使用简单
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacency-matrix.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacency-matrix.jpg?raw=true)
 
 #### 邻接表
 
@@ -658,7 +658,7 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 - 由于单链表查找速度慢问题，可以进行优化升级
 	- 比如将链表改为更高效支持动态操作的数据结构如二叉平衡查找树、跳表等
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacencylist.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/graph-adjacencylist.jpg?raw=true)
 
 ### 搜索
 
@@ -684,3 +684,111 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 
 ## 疏漏
 1. 平衡二叉查找树部分，印象比较浅，基本没有实践过
+
+## 字符串匹配
+
+模式串、主串
+
+### BF（Brute Force）
+
+暴力匹配
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/BruteForce.jpg?raw=true)
+
+- 假设模式串长度是m，主串长度为n，n > m
+- 最坏情况，模式串要易懂n-m+1次，每次都要比较m个元素
+- 时间复杂度是O(m * n)
+
+### RK（Rabin-Karp）
+
+基于BF进行改进
+
+- 核心是每次模式串和主串比较时不再挨个比较，而是转为哈希值比较
+- 通过设计合适的哈希算法，计算出，主串中要与每个模式串比较的子串的哈希值（设计的好的话，相邻子串之间的哈希值是有关联的，可以通过计算互相得出，进一步提高匹配性能）
+- 模式串的哈希值与每个子串的哈希值进行比较
+- 若哈希值相等，再比较两个串是否真的相等，以避免哈希冲突问题
+	- 所以哈希算法的设计比较重要，如果冲突概率太高，每次比较哈希值都相等，不得已再去比较两个串的话，时间复杂度就降为O(m * n)了
+- 哈希值的比较相比子串挨个比较效率更高
+- 时间复杂度方面
+	- 遍历一遍主串计算相邻子串的哈希值，O(n)
+	- 模式串和子串比较，每次O(1)，一共比较n-m+1次，O(n)
+	- 总时间复杂度是O(n)
+
+### BM（Boyer-Moore）
+
+> 文本编辑器中的替换功能如何实现的？
+
+- 本质上BM算法是在BF和RK的基础上，针对字符串本身的特性，力求减少字符的比较次数，规避掉无用的比较，从而达到降低时间复杂度的目的
+- 当然，算法本身由于技巧性比较强，并不容易懂，但学习算法本身的目的并不是记住某个算法，而是了解算法，同时掌握不同算法的使用场景，更高阶的则要求有些普适性的算法技巧可以举一反三
+- 比如本算法中，为了提高查找效率可以使用散列表；为了减少不必要的计算可以通过预处理，将常计算的值提前存储起来，使用时通过查表快速找到
+- BM算法中总体上是应用两个规则来降低字符比较次数的
+	- 坏字符规则
+	- 好后缀规则
+- 仅适用坏字符规则不妥，的情况
+- 坏字符规则需要根据要比较的字符集大小开辟一个相应大小的额外空间，所以对于字符集太大的情况，内存不够用时可以只运用好后缀规则，只不过可能时间复杂度就会增大一些了
+- 好后缀当然也需要额外空间
+- 文本编辑器的替换功能就会使用该方法
+
+### KMP（Knuth Morris Pratt）
+
+本质和BM类似，也是跳过不必要的字符比较
+
+- [字符串匹配的KMP算法](http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html)
+- [怎么理解kmp算法中的next数组?](https://www.zhihu.com/question/21474082)
+
+### Trie 树
+
+> 也叫字典树
+
+- Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前缀合并在一起
+
+比如下面是一个Trie树，代表着`how`，`hi`，`her`，`hello`，`so`，`see`这组字符串列表
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/TrieTree.jpg?raw=true)
+
+- 如果要查找一个字符串a是否在上面列表中出现，最暴力的办法，挨个匹配
+- 若用Trie树，则最多需要比较K次即可得出结果，K为a的长度
+
+#### 存储
+- 可以看出Trie树是一个多叉树，为了能够实现多叉树的结构，每一个节点除了存储数据本身以外，还要能够存储每个分支信息
+- 所以每个节点中包含了一个哈希表，每个key表示一个分支
+	- Trie树之所以叫做字典树也是因为这个
+- 比如如图所示，将a-z26个字母作为key
+
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/TrieTree-Storage.jpg?raw=true)
+
+#### 时间、空间复杂度
+
+- 创建一个Trie树需要遍历一遍所有字符O(n)
+- 创建好树后，每次查询时间复杂度O(K)，K表示待查询字符串长度
+- 查询速度是比较高效的
+- 但比较浪费内存，而且由于字符集的不同，需要额外哈希表的空间也不同
+
+#### 总结
+
+- Trie树其实是用空间换时间的思想，以提高搜索效率
+- Trie树还有一个普世思想
+	- 想在多个字符串中查找一个字符串，我们可以提前做一些预处理，比如这里的构建成Trie树，构建好后在查询就快了
+	- 突出预处理思想的重要性
+- 对于字符串的精确匹配Trie树应用的并不多，因为有更节约内存的红黑树等动态数据结构
+- Trie树的优势是适用查找前缀匹配的字符串，比如搜索引擎中的关键词提示功能
+
+### AC自动机
+
+- 单模式串匹配算法：在主串中查找一个模式串
+- 多模式串匹配算法：在主串中查找多个模式串
+- 多模式串匹配，可以使用Trie树，将多个模式串预处理成Tire树
+	- 然后从主串第一个字符开始，到树种检索，第一个检索结束后再从第二个开始检索
+- AC自动机是基于Trie树的改进，相当于单模式串匹配中加入了KMP算法的特性
+
+## 贪心（greedy algorithm）
+
+> 掌握贪心算法的关键是**多练习**
+
+
+
+## 分治
+
+## 回溯
+
+## 动态规划

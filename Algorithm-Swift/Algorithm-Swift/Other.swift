@@ -38,4 +38,41 @@ class Other {
         if ipStr.count == 0 { return nil }
         return ipStr.joined(separator: ".")
     }
+    // leetcode-443
+    func compress(_ chars: inout [Character]) -> Int {
+        if chars.count == 1 { return 1 }
+        // 一个cur下标表示当前字符
+        // 一个counter，计数用
+        // 一个pre下标，记录上一个字符
+        // 还一个i，表示替换位置
+        // 开始cur = i = 1，pre = 0
+        var pre, cur, i, counter: Int
+        pre = 0
+        cur = 1
+        i = 1
+        counter = 1
+        
+        while cur <= chars.count {
+            print("cur->\(cur), pre->\(pre)")
+            if cur < chars.count && chars[cur] == chars[pre] {
+                counter += 1
+            } else {
+                if counter > 1 {
+                    // 替换
+                    let counterStr = "\(counter)"
+                    for j in counterStr {
+                        chars[i] = j
+                        i += 1
+                    }
+                } else {
+                    chars[i] = chars[cur]
+                }
+                counter = 1
+                i += 1
+            }
+            cur += 1
+            pre += 1
+        }
+        return i + 1
+    }
 }

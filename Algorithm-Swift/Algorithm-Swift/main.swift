@@ -97,5 +97,11 @@ public func insertionSort() {
 //print(sqrt(6))
 //print(findValue([4, 5, 6, 1, 2, 3], 3))
 //RecursionTree.testSplit()
-Solution1().permuteUnique([1, 2, 1])
+//Solution1().permuteUnique([1, 2, 1])
+//AString().getNexts("ababacd")
+//TrieTreeNodeTest.test()
+var chars: [Character] = ["a","a","b","b","c","c","c"]
+let xx = Other().compress(&chars)
+print(chars)
+print(xx)
 
