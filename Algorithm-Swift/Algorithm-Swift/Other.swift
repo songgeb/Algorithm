@@ -46,33 +46,58 @@ class Other {
         // 一个pre下标，记录上一个字符
         // 还一个i，表示替换位置
         // 开始cur = i = 1，pre = 0
-        var pre, cur, i, counter: Int
-        pre = 0
-        cur = 1
-        i = 1
-        counter = 1
+//        var pre, cur, i, counter: Int
+//        pre = 0
+//        cur = 1
+//        i = 0
+//        counter = 1
+//
+//        while cur <= chars.count {
+//            if cur < chars.count, chars[cur] == chars[pre] {
+//                counter += 1
+//            } else {
+//                chars[i] = chars[pre]
+//                if counter > 1 {
+//                    // 替
+//                    i += 1
+//                    let counterStr = "\(counter)"
+//                    for j in counterStr {
+//                        chars[i] = j
+//                        i += 1
+//                    }
+//                } else {
+//                    i += 1
+//                }
+//                counter = 1
+//            }
+//            cur += 1
+//            pre += 1
+//        }
+//        return i
         
-        while cur <= chars.count {
-            print("cur->\(cur), pre->\(pre)")
-            if cur < chars.count && chars[cur] == chars[pre] {
-                counter += 1
-            } else {
-                if counter > 1 {
-                    // 替换
-                    let counterStr = "\(counter)"
-                    for j in counterStr {
-                        chars[i] = j
-                        i += 1
+        //更优雅的实现（主要是针对上面代码比较繁琐的情况进行优化，参考了其他人Swift的实现）
+        // 通过for循环遍历每个字符，循环中，仅当当前元素和下个元素不同时才做处理
+        // 具体处理是：替换元素，
+        // 1. 先替换字符元素，需要一个write变量，标记要替换的位置
+        // 2. 再替换数字，需要一个变量start，来记录当前压缩字符段的开始位置，通过i - start + 1来求得重复字符个数len，当个数大于1，才替换数字，否则仅第1不的元素替换就够了
+        // 对于i走到头的情况要特殊考虑，要做的工作也是上面的1和2
+        
+        var write = 0
+        var start = 0
+        for i in chars.indices {
+            if i == chars.count - 1 || chars[i] != chars[i+1] {
+                chars[write] = chars[i]
+                write += 1
+                let len = i - start + 1
+                if len > 1 {
+                    for c in String(len) {
+                        chars[write] = c
+                        write += 1
                     }
-                } else {
-                    chars[i] = chars[cur]
                 }
-                counter = 1
-                i += 1
+                start = i + 1
             }
-            cur += 1
-            pre += 1
         }
-        return i + 1
+        return write
     }
 }
