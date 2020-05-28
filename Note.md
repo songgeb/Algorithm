@@ -9,6 +9,16 @@
  
 (特殊情况: 当 q = 1 时, Sn = n * a1)
 
+### 等差数列求和公式
+Sn = (a1 + an) * n / 2
+
+#### 推导
+1. 通过特殊例子来证明一下
+2. Sn = 1 + 2 + ... + n
+3. Sn = n + n - 1 + ... + 1
+4. 2Sn = (n + 1) + (n + 1) + ... + (n + 1)
+5. Sn = n * (n + 1) / 2
+
 ## 数组
 
 ### 特点
@@ -164,10 +174,10 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 但实际应用中，快排应用更多，因为归并排序为了合并需要额外的O(n)的空间复杂度
 
 #### 归并排序示意图
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/mergesort.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/mergesort.jpg?raw=true)
 
 #### 快排示意图
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/quicksort.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/quicksort.jpg?raw=true)
 
 #### 习题
 - O(n)时间内找到一个无序数组中第K大的值
@@ -295,7 +305,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 为**有序**的链表添加了多级索引链表
 - 通过查找索引链表再找到原始链表中的数据，相比直接在原始链表中查询要更高效
 
-![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/Skiplist.jpg)
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/Skiplist.jpg?raw=true)
 
 ### 时间复杂度分析
 
@@ -306,7 +316,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 假设在查找时，每级索引访问的节点为m个，则总时间复杂度是O(m*logn)
 - 根据下图可知一个特性，每一级访问节点数不超过3个，所以最终时间复杂度就是O(logn)
 
-![](https://github.com/songgeb/Algorithm/blob/master/Resources/skiplist-index-3.jpg)
+![](https://github.com/songgeb/Algorithm/blob/master/Resources/skiplist-index-3.jpg?raw=true)
 
 > 当然，上面的时间复杂度分析是以每两个节点建立一个索引为基础计算的。假设选取其他个数节点创建索引也是类似，比如每3个节点的话，跳表高度就是log<sub>3</sub>n，查找时每一级访问节点数不超过4个。最终的时间复杂度仍是O(logn)
 
@@ -682,9 +692,6 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 	- 根据用户名称的首字母排序，分页获取用户的粉丝列表；
 	- 根据用户名称的首字母排序，分页获取用户的关注列表。
 
-## 疏漏
-1. 平衡二叉查找树部分，印象比较浅，基本没有实践过
-
 ## 字符串匹配
 
 模式串、主串
@@ -785,10 +792,33 @@ QQ中的好友关系有一个亲密度的概念，即若用户A和B之间交流�
 
 > 掌握贪心算法的关键是**多练习**
 
-
+### 习题
+1. 在一个非负整数 a 中，我们希望从中移除 k 个数字，让剩下的数字值最小，如何选择移除哪 k 个数字呢？
+	1. 先算出移除k个数字，还剩下几位
+	2. 然后根据从高位到低位，取a中选数字即可
+	3. 每次在可选范围内选最小的
+2. 假设有 n 个人等待被服务，但是服务窗口只有一个，每个人需要被服务的时间长度是不同的，如何安排被服务的先后顺序，才能让这 n 个人总的等待时间最短？
+	- 简单的举例画一下即可得出
+	- 应该优先安排服务时间最短的
+	- 因为当1个人被服务时，其他人都要等待这个人的服务时长
+	- 如果1个人需要的服务时间很长，且他先被服务的话，那有更多人需要等待这个较长的服务时间。所以应该优先选择服务时间短的
 
 ## 分治
+分治算法符合如下特征
+- 大问题分解为小问题
+- 小问题和大问题可以用相同的方法来解决
+
+### 习题
+- 二维平面上有 n 个点，如何快速计算出两个距离最近的点对？
+- 
 
 ## 回溯
 
 ## 动态规划
+
+## 疏漏
+1. 平衡二叉查找树部分，印象比较浅，基本没有实践过
+2. KMP算法中NEXT数组的构建过程还是懵逼
+3. 全排列的非递归实现
+4. 递归时间复杂度的分析
+	- 包括快排

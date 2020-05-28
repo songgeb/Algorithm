@@ -100,8 +100,14 @@ public func insertionSort() {
 //Solution1().permuteUnique([1, 2, 1])
 //AString().getNexts("ababacd")
 //TrieTreeNodeTest.test()
-var chars: [Character] = ["a","a","b","b","c","c","c"]
-let xx = Other().compress(&chars)
-print(chars)
-print(xx)
+//print(Other().maxSubArray([2,0,3,-2]))
+//print(Other().sum0100(2))
+
+let matrix: [[Int]] = [[1, 4, 7, 11, 15],
+                       [2, 5, 8, 13, 19],
+                       [3, 6, 9, 16, 22],
+                       [10, 13, 14, 17, 24],
+                       [18, 21, 23, 26, 30]]
+
+print(Other().searchMatrix(matrix, 18))
 

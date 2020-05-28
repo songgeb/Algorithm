@@ -100,4 +100,76 @@ class Other {
         }
         return write
     }
+    /// leetcode-https://leetcode-cn.com/problems/contiguous-sequence-lcci/
+    func maxSubArray(_ nums: [Int]) -> Int {
+        if nums.count == 0 { return -1 }
+        // 暴力办法
+        // 两层for循环，遍历所有可能的组合，求出最大值
+        // 时间复杂度是O(n2)
+        // 分治法解决
+        // 核心思想，从中间将数组分为两部分
+        // 要求的总和最大的连续序列要么落在左边，要么右边，要么横跨在中间
+        // 左边和右边继续递归实现，主要是中间如何求。假设中间元素下标是mid
+        // 现在核心问题是，如何求横跨左右两边的总和最大的连续数列
+        // 其实从mid往前加，mid+1往后加，两部分最大值加到一起就是横跨中间的最大值
+        // 递推公式如上所述
+        // 终止条件是：当区间缩小到只有1个时，返回自己
+        // check: 空数组时，1个元素时
+        func action(_ left: Int, _ right: Int) -> Int {
+            if left == right {
+                return nums[left]
+            }
+            
+            let mid = left + (right - left) >> 1
+            let leftSum = action(left, mid)
+            let rightSum = action(mid + 1, right)
+            // 计算中间最大
+            // 一个maxSum记录最大和
+            var maxlSum = nums[mid]
+            var lSum = 0
+            for i in stride(from: mid, to: left - 1, by: -1) {
+                lSum += nums[i]
+                maxlSum = max(maxlSum, lSum)
+            }
+            
+            var maxrSum = nums[mid+1]
+            var rSum = 0
+            for i in (mid+1)...right {
+                rSum += nums[i]
+                maxrSum = max(maxrSum, rSum)
+            }
+            
+            return max(max(leftSum, rightSum), maxlSum + maxrSum)
+        }
+        
+        return action(0, nums.count - 1)
+    }
+    
+    /// 递归实现0到100的加和
+    /// 递推公式: f(n) = f(n-1) + n
+    /// 终止条件: f(1) = 1
+    func sum0100(_ n: Int) -> Int {
+        
+        if n == 1 { return 1 }
+        return n + sum0100(n-1)
+    }
+    
+    /// 矩阵中查找某个给定的元素
+    /// 分治思想，
+    func searchMatrix(_ matrix: [[Int]], _ target: Int) -> Bool {
+        
+        func action(_ i: Int, _ j: Int) -> Bool {
+            if i < 0 || j < 0 { return false }
+            if (i >= matrix.length || j >= matrix[i].length) { return false; }
+            if target == matrix[i][j] {
+                return true
+            } else if target > matrix[i][j] {
+                return action(i + 1, j)
+            } else {
+                return action(i, j - 1)
+            }
+        }
+        // 从右上角的元素开始找，找的次数更少
+        return action(0, matrix[0].count - 1)
+    }
 }
