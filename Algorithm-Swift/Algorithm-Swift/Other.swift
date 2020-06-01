@@ -160,7 +160,7 @@ class Other {
         
         func action(_ i: Int, _ j: Int) -> Bool {
             if i < 0 || j < 0 { return false }
-            if (i >= matrix.length || j >= matrix[i].length) { return false; }
+            if i >= matrix.count || j >= matrix[i].count { return false }
             if target == matrix[i][j] {
                 return true
             } else if target > matrix[i][j] {

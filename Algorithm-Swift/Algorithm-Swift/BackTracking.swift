@@ -56,6 +56,75 @@ func allRankRecursion(array: [Int], path: inout [Int], used: inout [Bool], count
 }
 
 // MARK: - 8皇后问题
+// 一个8*8的棋盘，往里面放8个棋子(皇后)，要求八个棋子横向、竖向、对角线上
+class EightQueen {
+    /// 结果集中下标表示棋盘的行下标，值表示列下标; 初始为-1，表示没有值
+    private var result: [Int] = [Int].init(repeating: -1, count: 8)
+    /// 在i、j的位置放棋子可不可以
+    private func isOK(_ i: Int, _ j: Int) -> Bool {
+        let validRange = 0..<result.count
+        if !validRange.contains(i) || !validRange.contains(i) { return false }
+        // 判断同一行有木有重复的
+        if result[i] >= 0 { return false }
+        // 判断同一列有木有
+        for row in 0..<result.count {
+            if j == result[row] {
+                // 第row，第j列，有棋子
+                return false
+            }
+        }
+        // 判断对角线上有木有
+        var p = (i, j)
+        while p.0 < result.count, p.1 < result.count {
+            if result[p.0] == p.1 {
+                return false
+            }
+            p = (p.0 + 1, p.1 + 1)
+        }
+        
+        p = (i, j)
+        while p.0 >= 0, p.1 >= 0 {
+            if result[p.0] == p.1 {
+                return false
+            }
+            p = (p.0 - 1, p.1 - 1)
+        }
+        
+        p = (i, j)
+        while p.0 < result.count, p.1 >= 0 {
+            if result[p.0] == p.1 {
+                return false
+            }
+            p = (p.0 + 1, p.1 - 1)
+        }
+        
+        p = (i, j)
+        while p.0 >= 0, p.1 < result.count {
+            if result[p.0] == p.1 {
+                return false
+            }
+            p = (p.0 - 1, p.1 + 1)
+        }
+        return true
+    }
+    /// 8皇后问题，列举出所有摆放棋子的方案
+    /// j表示第几列
+    public func cal8Queeens(_ j: Int) {
+        if j == 8 {
+            // 结束了
+            print(result)
+            return
+        }
+        // 每一行都有摆放的可能
+        for i in 0...7 {
+            if isOK(i, j) {
+                result[i] = j
+                cal8Queeens(j + 1)
+                result[i] = -1
+            }
+        }
+    }
+}
 
 
 // MARK: - 01背包
@@ -181,4 +250,223 @@ class Package {
     static func test() {
         zhuang4()
     }
+}
+
+/// 例举出所有A、B、C，使其满足A + B + C = 1000 和 A^2 + B^2 = C^2
+func calABC() {
+    func isOK(_ a: Int, _ b: Int, _ c: Int) -> Bool {
+        return a + b + c == 1000 && a*a + b*b == c*c
+    }
+    
+    var result: [Int] = []
+    func action(_ n: Int) {
+        if n == 3 {
+            let c = 1000 - result[0] - result[1]
+            if isOK(result[0], result[1], c) {
+                result.append(c)
+                print(result)
+                result.removeLast()
+            }
+            return
+        }
+        
+        for i in 0...1000 {
+            result.append(i)
+            action(n+1)
+            result.removeLast()
+        }
+    }
+    
+    action(1)
+    
+    /// 非递归实现
+    //    for a in 0...1000 {
+    //        for b in 0...1000 {
+    //            // 因为c是唯一的，所以此处通过公式结算得到c
+    //            let c = 1000 - a - b
+    //            if isOK(a, b, c) {
+    //                print("\(a), \(b), \(c)")
+    //            }
+    //        }
+    //    }
+    
+    // 结果集
+    // 0, 500, 500
+    // 200, 375, 425
+    // 375, 200, 425
+    // 500, 0, 500
+}
+
+/// leetcode-79，单词搜索问题
+func exist(_ board: [[Character]], _ word: String) -> Bool {
+    var usedCharaters = [[Bool]].init(repeating: [Bool].init(repeating: false, count: board[0].count), count: board.count)
+    let wordCharacters = [Character].init(word)
+    let directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    
+    func isIndexInBoard(_ i: Int, _ j: Int) -> Bool {
+        return (0..<board.count).contains(i) && (0..<board[i].count).contains(j)
+    }
+    
+    func search(i: Int, j: Int, characterIndex: Int) -> Bool {
+        if board[i][j] != wordCharacters[characterIndex] {
+            return false
+        }
+        // 注意usedCharaters[i][j] = true的位置在这句话下面，是因为当匹配到最后一个字符时，可以认为我们并没有取占用最后一个字符，就回溯告诉外面成功了
+        // 也可以从另一个角度去考虑，占用和重置应该是成对出现的，如果此处占用了最后一个字符，但并没有重置它的地方，会导致状态错乱
+        if characterIndex == wordCharacters.count - 1 {
+            return true
+        }
+        usedCharaters[i][j] = true
+        // 四个方向都试一遍
+        for direction in directions {
+            let newI = i + direction.0
+            let newJ = j + direction.1
+            if isIndexInBoard(newI, newJ), !usedCharaters[newI][newJ] {
+                if search(i: newI, j: newJ, characterIndex: characterIndex + 1) {
+                    return true
+                }
+            }
+        }
+        usedCharaters[i][j] = false
+        return false
+    }
+    
+    for i in 0..<board.count {
+        for j in 0..<board[i].count {
+            if search(i: i, j: j, characterIndex: 0) {
+                return true
+            }
+        }
+    }
+    
+    return false
+}
+
+/// 幂集。编写一种方法，返回某集合的所有子集。集合中不包含重复的元素。
+
+/// 说明：解集不能包含重复的子集。
+/// 输入： nums = [1,2,3]
+///输出：
+//[
+//    [3],
+//        [1],
+//              [2],
+//                    [1,2,3],
+//                          [1,3],
+//                                [2,3],
+//                                      [1,2],
+//                                            []
+//]
+func subsets(_ nums: [Int]) -> [[Int]] {
+    var results: [[Int]] = []
+    var result: [Int] = []
+    func action(_ i: Int) {
+        if i >= nums.count {
+            print(result)
+            results.append(result)
+            return
+        }
+        // 选择i个
+        result.append(nums[i])
+        action(i + 1)
+        
+        // 不选择i个
+        result.removeLast()
+        action(i+1)
+    }
+    action(0)
+    return results
+}
+/// 子集非递归实现
+func subsets111(_ nums: [Int]) -> [[Int]] {
+    var result: [[Int]] = []
+    
+    // 遍历nums中每个元素
+    // 每次遍历中，新建一个数组用于放本次的结果集tmp，每次拿到一个元素后，先把自己包成一个数组放入tmp，再取出result中的每个元素，每个都和当前元素合成以一把，加到tmp中
+    // 遍历结束时，将tmp放到结果集中
+    // 空数据单独加一个
+    result.append([])
+    var count = 0
+    for num in nums {
+        var tmp: [[Int]] = []
+        
+        for subset in result {
+            var s = subset
+            s.append(num)
+            tmp.append(s)
+            count += 1
+        }
+        
+        result.append(contentsOf: tmp)
+    }
+
+    return result
+}
+
+/// leetcode-https://leetcode-cn.com/problems/bracket-lcci/
+/// 根据输入n，产生n对有效的括号组合
+func generateParenthesis(_ n: Int) -> [String] {
+    var result: Set<String> = []
+    // i从2开始，一直到n，因为n=1时只有一种可能--()
+    func action(_ i: Int, _ str: String) {
+        if i == n {
+            print(str)
+            result.insert(str)
+            return
+        }
+        
+        // 往左右边插入一对括号
+        var tmp1 = str
+        tmp1.insert(contentsOf: "()", at: str.startIndex)
+        action(i + 1, tmp1)
+        
+        tmp1 = str
+        tmp1.insert(contentsOf: "()", at: tmp1.endIndex)
+        // 往每个(后面插入一对括号
+        var tmp2 = str
+        for index in tmp2.indices {
+            if tmp2[index] == ")" {
+                tmp2.insert(contentsOf: "()", at: index)
+                action(i + 1, tmp2)
+                tmp2 = str
+            }
+        }
+    }
+    action(1, "()")
+    return [String].init(result)
+}
+
+/// leetcode-https://leetcode-cn.com/problems/bracket-lcci/
+/// 求括号另一种解法
+/// 总体思想是，我们分2n步骤，每一步可以选择左括号、右括号，这样就会出现2n个数量限制下的所有左右括号的组合
+/// 当然，上面还不够，还要保证括号的匹配是有效的
+/// 比如第一个字符必须是左括号，左右括号数量必须相匹配
+/// 所以这个判断条件是很重要的
+/// 添加左括号的限制是，添加后，总数不超过2n，此处需要知道左括号数量，所以添加一个参数
+/// 右括号限制，当然，添加后不超过2n，而且添加完后，不能使得添加完后，比左括号数多
+func generateParenthesis1(_ n: Int) -> [String] {
+    if n == 0 { return [] }
+    
+    let total = 2 * n
+    func action(_ i: Int, str: String, leftnum: Int, rightnum: Int) {
+        if i > 2 * n {
+            print(str)
+            return
+        }
+        
+        // 左括号
+        if 2 * leftnum + 1 <= total {
+            action(i + 1, str: str + "(", leftnum: leftnum + 1, rightnum: rightnum)
+        }
+        
+        // 右括号
+        if rightnum + 1 <= leftnum {
+            action(i + 1, str: str + ")", leftnum: leftnum, rightnum: rightnum + 1)
+        }
+    }
+    
+    action(1, str: "", leftnum: 0, rightnum: 0)
+    
+    return []
+    
 }

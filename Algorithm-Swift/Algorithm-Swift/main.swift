@@ -103,11 +103,24 @@ public func insertionSort() {
 //print(Other().maxSubArray([2,0,3,-2]))
 //print(Other().sum0100(2))
 
+// MARK: - 回溯算法
 let matrix: [[Int]] = [[1, 4, 7, 11, 15],
                        [2, 5, 8, 13, 19],
                        [3, 6, 9, 16, 22],
                        [10, 13, 14, 17, 24],
                        [18, 21, 23, 26, 30]]
 
-print(Other().searchMatrix(matrix, 18))
+//print(Other().searchMatrix(matrix, 18))
+//EightQueen().cal8Queeens(0)
+//calABC()
+
+let board: [[Character]] = [["A", "B", "C", "E"],
+                            ["S", "F", "C", "S"],
+                            ["A", "D", "E", "E"]]
+//print(exist(board, "ADEE"))
+//subsets([1, 2, 3])
+//print(subsets111([1, 2, 3]))
+//print(generateParenthesis(3))
+generateParenthesis1(3)
+
 
