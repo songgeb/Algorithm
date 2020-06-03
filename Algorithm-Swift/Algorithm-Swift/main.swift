@@ -121,6 +121,14 @@ let board: [[Character]] = [["A", "B", "C", "E"],
 //subsets([1, 2, 3])
 //print(subsets111([1, 2, 3]))
 //print(generateParenthesis(3))
-generateParenthesis1(3)
+//generateParenthesis1(3)
+
+// MARK: - 动态规划
+//check()
+//check_dynamic(coins: [1, 3, 5], total: 9)
+//print(check_dp(coins: [1, 8, 20], total: 32))
+//yanghui()
+//increasingSubSequence([2,9,3,6,5,1,7])
+print(lengthOfLIS([4, 10, 4, 3, 8, 9]))
 
 

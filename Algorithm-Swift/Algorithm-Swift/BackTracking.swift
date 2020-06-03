@@ -189,67 +189,6 @@ class Package {
             method.removeLast()
         }
     }
-    
-    /// 动态规划解决背包问题
-    /// 所谓动态规划，就是依靠上一步的结果，制定下一步的策略，将当前一步的所有情况标记出来，通过技巧规避掉重复项
-    /// 联想到二维数组，去重的01背包问题
-    /// 想象一个二维数组，行数表示物品数量，列数表示重量，列数最大不超过背包总重量
-    /// 假设物品重量是[2,2]，a[0][0] = 1，表示第一个物品不放入背包时重量为0，a[0][2]=1表示第一个物品放入了背包，重量是2
-    
-    static var states: [[Bool]] = [[Bool]].init(repeating: [Bool].init(repeating: false, count: 10), count: 5)
-    static func zhuang3() {
-        // 先对第一个物品做特殊处理
-        // 不装
-        states[0][0] = true
-        // 装
-        if array[0] > capacity {
-            states[0][array[0]] = true
-        }
-        
-        // 从第二个物品到结束
-        for i in 1..<array.count {
-            for j in 0...capacity {
-                // 只用关前面已装或未装的
-                if states[i - 1][j] {
-                    // 当前i物品，不装的状态
-                    states[i][j] = true
-                    // 当前i物品，装的状态
-                    if j + array[i] <= capacity {
-                        states[i][j + array[i]] = true
-                    }
-                }
-            }
-        }
-        
-        //按行输出结果集
-        for i in 0..<array.count {
-            for j in 0...capacity {
-                print(states[i][j], terminator: " ")
-            }
-            print("")
-        }
-    }
-    
-    /// 使用一位数组实现动态规划实现01背包
-    static var states4: [Bool] = [Bool].init(repeating: false, count: Package.capacity + 1)
-    static func zhuang4() {
-        states4[0] = true
-        if array[0] <= capacity {
-            states4[array[0]] = true
-        }
-        
-        for i in 1..<array.count {
-            for j in stride(from: capacity - array[i], to: 0, by: -1) {
-                if states4[j] { states4[j + array[i]] = true }
-            }
-        }
-        
-        print(states4)
-    }
-    
-    static func test() {
-        zhuang4()
-    }
 }
 
 /// 例举出所有A、B、C，使其满足A + B + C = 1000 和 A^2 + B^2 = C^2
