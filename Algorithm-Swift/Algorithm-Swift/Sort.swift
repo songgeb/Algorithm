@@ -343,6 +343,7 @@ class SolutionS {
         return nums
     }
 
+    // MARK: - 快速排序
     func quickSort(_ nums: inout [Int], _ p: Int, _ r: Int) {
         if p >= r { return }
         let q = partition(&nums, p, r)
@@ -372,5 +373,32 @@ class SolutionS {
         }
         nums.swapAt(i, r)
         return i
+    }
+    
+    // MARK: - 线性排序
+    
+    /// 设计一个排序算法，时间复杂度是O(n)
+    /// 为公司员工按照年龄排序，员工有几万人
+    /// 核心思想是计数排序
+    func sortAges(_ ages: inout [Int]) {
+        // 使用计数排序
+        // 从0-100岁，每个年龄想象成一个桶
+        // 扫描一遍所有年龄，将相应年龄的人放入相应桶里
+        // 最终取出桶里所有人合并到一起就排序成功了
+        
+        var bottles = [Int].init(repeating: 0, count: 101)
+        
+        for age in ages {
+            bottles[age] += 1
+        }
+        // 数字重新填回原数组中
+        // 对每个年龄，取出一个个数，让后给原数组赋值，同时索引加一
+        var index = 0
+        for age in 0...100 {
+            for _ in 0..<bottles[age] {
+                ages[index] = age
+                index += 1
+            }
+        }
     }
 }

@@ -57,6 +57,25 @@ class Tree {
         return node33
     }
     
+    // MARK: - 前序、中序遍历
+    class func preTraversal(_ root: TreeNode?) {
+        guard let root = root else {
+            return
+        }
+        print(root.val)
+        preTraversal(root.left)
+        preTraversal(root.right)
+    }
+    
+    class func inTraversal(_ root: TreeNode?) {
+        guard let root = root else {
+            return
+        }
+        inTraversal(root.left)
+        print(root.val)
+        inTraversal(root.right)
+    }
+    
     // MARK: - 求树深度
     /// 求树的深度（递归实现）
     /// - Parameter root:
@@ -322,7 +341,7 @@ class Tree {
         //    midOrder(root: root)
         //    insert(val: 100, root: root)
         print(maxDepth(root: root))
-        //    midOrder(root: root)
+//            midOrder(root: root)
         //    deleteNodeOptimize(val: 33, root: root)
         //    deleteNode(val: 13, root: root)
         
@@ -440,4 +459,55 @@ class ArrayTree {
         let res = levelOrder1(root: 1)
         print(res)
     }
+}
+
+/// 根据二叉树的前序和中序遍历序列，重新构建出二叉树
+/// 这个题细节比较多，确实不容易做
+func buildTree(_ preorder: [Int], _ inorder: [Int]) -> TreeNode? {
+    if preorder.isEmpty || inorder.isEmpty {
+        return nil
+    }
+    // 根据前序和中序序列，我们是能找到根节点和左右子树的范围的
+    // 那么递归实现一把
+    // 递归核心工作就是，找出根节点的值和左右子树范围，同时新建根节点，将左右子树通过递归形式赋值
+    // 递归终止条件：当只剩下一个元素时
+    
+    /// range1表示树在前序遍历数组中的范围，range2表示在中序遍历序列中的范围
+    func action(_ preLeft: Int?, _ preRight: Int?, _ midLeft: Int?, _ midRight: Int?) -> TreeNode? {
+        //
+        guard let preLeft = preLeft, let preRight = preRight, let midLeft = midLeft, let midRight = midRight else {
+            return nil
+        }
+        
+        if preLeft == preRight && midLeft == midRight {
+            return TreeNode(preorder[preLeft])
+        }
+        
+        let val = preorder[preLeft]
+        let root = TreeNode(val)
+        
+        var p = midLeft
+        var count = 0
+        while inorder[p] != val {
+            p += 1
+            count += 1
+        }
+        let newLeftPreLeft = preLeft + 1
+        let newLeftPreRight = preLeft + count
+        let newLeftMidLeft = midLeft
+        let newLeftMidRight = p - 1
+        
+        let newRightPreLeft = preLeft + count + 1
+        let newRightPreRight = preRight
+        let newRightMidLeft = p + 1
+        let newRightMidRight = midRight
+        //前序中的[preLeft + 1, preLeft + count]表示左子树，[preLeft+count+1, preRight]表示右子树
+        //中序中的[p + 1, midRight]表示右子树, [midLeft, p - 1]表示左子树
+        
+        root.left = newLeftPreLeft > newLeftPreRight ? nil : action(newLeftPreLeft, newLeftPreRight, newLeftMidLeft, newLeftMidRight)
+        root.right = newRightPreLeft > newRightPreRight ? nil : action(newRightPreLeft, newRightPreRight, newRightMidLeft, newRightMidRight)
+        return root
+    }
+    
+    return action(0, preorder.count - 1, 0, inorder.count - 1)
 }

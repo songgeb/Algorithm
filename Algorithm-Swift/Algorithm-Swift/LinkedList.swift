@@ -387,3 +387,23 @@ class LinkedList {
     }
 }
 
+/// 从尾到头打印单向链表
+/// 方法1: 先翻转过来，再打印。这样会破坏原链表结构 O(n)时间复杂度
+/// 方法2: 不修改原链表结构。可以让每个节点入栈，然后再出栈打印，所以可以使用递归技巧实现，时间复杂度也是O(n)
+func reversePrint(_ head: ListNode?) -> [Int] {
+    // 下面使用方法2实现
+    // 递归核心工作: 1. 继续递归下个节点 2. 打印当前节点值
+    // check，空链表--ok，只有一个节点ok
+    
+    var result: [Int] = []
+    
+    func action(_ node: ListNode?) {
+        guard let node = node else { return }
+        action(node.next)
+        result.append(node.val)
+    }
+    
+    action(head)
+    return result
+}
+

@@ -63,6 +63,83 @@ class Recursion {
     func getDirectReferrerId(_ uid: String) -> String? {
         return ""
     }
+    /// 斐波那契数列非递归求值
+    /// f(n) = f(n - 1) + f(n - 2)
+    /// f(0) = 0, f(1) = 1
+    /// 输入n，返回数列的第n项
+    func fib(_ n: Int) -> Int {
+        var f0 = 0
+        var f1 = 1
+        if n == 0 { return f0 }
+        if n == 1 { return f1 }
+        
+        for _ in 1..<n {
+            let tmpf1 = f1
+            f1 = (f0 + f1) % 1000000007
+            f0 = tmpf1
+        }
+        return f1
+    }
+    
+    /// 爬楼梯，有n阶楼梯要爬，每次可以爬1层，也可以爬2层
+    /// 递归实现
+    func climbStairs(_ n: Int) -> Int {
+        var sum = 0
+        /// i表示上了多少台阶了
+        func action(_ i: Int) {
+            
+            if i == n {
+                sum += 1
+                return
+            }
+            
+            if i > n {
+                return
+            }
+            
+            action(i + 1)
+            action(i + 2)
+        }
+        action(0)
+        return sum
+    }
+    
+    /// 爬楼梯非递归实现
+    /// 分析爬楼梯问题的前几位能够发现，本质就是斐波那契数列，只不过开始值不同罢了
+    func climbStairs1(_ n: Int) -> Int {
+        if n <= 0 { return 0 }
+        if n == 1 { return 1 }
+        if n == 2 { return 2 }
+        
+        var first = 1
+        var second = 2
+        for _ in 2..<n {
+            let tmp = second
+            second = first + second
+            first = tmp
+        }
+        return second
+    }
+    
+    func climbStairs2(_ n: Int) -> Int {
+        if n <= 0 { return 0 }
+        if n == 1 { return 1 }
+        if n == 2 { return 2 }
+        if n == 3 { return 4 }
+        
+        var first = 1
+        var second = 2
+        var third = 4
+        for _ in 3..<n {
+            
+            let tmpSecond = second
+            let tmpThird = third
+            third = first + second + third
+            second = tmpThird
+            first = tmpSecond
+        }
+        return second
+    }
     
 }
 

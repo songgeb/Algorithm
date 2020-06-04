@@ -9,8 +9,34 @@
 import Foundation
 
 print("Hello, World!")
+// MARK: - 数组
+//print(replaceSpace("bcaa aaec"))
+// 0表示没有数据
+//var A = [1, 2, 3, 0, 0, 0]
+//let B = [2, 5, 6]
+//merge(&A, 3, B, 3)
+//print(A)
+
+// MARK: - 链表
+//let listNode = LinkedList().createLinkedList([9, 7, 8, 11, 3, 4, 2, 21]).head
+//print(reversePrint(listNode))
+
+// MARK: - Tree
+//let root = buildTree([3,9,20,15,7], [9,3,15,20,7])
+//Tree.preTraversal(root)
+//print("-----")
+//Tree.inTraversal(root)
 
 // MARK: - 排序
+
+//var ages = [Int]()
+//for i in 0...20000 {
+//    let age = Int.random(in: 1...100)
+//    ages.append(age)
+//}
+//
+//SolutionS().sortAges(&ages)
+//print(ages)
 
 // MARK: 选择排序
 
@@ -66,42 +92,9 @@ public func insertionSort() {
 
 //insertionSort()
 
-// 链表
-//LinkedList().palindromeTest()
-
-// 队列
-//QueueTest.testCircularQueue()
-
-// 排序
-//Sort.testBubbleSort()
-//Sort.testInsertionSort()
-//Sort.testSelectionSort()
-//Sort.testMergeSort()
-//Sort.testPartition()
-
-//Search.testBinarySearch()
-//testMergeFunction()
-
-//Tree.testTree()
-//RecursionTree.testSplit()
-//Heap.test()
-
-//testKth()
-
-//allRank(array: [3, 1, 2, 4, 5])
-
-//Package.test()
-//LinkedList().testCircleDetetor()
-//LinkedList().testDeletion()
-//SolutionS().sortArray([5, 2, 3, 1])
-//print(sqrt(6))
-//print(findValue([4, 5, 6, 1, 2, 3], 3))
-//RecursionTree.testSplit()
-//Solution1().permuteUnique([1, 2, 1])
-//AString().getNexts("ababacd")
-//TrieTreeNodeTest.test()
-//print(Other().maxSubArray([2,0,3,-2]))
-//print(Other().sum0100(2))
+// MARK: - 递归
+//print(Recursion().fib(45))
+print(Recursion().climbStairs(45))
 
 // MARK: - 回溯算法
 let matrix: [[Int]] = [[1, 4, 7, 11, 15],
@@ -129,6 +122,6 @@ let board: [[Character]] = [["A", "B", "C", "E"],
 //print(check_dp(coins: [1, 8, 20], total: 32))
 //yanghui()
 //increasingSubSequence([2,9,3,6,5,1,7])
-print(lengthOfLIS([4, 10, 4, 3, 8, 9]))
+//print(lengthOfLIS([4, 10, 4, 3, 8, 9]))
 
 
