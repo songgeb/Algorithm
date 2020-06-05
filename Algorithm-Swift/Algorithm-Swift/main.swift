@@ -94,7 +94,17 @@ public func insertionSort() {
 
 // MARK: - 递归
 //print(Recursion().fib(45))
-print(Recursion().climbStairs(45))
+//print(Recursion().climbStairs(45))
+
+// MARK: - 位运算
+//print(Bit().hammingWeight(-8))
+//print(Bit().judge2Power(218))
+//print(Bit().changeCount(10, 13))
+print(Bit().differentLetters("abcccwwww"))
+
+// MARK: - 字符串匹配
+//print(AString().maxFreq("abcde", 2, 3, 3))
+//print(AString().maxFreq1("aababcaab", 2, 3, 4))
 
 // MARK: - 回溯算法
 let matrix: [[Int]] = [[1, 4, 7, 11, 15],

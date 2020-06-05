@@ -20,6 +20,7 @@
 		CCBBB51321ECC5A400533FC2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBBB51221ECC5A400533FC2 /* main.swift */; };
 		CCD2A3A22484AA410088D296 /* DynamicProgramming.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2A3A12484AA410088D296 /* DynamicProgramming.swift */; };
 		CCD2A3A424879C990088D296 /* AArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2A3A324879C990088D296 /* AArray.swift */; };
+		CCD2A3A624893F870088D296 /* Bit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2A3A524893F870088D296 /* Bit.swift */; };
 		CCE7A4C5240148A300DF70FC /* BackTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE7A4C4240148A300DF70FC /* BackTracking.swift */; };
 		CCE94E472394A66D00D5000C /* RecursionTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE94E462394A66D00D5000C /* RecursionTree.swift */; };
 		CCE94E4923960D0400D5000C /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE94E4823960D0400D5000C /* Heap.swift */; };
@@ -52,6 +53,7 @@
 		CCBBB51221ECC5A400533FC2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		CCD2A3A12484AA410088D296 /* DynamicProgramming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicProgramming.swift; sourceTree = "<group>"; };
 		CCD2A3A324879C990088D296 /* AArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AArray.swift; sourceTree = "<group>"; };
+		CCD2A3A524893F870088D296 /* Bit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bit.swift; sourceTree = "<group>"; };
 		CCE7A4C4240148A300DF70FC /* BackTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackTracking.swift; sourceTree = "<group>"; };
 		CCE94E462394A66D00D5000C /* RecursionTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecursionTree.swift; sourceTree = "<group>"; };
 		CCE94E4823960D0400D5000C /* Heap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				CC73D9B2247CC07600919BC8 /* TrieTree.swift */,
 				CCD2A3A12484AA410088D296 /* DynamicProgramming.swift */,
 				CCD2A3A324879C990088D296 /* AArray.swift */,
+				CCD2A3A524893F870088D296 /* Bit.swift */,
 			);
 			path = "Algorithm-Swift";
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				CCBBB51321ECC5A400533FC2 /* main.swift in Sources */,
 				CCE7A4C5240148A300DF70FC /* BackTracking.swift in Sources */,
 				CCE94E4923960D0400D5000C /* Heap.swift in Sources */,
+				CCD2A3A624893F870088D296 /* Bit.swift in Sources */,
 				CCD2A3A424879C990088D296 /* AArray.swift in Sources */,
 				CCD2A3A22484AA410088D296 /* DynamicProgramming.swift in Sources */,
 				CC3E4458246A556A00F0CA85 /* Recursion.swift in Sources */,
