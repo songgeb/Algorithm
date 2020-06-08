@@ -173,3 +173,191 @@ class Other {
         return action(0, matrix[0].count - 1)
     }
 }
+
+func myPow(_ x: Double, _ n: Int) -> Double {
+    if x == 0 { return 0 }
+    if n == 0 {
+        return 1
+    } else if n > 0 {
+        var result: Double = 1
+        for _ in 0..<n {
+            result *= x
+        }
+        return result
+    } else {
+        var result: Double = 1
+        for _ in 0..<n {
+            result *= x
+        }
+        return 1.0 / result
+    }
+}
+
+func myPow1(_ base: Double, _ n: Int) -> Double {
+    // 上面的性能不够
+    if base == 0 { return 0 }
+    if n == 0 { return 1 }
+    let positiveN = abs(n)
+    
+    func action(_ i: Int) -> Double {
+        if i == 1 {
+            return base
+        }
+        
+        let isEven = i & 0x1 == 0
+        let halfValue = action(i >> 1)
+        
+        if isEven {
+            return halfValue * halfValue
+        } else {
+            // i从3开始
+            return halfValue * halfValue * base
+        }
+    }
+    
+    let result = action(positiveN)
+    if n > 0 {
+        return result
+    } else {
+        return 1.0 / result
+    }
+}
+
+/// 打印从1到最大的n位数
+func printNumbers(_ n: Int) -> [Int] {
+    /// 此题考查的是当n很大时，整型类型无法存储的情况
+    /// 无法存储就改用字符串来存
+    /// 先来考虑下整个流程
+    /// 我们没办法弄一个999出来，然后从1到999，输出
+    /// 此处又一个讨巧（fuck）的实现，我们在字符串里模拟加一操作，每次加一的同时，都打印一次当前的值，直到无法再加一
+    /// 根据上面分析的整个流程，可以翻译成如下代码
+    /// while incrementOne() { printNum() }
+    /// 分解一下问题，1. 模拟加一（考虑进位） 2. 判断无法加一的情况 3. 打印字符串（高位的0要干掉）
+    
+    /// 用字符数组可能更好处理一些，我们开辟一个长度为n的字符数组吧，初始每个字符都是"0"
+    // 加一操作(注意incrementOne方法在无法继续加一时，应能返回false)
+    // 用代码模拟加一过程，要考虑到进位问题
+    // 每次加1，我们从数组最后一位开始，到数组第一位结束
+    // 看下手算时的逻辑，当前位的字符转为真正的整数后加一，看下有没有进位，如果有进位，再加1，加完后，看下是不是大于等于10了
+    // 如果大于等于10的话，那取余保留下来，告诉后面的还要进位
+    // 综上，对于每一位的循环中，要有一个进位变量用于记录是否有进位
+    // 关于何时无法继续加一的问题，当是第一个字符时，前面判断后还有进位的话，就是不能继续加了，所以for循环中需要由下标
+    if n <= 0 { return [] }
+    
+    var numCharacters = [Character].init(repeating: "0", count: n)
+    
+    func incrementOne() -> Bool {
+        var shouldCarry = false
+        for i in stride(from: numCharacters.count - 1, to: -1, by: -1) {
+            guard var num = Int(String(numCharacters[i])) else {
+                fatalError()
+            }
+            
+            num += 1
+            if shouldCarry {
+                shouldCarry = false
+            }
+            
+            if num >= 10 {
+                if i == 0 {
+                    return false
+                }
+                num = num % 10
+                shouldCarry = true
+                numCharacters[i] = Character("\(num)")
+            } else {
+                numCharacters[i] = Character("\(num)")
+                break
+            }
+        }
+        return true
+    }
+    
+    // 将当前字符数组表示的数字返回
+    func printNum() -> Int {
+        // 用打印整数的方式打印字符数组
+        // 注意前面的0要干掉
+        // 从头往前，从不是0，就继续
+        // 增加一个标记，当遇到第一个不是0的字符时，赋值为false
+        var isbegin0 = true
+        var result = ""
+        for i in 0..<numCharacters.count {
+            if isbegin0, numCharacters[i] != "0" {
+                isbegin0 = false
+            }
+            if !isbegin0 {
+                result += String(numCharacters[i])
+            }
+        }
+        
+        guard let value = Int(result) else {
+            return 0
+        }
+        return value
+    }
+    
+    var result: [Int] = []
+    while incrementOne() {
+        result.append(printNum())
+    }
+    return result
+}
+
+/// 回溯实现
+func printNumbers1(_ n: Int) -> [Int] {
+    // n位数字，每次选一个
+    // 第一位选择时不能是0
+    // 长度是1、2、3、n
+    if n <= 0 { return [] }
+    var result = ""
+    var results: [Int] = []
+    /// 生成长度为length的字符串，currentPosition表示当前处要生成第几个位置的数字
+    func action(length: Int, currentPosition: Int) {
+        if currentPosition == length {
+            results.append(Int(result)!)
+            return
+        }
+        var start = 0
+        if currentPosition == 0 {
+            start = 1
+        }
+        
+        for i in start...9 {
+            result.append("\(i)")
+            action(length: length, currentPosition: currentPosition + 1)
+            result.removeLast()
+        }
+    }
+    
+    for i in 1...n {
+        action(length: i, currentPosition: 0)
+    }
+    return results
+}
+
+/// 输入一个数组，经过函数执行后，让所有奇数在前，偶数在后
+func exchange(_ nums: inout [Int]) -> [Int] {
+    // 参考快排中的分区逻辑
+    // 一个指针p从第一个位置开始，另一个指针q也指向第一个位置
+    // p的含义是，在p之前的元素都是奇数，p以及之后的元素都是偶数
+    // q表示还没有check的元素
+    // 整个过程是这样的：一次遍历循环，每次遍历都去check q元素，如果是奇数，就和p交换
+    // 每次q都要前进，但只有交换后p才会前进
+    // 直到循环结束
+    // check边界情况
+    // 1. 空数组，遍历不进行，不受影响
+    // 2. 至于一个元素，最多自己与自己交换
+    
+    var p, q: Int
+    p = 0
+    q = 0
+    while q < nums.count {
+        if nums[q] & 0x1 == 1 {
+            nums.swapAt(p, q)
+            p += 1
+        }
+        q += 1
+    }
+    
+    return nums
+}

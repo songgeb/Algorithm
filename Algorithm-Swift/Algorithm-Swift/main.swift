@@ -18,8 +18,10 @@ print("Hello, World!")
 //print(A)
 
 // MARK: - 链表
-//let listNode = LinkedList().createLinkedList([9, 7, 8, 11, 3, 4, 2, 21]).head
+let listNode = LinkedList().createLinkedList([9, 7, 8]).head
 //print(reversePrint(listNode))
+let node = LinkedList().reverseList1(listNode)
+LinkedList().printList(node)
 
 // MARK: - Tree
 //let root = buildTree([3,9,20,15,7], [9,3,15,20,7])
@@ -100,7 +102,7 @@ public func insertionSort() {
 //print(Bit().hammingWeight(-8))
 //print(Bit().judge2Power(218))
 //print(Bit().changeCount(10, 13))
-print(Bit().differentLetters("abcccwwww"))
+//print(Bit().differentLetters("abcccwwww"))
 
 // MARK: - 字符串匹配
 //print(AString().maxFreq("abcde", 2, 3, 3))
@@ -134,4 +136,10 @@ let board: [[Character]] = [["A", "B", "C", "E"],
 //increasingSubSequence([2,9,3,6,5,1,7])
 //print(lengthOfLIS([4, 10, 4, 3, 8, 9]))
 
+// MARK: - other
+//print(myPow1(2.0, 10))
+//print(printNumbers(5))
+//print(printNumbers1(5).count)
+var array = [1, 2, 3, 4]
+//print(exchange(&array))
 

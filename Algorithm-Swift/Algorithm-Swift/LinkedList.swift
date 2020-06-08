@@ -63,6 +63,14 @@ class List {
 
 class LinkedList {
     
+    func printList(_ node: ListNode?) {
+        var current = node
+        while current != nil {
+            Swift.print(current?.val)
+            current = current?.next
+        }
+    }
+    
     func findMiddle(_ list: List) -> ListNode? {
         // 如果是空链表返回空
         if list.head == nil {
@@ -139,6 +147,29 @@ class LinkedList {
             current = currentNext
         }
         return pre
+    }
+    /// 递归实现链表翻转
+    func reverseList1(_ head: ListNode?) -> ListNode? {
+        // 尝试看下递归能否实现
+        // 一般情况下，一个节点如何进行翻转
+        // 1. 当前节点为cur，先记录下cur.next来，然后cur.next = cur
+        // 2. 对cur.next，做同样的事情
+        // 看样子递归也可以实现，核心工作就是上面两条
+        // 终止条件：当接收到的节点是空，则结束
+        // check：1个节点，ok；没有节点，ok
+        
+        /// 将node和node.next进行翻转，并返回翻转后的开始节点
+        func action(_ node: ListNode?, _ next: ListNode?) -> ListNode? {
+            
+            guard let next = next else {
+                return node
+            }
+            
+            let nnext = next.next
+            next.next = node
+            return action(next, nnext)
+        }
+        return action(nil, head)
     }
     
     func createLinkedList(_ values: [Int]) -> List {
@@ -302,6 +333,29 @@ class LinkedList {
         }
         
         return list.head
+    }
+    /// 递归实现有序链表合并
+    func mergeOrderedList1(_ head1: ListNode?, _ head2: ListNode?) -> ListNode? {
+        // 递归核心工作：比较两个链表中当前节点，选出一个较小的节点A，让其他的节点继续递归，并把A.next赋值为递归的结果值
+        // 终止条件：如果其中有一个是空了，则返回两一个节点
+        
+        func merge(_ node1: ListNode?, _ node2: ListNode?) -> ListNode? {
+            guard let node1 = node1 else {
+                return node2
+            }
+            guard let node2 = node2 else {
+                return node1
+            }
+            if node1.val <= node2.val {
+                node1.next = merge(node1.next, node2)
+                return node1
+            } else {
+                node2.next = merge(node1, node2.next)
+                return node2
+            }
+        }
+        
+        return merge(head1, head2)
     }
     
     /// 单链表删除倒数第n个结点
