@@ -235,3 +235,32 @@ func lengthOfLIS(_ nums: [Int]) -> Int {
     }
     return result
 }
+
+/// 滑动窗口解决“不重复最长子串长度”
+func lengthOfLongestSubstring(_ s: String) -> Int {
+    /// 相比暴力的遍历O(n^2)的时间复杂度，该方法仅需要O(n)，是因为避免了无用的遍历情况
+    /// 滑动窗口需要一左一右指针表示滑动的窗口left、right
+    /// left和right都从0开始，right用于遍历后序的字符，left用于限定滑动窗口左边界和计算子串长度
+    /// right遍历每个字符时，check字符是否在滑动窗口中出现过，此处为了提高效率可以是用哈希表来存储滑动窗口中出现的字符
+    // 若字符在滑动窗口中出现过，说明遇到重复字符了，那此时就不满足求解要求，没有再往后遍历的必要，此时我让left前进一位，然后开始新的遍历比较，注意，同时，要将之前left对应的字符从哈希表中删除，其实就是更新当前滑动窗口中出现的字符
+    /// 若字符在滑动窗口中没出现过，说明遇到了新字符，那就将这个字符加入到哈希表中，同时更新下最新的子串最大长度，然后right继续遍历
+    /// https://zhuanlan.zhihu.com/p/74022291
+    var max = 0
+    var left = s.startIndex
+    var right = s.startIndex
+    var map: [Character: Int] = [:]
+
+    while right < s.endIndex {
+        let character = s[right]
+        if map[character] == nil {
+            map[character] = 1
+            let length = s.distance(from: left, to: right) + 1
+            max = Swift.max(max, length)
+            right = s.index(after: right)
+        } else {
+            map.removeValue(forKey: s[left])
+            left = s.index(after: left)
+        }
+    }
+    return max
+}

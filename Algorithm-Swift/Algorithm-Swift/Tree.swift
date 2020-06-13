@@ -57,7 +57,7 @@ class Tree {
         return node33
     }
     
-    // MARK: - 前序、中序遍历
+    // MARK: - 递归实现前序、中序遍历
     class func preTraversal(_ root: TreeNode?) {
         guard let root = root else {
             return
@@ -74,6 +74,72 @@ class Tree {
         inTraversal(root.left)
         print(root.val)
         inTraversal(root.right)
+    }
+    
+    // MARK: - 非递归实现前序、中序、后序遍历
+    func inOrderWithoutRecursion(_ root: TreeNode?) {
+        // 因为深度访问到底之后，需要向上回溯，所以借助Stack比较方便
+        // 梳理一下整体思路
+        // 1. 从根节点一直往左下走，每经过一个节点，就入栈，走到最后一个节点p，打印，看下是否右右子树
+        // 2.1 有的话，右子树也要进行1的操作，同时p出栈
+        // 2.2 没有的话，那p出栈，找到p的父节点，父节点打印，同时父节点出栈，转到父节点的右节点进行1操作
+        // 只要栈不为空，就可以一直做1和2的工作
+        guard let root = root else { return }
+        let stack = Stack<TreeNode>()
+        
+        var p: TreeNode? = root
+        while !stack.isEmpty || p != nil {
+            // 找到最左下角节点
+            while let pp = p {
+                stack.push(pp)
+                p = p?.left
+            }
+            // 打印节点
+            p = stack.top()
+            print(p?.val)
+            stack.pop()
+            
+            // check叶子节点的两种情况
+            if let right = p?.right {
+                p = right
+            } else {
+                // 找到父节点
+                guard let parent = stack.top() else {
+                    break
+                }
+                print(parent.val)
+                stack.pop()
+                p = parent.right
+            }
+        }
+    }
+    /// 非递归前序遍历
+    func preorderTraversal(_ root: TreeNode?) -> [Int] {
+        guard let root = root else { return [] }
+        let stack = Stack<TreeNode>()
+        var p: TreeNode? = root
+        var result: [Int] = []
+        while !stack.isEmpty || p != nil {
+            // 一直找左子树，同时打印节点，直到左子树是空
+            while let pp = p {
+                result.append(pp.val)
+                stack.push(pp)
+                p = p?.left
+            }
+            
+            //
+            if let pp = stack.top() {
+                if let right = pp.right {
+                    stack.pop()
+                    p = right
+                } else {
+                    stack.pop() // 把pp弹出
+                    let parent = stack.pop() // 把pp的父节点弹出
+                    p = parent?.right
+                }
+            }
+        }
+        return result
     }
     
     // MARK: - 求树深度
@@ -510,4 +576,54 @@ func buildTree(_ preorder: [Int], _ inorder: [Int]) -> TreeNode? {
     }
     
     return action(0, preorder.count - 1, 0, inorder.count - 1)
+}
+
+/// 给定一个序列，判断该序列是否为一棵二叉搜索树的后序遍历列表
+func verifyPostorder(_ postorder: [Int]) -> Bool {
+    // 根据二叉搜索树中序遍历是排好序的数组这一个特征，我们假定输入的序列是某个二叉搜索树的后序遍历序列，那么排好序的序列就是中序序列
+    // 问题转化为检查这两个序列是否正确
+    // 具体做法就是对这两个序列做拆分，看最终能否成功拆分
+    
+    // 核心递归工作：输入中序、后序两个序列，以及这两个序列对应的一对开始结束位置
+    // 从后序序列中取出最后一个元素，在中序序列中寻找该值，如果找不到直接返回false；如果找到，则中序序列中的该值会将序列分为左子树和右子树两部分。对应到后序序列中，也能确定左右子树在后序序列中的起始位置
+    // 继续进行递归
+    // 终止条件：1. 当pstart > pend, instart > inend，返回true 2. pstart == pend, instart = inend，则比较两个的值，若相等则true，否则false
+    // check，一个元素时
+    if postorder.isEmpty { return false }
+    let inorder = postorder.sorted()
+    func split(pStart: Int, pEnd: Int, inStart: Int, inEnd: Int) -> Bool {
+        if pStart > pEnd, inStart > inEnd {
+            return true
+        }
+        
+        if pStart == pEnd, inStart == inEnd {
+            return postorder[pStart] == inorder[inStart]
+        }
+        
+        let rootValue = postorder[pEnd]
+        var p = inStart
+        while p <= inEnd, inorder[p] != rootValue {
+            p += 1
+        }
+        
+        if inorder[p] != rootValue { return false }
+        
+        let leftInStart = inStart
+        let leftInEnd = p - 1
+        let leftCount = leftInEnd - leftInStart + 1
+        let leftPStart = pStart
+        let leftPEnd = leftPStart + leftCount - 1
+        
+        let leftResult = split(pStart: leftPStart, pEnd: leftPEnd, inStart: leftInStart, inEnd: leftInEnd)
+        
+        let rightInStart = p + 1
+        let rightInEnd = inEnd
+        let rightCount = rightInEnd - rightInStart + 1
+        let rightPStart = pEnd - rightCount
+        let rightPEnd = pEnd - 1
+        let rightResult = split(pStart: rightPStart, pEnd: rightPEnd, inStart: rightInStart, inEnd: rightInEnd)
+        return leftResult && rightResult
+    }
+    
+    return split(pStart: 0, pEnd: postorder.count - 1, inStart: 0, inEnd: inorder.count - 1)
 }

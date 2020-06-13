@@ -361,3 +361,42 @@ func exchange(_ nums: inout [Int]) -> [Int] {
     
     return nums
 }
+
+func spiralOrder(_ matrix: [[Int]]) -> [Int] {
+    // 第一感觉可以用递归或者回溯来解决
+    // 从0,0这个位置开始
+    // 递归核心工作：
+    // 先把自己放入结果集
+    // 按照右->下->左->上的方向，看下每个元素能不能走，当然要有一个used数组来存放某个数组是否已经访问过的问题
+    // 如果发现可以走某个元素，就打印，或者放入结果集中
+    // 直到发现没有可以继续前进的了
+    if matrix.isEmpty { return [] }
+    var result: [Int] = []
+    var used: [[Bool]] = [[Bool]].init(repeating: [], count: matrix.count)
+    for (index, rowArray) in matrix.enumerated() {
+        used[index] = [Bool].init(repeating: false, count: rowArray.count)
+    }
+    let row = matrix.count
+    func spiral(_ i: Int, _ j: Int) {
+        result.append(matrix[i][j])
+        let column = matrix[i].count
+        var newI, newJ: Int
+        newI = i
+        newJ = j
+        if j + 1 < column, !used[i][j+1] {
+            newJ = j + 1
+        } else if i + 1 < row, !used[i + 1][j] {
+            newI = i + 1
+        } else if j - 1 >= 0, !used[i][j - 1] {
+            newJ = j - 1
+        } else if i - 1 >= 0, !used[i - 1][j] {
+            newI = i - 1
+        } else {
+            return
+        }
+        used[newI][newJ] = true
+        spiral(newI, newJ)
+    }
+    spiral(0, 0)
+    return result
+}

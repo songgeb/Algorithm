@@ -60,6 +60,32 @@ class Solution {
         }
 
         return stack.isEmpty
-        
+    }
+    
+    func validateStackSequences1(_ pushed: [Int], _ popped: [Int]) -> Bool {
+        // 搞一个辅助栈stack
+        // 对于每一个poped元素
+        // 若top和poped元素不相等，则从pushed中追加元素到stack中，若一直到pushed结束，说明顺序不对，返回false；若找到了相等元素，则应该pop
+        // 对于下个元素还是做这样操作，整个循环结束了，说明ok
+        // 特殊情况，两个序列大小不等，或者有等于0的，直接返回false
+        if pushed.isEmpty || popped.isEmpty || pushed.count != popped.count { return false }
+        var pushedStart = 0
+        let stack = Stack<Int>()
+        for poppedValue in popped {
+            if let top = stack.top(), top == poppedValue {
+                stack.pop()
+            } else {
+                // 那就从pushed中添加，直到top==poppedValue
+                for i in pushedStart..<pushed.count {
+                    stack.push(pushed[i])
+                    if let top = stack.top(), top == poppedValue {
+                        stack.pop()
+                        pushedStart  = i + 1
+                        break
+                    }
+                }
+            }
+        }
+        return stack.isEmpty
     }
 }

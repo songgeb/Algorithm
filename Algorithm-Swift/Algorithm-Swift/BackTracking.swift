@@ -409,3 +409,153 @@ func generateParenthesis1(_ n: Int) -> [String] {
     return []
     
 }
+/// 字符串全排列
+func permutation(_ s: String) -> [String] {
+    // 全排列问题
+    // 所有字符排列组合可以分解成：
+    // {a, *, *} + {b, *, *} + {c, *, *}
+    // 文字描述的话，就是固定第一个元素，让后面的元素进行全排列
+    // 显然可以用递归来实现
+    
+    // 如何固定呢
+    // 对于第i个，j从i到length-1，swap(i, j)
+    // 然后递归的进行第1个、第2个，直到第length-1个，就完成一个结果
+    var result: [String] = []
+    var chars: [Character] = []
+    for c in s {
+        chars.append(c)
+    }
+    func hasSameValue<T: Equatable>(start: Int, end: Int, target: T, array: [T]) -> Bool {
+        if start > end { return false }
+        for i in start...end {
+            if array[i] == target {
+                return true
+            }
+        }
+        return false
+    }
+    // 固定住第i个元素，让后面的元素进行全排列
+    func action(_ i: Int) {
+        if i == chars.count - 1 {
+            result.append(String(chars))
+            return
+        }
+        
+        for j in i..<chars.count {
+            // j表示要讲第i个元素固定为第j位置的元素
+            // 如果在j之前曾经出现过j位置的元素，说明这个值已经固定过了，不能再重复递归了
+            // 剪枝策略是，如果在[i...j-1]这个区间里出现了chars[j]元素
+            if hasSameValue(start: i, end: j - 1, target: chars[j], array: chars) { continue }
+            chars.swapAt(i, j)
+            action(i+1)
+            chars.swapAt(i, j)
+        }
+    }
+    
+    action(0)
+    return result
+}
+
+/// 一个字符串所有字符的组合
+func permutation2(_ s: String) -> [String] {
+    if s.isEmpty { return [] }
+    var result: [String] = []
+    var chars: [Character] = []
+    for c in s {
+        chars.append(c)
+    }
+    
+    var tmp: [Character] = []
+    /// 计算在s字符串中，由num个字符组成的组合
+    func action(_ num: Int, _ start: Int) {
+        if num == 0 {
+            result.append(String(tmp))
+            return
+        }
+        
+        for i in start..<chars.count {
+            tmp.append(chars[i])
+            action(num - 1, i + 1)
+            tmp.removeLast()
+        }
+    }
+
+    for i in 1...s.count {
+        action(i, 0)
+    }
+    
+    return result
+}
+/// 整数组合，输入n和k，求从1到n中，选择k个数，所有的组合
+func combinex(_ n: Int, _ k: Int) -> [[Int]] {
+    if n == 0 || k == 0 { return [] }
+    // 核心思想是，一个一个选
+    // 第一次选，可选择的有n个，第二次选从生下的n-1个中选择1个
+    
+    var result: [[Int]] = []
+    var tmp: [Int] = []
+    
+    func action(_ start: Int) {
+        if tmp.count == k {
+            result.append(tmp)
+            return
+        }
+        /// 第i次选择数字
+        
+        for i in stride(from: start, to: n+1, by: 1) {
+            tmp.append(i)
+            action(i+1)
+            tmp.removeLast()
+        }
+    }
+    action(1)
+    return result
+}
+
+/// 整数组合2
+func combiney(_ n: Int, _ k: Int) -> [[Int]] {
+    // 对于每一个数字有两种可能，选或者不选
+    // 于是递归的核心工作是，选当前数字i，不选当前数字i，然后继续进行下一个数的递归工作
+    // 递归终止条件：当前索引已经超出了n，或者结果集的数字已经到k个了
+    var result: [[Int]] = []
+    var tmpResult: [Int] = []
+    // 对第i个数做决策
+    func action(_ i: Int) {
+        
+        if tmpResult.count == k {
+            result.append(tmpResult)
+            return
+        }
+        
+        if i > n {
+            return
+        }
+        
+        // 选
+        tmpResult.append(i)
+        action(i + 1)
+        tmpResult.removeLast()
+        
+        // 不选
+        action(i+1)
+    }
+    action(1)
+    return result
+}
+/// 子集
+func subsets2(_ nums: [Int]) -> [[Int]] {
+    if nums.isEmpty {
+        return [[]]
+    }
+    
+    var nums = nums
+    let lastValue = nums.removeLast()
+    var sets = subsets2(nums)
+    
+    for s in sets {
+        var tmp = s
+        tmp.append(lastValue)
+        sets.append(tmp)
+    }
+    return sets
+}
