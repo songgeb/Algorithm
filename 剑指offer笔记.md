@@ -56,3 +56,55 @@
     }
 ```
 
+## 面试题62. 圆圈中最后剩下的数字
+0,1,,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字。求出这个圆圈里剩下的最后一个数字。
+
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+
+```
+输入: n = 5, m = 3
+输出: 3
+```
+
+关键是找出f(n)和f(n-1)之间的关系
+
+- [换个角度举例解决约瑟夫环](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/huan-ge-jiao-du-ju-li-jie-jue-yue-se-fu-huan-by-as/)
+
+## 面试题65. 不用加减乘除做加法
+
+> 计算机使用补码存储数据，可以将正数负数的相加减规则统一，而且统一成我们平时了解的加法规则
+
+- 两个二进制数做”异或“操作，可以完成二进制的无进位加法
+- 先做与运算，再左移，相当于进位操作
+- 继续执行上面两个操作，直到进位是0，就是最终结果了
+
+```
+var sum = 0
+var a = a
+var b = b
+while b != 0 {
+	sum = a ^ b
+	b = (a & b) << 1
+	a = sum
+}
+return sum
+```
+
+- [负数在计算机中如何表示？为什么用补码存储](https://leetcode-cn.com/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/solution/mian-shi-ti-65-bu-yong-jia-jian-cheng-chu-zuo-ji-9/)
+
+## 面试题 16.01. 交换数字
+编写一个函数，不用临时变量，直接交换numbers = [a, b]中a与b的值。
+
+```
+var a = numbers[0]
+var b = numbers[1]
+// a = a ^ b
+// b = a ^ b
+// a = a ^ b
+// return [a, b]
+
+a = a + b
+b = a - b
+a = a - b
+return [a, b]
+```

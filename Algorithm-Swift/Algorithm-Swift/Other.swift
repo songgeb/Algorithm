@@ -400,3 +400,201 @@ func spiralOrder(_ matrix: [[Int]]) -> [Int] {
     spiral(0, 0)
     return result
 }
+/// 打印第n个丑数
+func nthUglyNumber(_ n: Int) -> Int {
+    if n <= 0 { return -1 }
+    var uglyNumbers = [Int].init(repeating: 1, count: n)
+    uglyNumbers[0] = 1
+    var index = 1
+    var p2 = 0
+    var p3 = 0
+    var p5 = 0
+    while index < n {
+        uglyNumbers[index] = min(uglyNumbers[p2] * 2, min(uglyNumbers[p3] * 3, uglyNumbers[p5] * 5))
+        let last = uglyNumbers[index]
+        while uglyNumbers[p2] * 2 <= last {
+            p2 += 1
+        }
+        
+        while uglyNumbers[p3] * 3 <= last {
+            p3 += 1
+        }
+        
+        while uglyNumbers[p5] * 5 <= last {
+            p5 += 1
+        }
+    }
+    
+    return uglyNumbers[n-1]
+}
+
+/// 输入一个整数数组，输出逆序对数
+func reversePairs(_ nums: [Int]) -> Int {
+    // 总体是分治的思想
+    // 用上了归并排序的merge思路
+    // 根据分治思想，一个数组多个元素的归并排序，可以将数组平均分成两部分，分别进行递归的归并排序
+    // 最终分解成各包含一个元素的两个数组，这两个数组在合并，每层递归继续合并
+    // 在合并的时候，我们根据两个数组的指针，就可以计算出逆序数了
+    
+    // 写代码
+    // 归并排序要完整的实现一遍，同时加入逆序计数逻辑
+    var nums = nums
+    var reversePairsCount = 0
+    func mergeSort(_ start: Int, _ end: Int) {
+        if start >= end { return }
+        //
+        let mid = start + (end - start) >> 1
+        mergeSort(start, mid)
+        mergeSort(mid + 1, end)
+        merge(start, mid, end)
+    }
+    
+    func merge(_ p: Int, _ q: Int, _ r: Int) {
+        // 一个p到r的辅助数组
+        // 三个个指针left、right和index
+        // 两个指针分别属于两部分，一边遍历一边往辅助数组里放
+        // 指针结束后，把剩余的元素放入到辅助数组中
+        // 关于逆序对数
+        // 当nums[left] > nums[right]时，那其实从left到q所有元素都大于nums[right]，此时逆序数应该加(q - left + 1)
+        var left = p
+        var right = q + 1
+        var index = 0
+        var tmp = [Int].init(repeating: 0, count: r - p + 1)
+        
+        while left <= q, right <= r {
+            if nums[left] > nums[right] {
+                reversePairsCount += (q - left + 1)
+                tmp[index] = nums[right]
+                right += 1
+            } else {
+                tmp[index] = nums[left]
+                left += 1
+            }
+            index += 1
+        }
+        
+        while left <= q {
+            tmp[index] = nums[left]
+            left += 1
+            index += 1
+        }
+        
+        while right <= r {
+            tmp[index] = nums[right]
+            right += 1
+            index += 1
+        }
+        
+        index = 0
+        for i in p...r {
+            nums[i] = tmp[index]
+            index += 1
+        }
+    }
+    mergeSort(0, nums.count - 1)
+    return reversePairsCount
+}
+
+/// 面试题61. 扑克牌中的顺子
+func isStraight(_ nums: [Int]) -> Bool {
+    // 最快想到的是，将数组排序，完后根据0的情况，挨个遍历进行判断是否是相邻数值，时间复杂度O(nlogn)
+    // 用桶排序会更快一些
+    // 该问题核心是验证是否是顺子
+    // 核心思想是先排序，然后挨个判断，如果都是相邻的则说明是顺子
+    // 不相邻，但有足够的0来补充
+    // 不相邻，其中有重复数字
+    // 那我们可以对排好序的数组进行遍历
+    // 1. 一遍遍历一遍计算空位数，如果空位数比0的个数多，直接返回错误
+    // 2. 一遍遍历一遍看是否有重复数字，有重复数字就直接返回错误
+    // 3. 开始先计算有没有0，有几个0
+    let sortedNums = nums.sorted()
+    var emptyCounter = 0
+    var zeroCounter = 0
+    for i in 0..<sortedNums.count  {
+        let cur = sortedNums[i]
+        if cur == 0 {
+            zeroCounter += 1
+        } else {
+            if i - 1 >= 0, sortedNums[i - 1] == cur {
+                return false
+            }
+            if i - 1 >= 0, sortedNums[i - 1] != 0 {
+                emptyCounter += cur - sortedNums[i - 1] - 1
+                if emptyCounter > zeroCounter {
+                    return false
+                }
+            }
+        }
+    }
+    return true
+}
+
+/// 字符串转整数
+func strToInt(_ str: String) -> Int {
+    // 一道很基础的题，但很考验细节问题
+    // 需要考虑下面各种非法输入和边界问题
+    // 空串、前后多余字符、单正负号、包含非数字字符
+    // 上下越界问题
+    
+    // 写代码
+    // 转成字符数组
+    // 定义一个isInputValid变量，当空串、仅有正负号、包含非数字字符时标记为true，并返回false
+    // 先过滤掉所有前置空格，找到第一个非空格元素
+    // 如果全是空格，则无效输入，返回false
+    // 若是其他字符，则无效输入，返回false
+    // 若是正负号，则继续扫描后面字符，需要定义一个标记isMinus表示正负数
+    // 经过上面的检查后，说明后面是有效数字了
+    // 从当前数字开始，直到字符结束或者字符不是数字（此处可以提取一个方法判断，某个字符是否为数字）
+    // 定义一个结果result
+    // 每遇到一个数字，就result = result * 10 + digit
+    var chars: [Character] = []
+    str.forEach({ chars.append($0) })
+    
+    var isInputValid = true
+    if chars.isEmpty {
+        isInputValid = false
+        return 0
+    }
+    var p = 0
+    while p < chars.count, chars[p] == " " {
+        p += 1
+    }
+    
+    func isNumber(for char: Character) -> Bool {
+        enum NumberConstant {
+            static let map: [Character: UInt8] = ["0": 1, "1": 1, "2": 1, "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1]
+        }
+        return NumberConstant.map[char] != nil
+    }
+    
+    if p == chars.count {
+        isInputValid = false
+        return 0
+    }
+    var isMinus = false
+    if chars[p] == "-" || chars[p] == "+" {
+        if p + 1 == chars.count {
+            isInputValid = false
+            return 0
+        }
+        isMinus = chars[p] == "-"
+        p += 1
+    }
+    guard let zeroAsciiValue = ("0" as Character).asciiValue else {
+        return 0
+    }
+    var result = 0
+    while p < chars.count, isNumber(for: chars[p]) {
+        guard let pAscii = chars[p].asciiValue else {
+            return 0
+        }
+        let interval = Int(pAscii - zeroAsciiValue)
+        result = result * 10 + Int(isMinus ? interval * -1 : interval)
+        if result > Int32.max || result < Int32.min {
+            // 越界
+            return 0
+        }
+        p += 1
+    }
+    return result
+}
