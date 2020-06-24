@@ -133,8 +133,10 @@ let board: [[Character]] = [["A", "B", "C", "E"],
 //generateParenthesis1(3)
 //print(permutation("baa"))
 //print(permutation2("123"))
-//print(combiney(4, 2))
+//print(combinex(4, 3))
 //print(subsets2([1,2]))
+print(check())
+print(check2())
 
 // MARK: - 动态规划
 //check()
@@ -157,5 +159,5 @@ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;
 //print(spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
 //reversePairs([7, 5, 6, 4])
 //isStraight([0,0,8,5,4])
-strToInt("-9")
+//strToInt("-9")
 

@@ -559,3 +559,52 @@ func subsets2(_ nums: [Int]) -> [[Int]] {
     }
     return sets
 }
+
+/// 找零钱
+func check() -> [[Int]] {
+    var counter = 0
+    var result: [[Int]] = []
+    var tmpResult = [String]()
+    var coins = [2, 3, 7]
+    var cc = [50, 34, 15]
+    func action(_ sum: Int, _ start: Int) {
+        if sum == 100 {
+            //            result.append(tmpResult)
+            print(tmpResult)
+            counter += 1
+            return
+        }
+        
+        if start == coins.count || sum > 100 {
+            return
+        }
+        
+        for i in start..<coins.count {
+            for j in 1...cc[start] {
+                // 选择j个coins[start]
+                tmpResult.append("\(j)个\(coins[i])")
+                action(sum + j * coins[i], start + 1)
+                tmpResult.removeLast()
+            }
+        }
+    }
+    
+    action(0, 0)
+    print(counter)
+    return result
+}
+
+func check2() {
+    var counter = 0
+    for i in 0...50 {
+        for j in 0...34 {
+            for k in 0...15 {
+                if 2 * i + 3 * j + 7 * k == 100 {
+                   counter += 1
+                }
+            }
+        }
+    }
+    print(counter)
+}
+
