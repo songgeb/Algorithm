@@ -142,6 +142,11 @@ class Tree {
         return result
     }
     
+    func postorder(_ root: TreeNode?) -> [Int] {
+        // 一直往左子树访问，直到为空
+        // 看下有没有右子树，如果有，则需要先访问右子树；如果没有则需要先访问当前节点，然后再找父节点的右子树
+    }
+    
     // MARK: - 求树深度
     /// 求树的深度（递归实现）
     /// - Parameter root:
