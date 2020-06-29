@@ -87,3 +87,5 @@ func inorderTraversal(_ root: TreeNode?) -> [Int] {
 
 
 
+## 参考
+- [二叉树后序遍历的两种易写的非递归写法](https://zhuanlan.zhihu.com/p/80578741)
