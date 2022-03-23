@@ -135,8 +135,8 @@ let board: [[Character]] = [["A", "B", "C", "E"],
 //print(permutation2("123"))
 //print(combinex(4, 3))
 //print(subsets2([1,2]))
-print(check())
-print(check2())
+//print(check())
+//print(check2())
 
 // MARK: - 动态规划
 //check()
@@ -161,3 +161,12 @@ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;
 //isStraight([0,0,8,5,4])
 //strToInt("-9")
 
+
+// MARK: -
+let sss = "A man, a plan, a canal: Panama"
+//isPalindrome(sss)
+
+//print(spiralOrder1([[1,2,3],[4,5,6],[7,8,9]]))
+
+//print(canJump([0,2,3]))
+print(divingBoard(1, 1, 1000))
