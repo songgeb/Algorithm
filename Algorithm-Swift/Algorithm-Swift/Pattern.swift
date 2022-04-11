@@ -466,3 +466,13 @@ func divingBoard(_ shorter: Int, _ longer: Int, _ k: Int) -> [Int] {
     }
     return result
 }
+
+class A {
+    func what(_ i: Int) {
+        
+    }
+    
+    func what(_ i: Bool) {
+        
+    }
+}
