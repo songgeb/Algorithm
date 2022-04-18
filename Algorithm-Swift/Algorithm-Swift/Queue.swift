@@ -178,3 +178,30 @@ class QueueTest {
     arrayQueue.printQueue()
   }
 }
+/// https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/
+/// 两个栈实现队列
+class CQueue {
+    let dataStack = Stack<Int>()
+    let tmpStack = Stack<Int>()
+    
+    init() {
+    }
+    
+    func appendTail(_ value: Int) {
+        dataStack.push(value)
+    }
+    
+    func deleteHead() -> Int {
+        if dataStack.isEmpty { return -1 }
+        while let v = dataStack.pop() {
+            tmpStack.push(v)
+        }
+        guard let head = tmpStack.pop() else {
+            return -1
+        }
+        while let v = tmpStack.pop() {
+            dataStack.push(v)
+        }
+        return head
+    }
+}
