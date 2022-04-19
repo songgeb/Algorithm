@@ -20,6 +20,7 @@ class Stack<Element> {
         return datas.isEmpty
     }
     
+    @discardableResult
     func pop() -> Element? {
         guard datas.last != nil else { return nil }
         return datas.removeLast()
@@ -397,4 +398,83 @@ func removeDuplicates(_ s: String) -> String {
         str = String(char) + str
     }
     return str
+}
+
+func isValid(_ s: String) -> Bool {
+    // 遍历每个字符
+    // 如果栈为空，则加入到栈中
+    // 如果不为空，并且是)]}其中之一时，则必须满足下面条件，才有可能是合理的
+    // 1. 取出栈顶元素，和当前元素匹配，必须是成对的，不是则返回false
+    // 结束遍历后，判断栈是否为空，不为空则返回false
+    let stack = Stack<Character>()
+    func isPair(left: Character, right: Character) -> Bool {
+        switch (left, right) {
+        case ("(", ")"), ("[", "]"), ("{", "}"):
+            return true
+        default:
+            return false
+        }
+    }
+    for char in s {
+        if char == "(" || char == "[" || char == "{" {
+            stack.push(char)
+        } else {
+            if let topChar = stack.top() {
+                if isPair(left: topChar, right: char) {
+                    stack.pop()
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+    }
+    return stack.isEmpty
+}
+
+func validateStackSequences(_ pushed: [Int], _ popped: [Int]) -> Bool {
+    if pushed.isEmpty || popped.isEmpty { return true }
+    let stack1 = Stack<Int>()
+    var index = -1
+    for poppedValue in popped {
+        if let tooped = stack1.top(), tooped == poppedValue {
+            stack1.pop()
+        } else {
+            repeat {
+                index += 1
+                if index < pushed.count {
+                    stack1.push(pushed[index])
+                }
+            } while index < pushed.count && pushed[index] != poppedValue
+           
+            if let tooped = stack1.top(), tooped == poppedValue {
+                stack1.pop()
+            } else {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+/// https://leetcode-cn.com/problems/daily-temperatures/submissions/
+func dailyTemperatures(_ temperatures: [Int]) -> [Int] {
+    // 单调栈实现方式
+    // 使用一个栈来计算
+    // 遍历每一个温度，对于每一个温度，都要做如下的事情：
+    // 1. 当前正遍历的温度cur与栈顶温度top比较。若cur > top，则产生一个结果值，下标为top温度对应的下标，值为cur的下标减去top对应的下标，同时让top出栈
+    // 若cur <= top，则暂时还不能产生结果，将下标入栈
+    // 2. 若栈顶没有元素，则直接将下标入栈
+    // 重复执行1和2的过程，在1和2过程中下标入栈时，则结束重复过程，遍历下一个温度
+    var result = Array(repeating: 0, count:temperatures.count)
+    let stack = Stack<Int>()
+    for (index, temp) in temperatures.enumerated() {
+        while let topTempIndex = stack.top(), temp > temperatures[topTempIndex] {
+            result[topTempIndex] = index - topTempIndex
+            stack.pop()
+        }
+        stack.push(index)
+    }
+    return result
 }
