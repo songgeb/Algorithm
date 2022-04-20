@@ -478,3 +478,69 @@ func dailyTemperatures(_ temperatures: [Int]) -> [Int] {
     }
     return result
 }
+
+/// https://leetcode-cn.com/problems/trapping-rain-water/
+func trap(_ height: [Int]) -> Int {
+    // 暴力解法
+    // 计算每个柱子之上可以积多少水，然后进行求和
+    // 每个柱子之上可以积的水应该这么计算：
+    // y = (min(leftMaxHeight - rightMaxHeight) - height)
+    // leftMaxHeight和rightMaxHeight的计算，则是向左向右一直寻找，找maxheight
+    var sum = 0
+    let count = height.count
+    for (index, curHeight) in height.enumerated() {
+        var leftMaxHeight = 0
+        for leftIndex in stride(from: index - 1, to: -1, by: -1) {
+            if height[leftIndex] > leftMaxHeight {
+                leftMaxHeight = height[leftIndex]
+            }
+        }
+        
+        var rightMaxHeight = 0
+        for rightIndex in stride(from: index + 1, to: count, by: 1) {
+            if height[rightIndex] > rightMaxHeight {
+                rightMaxHeight = height[rightIndex]
+            }
+        }
+        
+        let result = min(leftMaxHeight, rightMaxHeight) - curHeight
+        if result > 0 {
+            sum += result
+        }
+    }
+    return sum
+}
+
+func trap1(_ height: [Int]) -> Int {
+    // 在暴力解法基础上做简单的性能优化
+    // 核心算法逻辑仍是暴力解法。只是，提前计算好每个元素的leftMaxHeight和rightMaxHeight，提前存好，用时直接取
+    // 本质是空间换时间
+    // 计算leftMaxHeight和rightMaxHeight有点小技巧，通过该技巧可以将时间复杂度降到O(n)
+    // 以leftMaxHeight的计算为例
+    // 定义一个leftMaxHeights表示每个元素位置左侧最大的高度
+    // 每个元素的取值可以又前一个元素计算得出y = max(leftMaxHeights[preIndex], height[preIndex])
+    let count = height.count
+    var leftMaxHeights = Array(repeating: 0, count: count)
+    var rightMaxHeights = Array(repeating: 0, count: count)
+    for index in 1..<count {
+        let preIndex = index - 1
+        leftMaxHeights[index] = max(leftMaxHeights[preIndex], height[preIndex])
+    }
+    // 计算rightMaxHeights时逻辑类似，可以从右到做遍历
+    for index in stride(from: count - 2, to: -1, by: -1) {
+        let afterIndex = index + 1
+        rightMaxHeights[index] = max(rightMaxHeights[afterIndex], height[afterIndex])
+    }
+    var sum = 0
+    for (index, curHeight) in height.enumerated() {
+        let leftMaxHeight = leftMaxHeights[index]
+        let rightMaxHeight = rightMaxHeights[index]
+        
+        let result = min(leftMaxHeight, rightMaxHeight) - curHeight
+        if result > 0 {
+            sum += result
+        }
+    }
+    return sum
+}
+

@@ -170,4 +170,5 @@ let sss = "A man, a plan, a canal: Panama"
 //print(divingBoard(1, 1, 1000))
 
 // 栈
-print(calculate("1+1+1"))
+//print(calculate("1+1+1"))
+trap([4,2,0,3,2,5])
