@@ -265,6 +265,44 @@ class Sort {
     print(array)
     print(result)
   }
+    
+    /// https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+    func findKthLargest(_ nums: [Int], _ k: Int) -> Int {
+        // 快排的划分方法 + 递归
+        // 反复执行划分逻辑，直到划分出来的index==k-1
+        var newNums = nums
+        func partition(_ left: Int, _ right: Int) -> Int {
+            // 按照由大到小进行划分，左边大右边小
+            // 取最右边的值作为pivot
+            if left >= right { return left }
+            let pivot = newNums[right]
+            var i = left
+            for j in left...right {
+                if newNums[j] > pivot {
+                    if i != j {
+                        newNums.swapAt(i, j)
+                    }
+                    i += 1
+                }
+            }
+            
+            newNums.swapAt(i, right)
+            return i
+        }
+        
+        func r(_ left: Int, _ right: Int) {
+            let index = partition(left, right)
+            if index == k - 1 {
+                return
+            } else if index > k - 1 {
+                r(left, index-1)
+            } else {
+                r(index+1, right)
+            }
+        }
+        r(0, newNums.count - 1)
+        return newNums[k-1]
+    }
 }
 
 func sb_merge(_ array: [Int], p: Int, q: Int, r: Int) -> [Int] {
@@ -402,3 +440,332 @@ class SolutionS {
         }
     }
 }
+
+/// https://leetcode-cn.com/problems/valid-anagram/
+func isAnagram(_ s: String, _ t: String) -> Bool {
+    // 用哈希表存储每个字符
+    // 遍历s，往哈希表里存每个字符和出现次数
+    // 遍历t，从哈希表里删除，如果字符对应的值>0，则减一，减到0后则删除
+    if s.count != t.count { return false }
+    var hashSet: [Character:Int] = [:]
+    for c in s {
+        if let num = hashSet[c] {
+            hashSet[c] = num + 1
+        } else {
+            hashSet[c] = 1
+        }
+    }
+    
+    for c in t {
+        if let num = hashSet[c] {
+            if num == 1 {
+                hashSet.removeValue(forKey: c)
+            } else {
+                hashSet[c] = num - 1
+            }
+        } else {
+            return false
+        }
+    }
+    return hashSet.isEmpty
+}
+
+func isAnagram1(_ s: String, _ t: String) -> Bool {
+    if s.count != t.count { return false }
+    let ss = s.sorted()
+    let ts = t.sorted()
+    for (index, sv) in ss.enumerated() {
+        if sv != ts[index] {
+            return false
+        }
+    }
+    return true
+}
+
+/// https://leetcode-cn.com/problems/merge-intervals/
+func merge(_ intervals: [[Int]]) -> [[Int]] {
+    // 用一个O(n)的算法完成
+    // 有一个区间，叫做待决断区间(pendingInterval)，初始值为第一个输入的区间
+    // 核心算法如下：
+    // 从第二个元素开始遍历，当前元素为item
+    // 与pendingInterval比较发现有重叠（item.0 <= pendingInterval.1），则更新pendingInterval
+    // 如果没有重叠，则将pendingInterval放入结果集，并更新pendingInterval为item
+    // 遍历结束后，需要将pendingInterval放入结果集
+    if intervals.isEmpty { return [] }
+    let count = intervals.count
+    if count == 1 { return intervals }
+    let intervals = intervals.sorted {
+        $0[0] < $1[0]
+    }
+    var pendingInterval = intervals.first!
+    var results: [[Int]] = []
+    for index in 1..<count {
+        let item = intervals[index]
+        if item[0] <= pendingInterval[1] {
+            pendingInterval[0] = min(item[0], pendingInterval[0])
+            pendingInterval[1] = max(item[1], pendingInterval[1])
+        } else {
+            results.append(pendingInterval)
+            pendingInterval = item
+        }
+    }
+    results.append(pendingInterval)
+    return results
+}
+
+/// https://leetcode-cn.com/problems/sort-colors/
+func sortColors(_ nums: inout [Int]) {
+    // 使用类似快排的partition的思想
+    // 两个指针：i和j
+    // 在排序过程中，我们将全部数据局分为[left, i)和[i, right]两个区间
+    // [left, i)表示所有小于pivot的元素
+    // [i, right]则表示还不确定的元素
+    // 刚开始[left, i)区间是空的，j在[i, right]中遍历，随着遍历，逐渐更新[left, i)区间
+    // 只要nums[j] < pivot，就swap(i, j)，并且让i前进
+    // 该次遍历之后，[left, i)中就都是0了；而[i, right]则混杂着1和2
+    // 我们需要再在[i, right]中执行一遍，就能将1和2划分出来了
+    var i = 0
+    let numCount = nums.count
+    for j in i..<numCount {
+        if nums[j] < 1 {
+            nums.swapAt(i, j)
+            i += 1
+        }
+    }
+    
+    let rightNumCount = (numCount - 1) - i + 1
+    if rightNumCount <= 1 { return }
+    
+    for j in i..<numCount {
+        if nums[j] < 2 {
+            nums.swapAt(i, j)
+            i += 1
+        }
+    }
+}
+
+/// https://leetcode-cn.com/problems/insertion-sort-list/
+func insertionSortList(_ head: ListNode?) -> ListNode? {
+    // 利用插入排序的思想对链表进行排序
+    // 从第二个节点遍历元素，需要一个表示前驱节点的变量
+    // 为了方便插入元素，可以构造一个虚拟头结点
+    if head?.next == nil { return head }
+    
+    let dummyNode = ListNode(Int.min)
+    dummyNode.next = head
+    
+    var pre: ListNode? = head
+    
+    while let curNode = pre?.next {
+        if curNode.val >= pre!.val {
+            pre = pre?.next
+            continue
+        }
+        //
+        pre?.next = curNode.next
+        // 从头开始遍历节点，直到找到大于curNode.val的元素
+        var tmpPre: ListNode? = dummyNode
+        while let nextNode = tmpPre?.next, nextNode.val <= curNode.val {
+            tmpPre = tmpPre?.next
+        }
+        curNode.next = tmpPre?.next
+        tmpPre?.next = curNode
+    }
+    return dummyNode.next
+}
+
+/// https://leetcode-cn.com/problems/sort-list/
+func sortList(_ head: ListNode?) -> ListNode? {
+    // 快排的思想对链表进行排序
+    // 递归实现快排
+    // 递
+    // 进行划分，划分函数需要返回privot对应node的指针
+    // 子方法 quickSortList需要接收两个参数preLeft和afterRiight，表示left的前驱和right的后继
+    // 递归终止条件是，只有一个节点或空区间时
+    if head == nil { return head }
+    
+    /// 交换node1与node2
+    /// - Parameters:
+    ///   - node1Pre: node1的前驱节点
+    ///   - node2Pre: node2的前驱节点
+    func swapNode(_ node1Pre: inout ListNode?, _ node2Pre: inout ListNode?) {
+        let node1 = node1Pre?.next
+        let node2 = node2Pre?.next
+        let tmpNode2Next = node2?.next
+        if node1?.next === node2 {
+            // 相邻节点情况
+            node1Pre?.next = node2
+            node2?.next = node1
+            node1?.next = tmpNode2Next
+            node2Pre = node1 // 保证nodePre不变
+        } else {
+            // 节点不相邻的情况
+            node1Pre?.next = node2
+            node2Pre?.next = node1
+            node2?.next = node1?.next
+            node1?.next = tmpNode2Next
+        }
+    }
+    
+    func partitionList(_ preLeft: ListNode?, _ afterRight: ListNode?) -> ListNode? {
+        // 选取第一个元素作为pivot，并将该元素放到最后
+        // 通过两个指针，将小于pivot的元素都归到左边，大于等于pivot的元素归到右边
+        // i从第二个元素开始，j从第三个元素开始
+        // 用j来遍历元素，当jValue < pivot时，则j和i进行交换，直到j遍历结束
+        // 遍历结束后，再pivot和i位置元素进行交换
+        // 只有一个元素时不需要划分
+        if preLeft == nil { return nil }
+        if preLeft?.next != nil, preLeft?.next?.next == nil {
+            return preLeft?.next
+        }
+        let pivot = preLeft?.next
+        let pivotValue = pivot!.val
+        var preI = pivot
+        var preJ = preI
+        
+        while preJ?.next !== afterRight {
+            if let jValue = preJ?.next?.val, jValue < pivotValue {
+                // 交换i和j位置的节点
+                swapNode(&preI, &preJ)
+                preI = preI?.next
+            }
+            preJ = preJ?.next
+        }
+        // pivot与i进行交换
+        
+        return pivot
+    }
+    
+    func quickSortList(_ preLeft: ListNode?, _ afterRight: ListNode?) {
+        if preLeft?.next?.next === afterRight || preLeft?.next === afterRight {
+            return
+        }
+        let pivotNode = partitionList(preLeft, afterRight)
+        quickSortList(preLeft, pivotNode)
+        quickSortList(pivotNode, afterRight)
+    }
+    
+    let dummyHead = ListNode(-1)
+    dummyHead.next = head
+    quickSortList(dummyHead, nil)
+    return dummyHead.next
+}
+
+func canMakeArithmeticProgression(_ arr: [Int]) -> Bool {
+    if arr.isEmpty { return false }
+    let count = arr.count
+    if count == 1 { return true }
+    let array = arr.sorted()
+    let interval = array[1] - array[0]
+    for i in 1..<count {
+        if array[i] - array[i-1] != interval {
+            return false
+        }
+    }
+    return true
+}
+
+/// https://leetcode-cn.com/problems/sorted-merge-lcci/
+func merge1(_ A: inout [Int], _ m: Int, _ B: [Int], _ n: Int) {
+    // 插入排序的思想
+    // 从下标m开始，使用插入排序的方式
+    // 先将B的元素放到A中，然后插入排序
+    for i in 0..<n {
+        let aIndex = i + m
+        A[aIndex] = B[i]
+    }
+    // 插入排序
+    // 4, 2, 3, 6, 1
+    // 从第2个数开始，根前面的数字比较，找到合适位置插入
+    // 和前一个元素比较，若大于等于，则遍历下一个元素
+    // 若非大于等于，则遍历从前一个元素到第一个元素，直到满足大于等于
+    // 只要不满足大于等于，则挪动元素
+    // 将待插入元素放到合适位置
+    for i in m..<m+n {
+        if i == 0 { continue }
+        let insertionNum = A[i]
+        if insertionNum >= A[i-1] { continue }
+        
+        var j = i - 1
+        while j >= 0 {
+            if insertionNum >= A[j] {
+                break
+            }
+            A[j+1] = A[j]
+            j -= 1
+        }
+        
+        // 此时j为-1，或者insertionNum >= A[j]
+        A[j+1] = insertionNum
+    }
+}
+
+/// https://leetcode-cn.com/problems/smallest-k-lcci/submissions/
+func smallestK(_ arr: [Int], _ k: Int) -> [Int] {
+    // 快排中的划分算法
+    // 递归来做
+    // 递归核心逻辑: 执行划分，如果恰好index==k，则递归结束；如果index!=k，则更新left和right继续递归
+    if k == 0 { return [] }
+    if arr.isEmpty { return arr }
+    let count = arr.count
+    if k >= count { return arr }
+    
+    var array = arr
+    
+    func partition(_ left: Int, _ right: Int) -> Int {
+        // 划分方法
+        // 选right位置数据作为pivot
+        if left >= right { return left }
+        var i = left
+        let pivot = array[right]
+        for j in left..<right {
+            if array[j] < pivot {
+                if i != j {
+                    array.swapAt(i, j)
+                }
+                i += 1
+            }
+        }
+        array.swapAt(i, right)
+        return i
+    }
+    
+    func r(_ left: Int, _ right: Int) {
+        let index = partition(left, right)
+        if index+1 == k {
+            return
+        }
+        if index+1 > k {
+            r(left, index-1)
+        } else {
+            r(index+1, right)
+        }
+    }
+    r(0, count-1)
+    
+    var result: [Int] = []
+    for i in 0..<k {
+        result.append(array[i])
+    }
+    return result
+}
+
+/// https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/
+func exchange(_ nums: [Int]) -> [Int] {
+    // 使用快排的划分方法思想：奇数都放到左边，剩下的右边就都是偶数了
+    // 区别在于，由于不是排序，所以不用最后进行交换，而且遍历时需要每个都遍历到
+    if nums.isEmpty { return [] }
+    var newNums = nums
+    var i = 0
+    for j in 0..<newNums.count {
+        // 奇数放到左边
+        if newNums[j] % 2 != 0 {
+            if i != j {
+                newNums.swapAt(i, j)
+            }
+            i += 1
+        }
+    }
+    return newNums
+}
+

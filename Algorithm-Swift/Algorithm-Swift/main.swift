@@ -171,4 +171,23 @@ let sss = "A man, a plan, a canal: Panama"
 
 // 栈
 //print(calculate("1+1+1"))
-trap([4,2,0,3,2,5])
+//trap([4,2,0,3,2,5])
+// 递归
+//numWays(10)
+//Solution1().numWays(10)
+//let list1 = LinkedList().createLinkedList([5]).head
+//let list2 = LinkedList().createLinkedList([1, 3, 4]).head
+//let list3 = Solution1().mergeTwoLists(list1, list2)
+//LinkedList().printList(list3)
+
+
+//print(Solution1().myPow4(0.00001, 2147483647))
+//Solution1().multiply(918795921, 1)
+//let head = LinkedList().createLinkedList([406,235,811,-55,-382,-843,943]).head
+//let d = sortList(head)
+//LinkedList().printList(d)
+
+//print(smallestK([1,2,3], 1))
+let xx = Sort().findKthLargest([3,3,3], 3)
+print(xx)
+
