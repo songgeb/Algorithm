@@ -561,9 +561,9 @@ func insertionSortList(_ head: ListNode?) -> ListNode? {
             pre = pre?.next
             continue
         }
-        //
+        // 更新pre，方便后序的遍历
         pre?.next = curNode.next
-        // 从头开始遍历节点，直到找到大于curNode.val的元素
+        // 从头开始遍历节点，直到找到大于curNode.val的元素，并插入
         var tmpPre: ListNode? = dummyNode
         while let nextNode = tmpPre?.next, nextNode.val <= curNode.val {
             tmpPre = tmpPre?.next
@@ -592,12 +592,22 @@ func sortList(_ head: ListNode?) -> ListNode? {
         let node1 = node1Pre?.next
         let node2 = node2Pre?.next
         let tmpNode2Next = node2?.next
-        if node1?.next === node2 {
+        if node1?.next === node2 || node2?.next === node1 {
             // 相邻节点情况
-            node1Pre?.next = node2
-            node2?.next = node1
-            node1?.next = tmpNode2Next
-            node2Pre = node1 // 保证nodePre不变
+            if node1?.next === node2 {
+                node1Pre?.next = node2
+                node2?.next = node1
+                node1?.next = tmpNode2Next
+                
+                node2Pre = node2 // 保证nodePre不变
+            } else {
+                node2Pre?.next = node1
+                let tmpNext1 = node1?.next
+                node1?.next = node2
+                node2?.next = tmpNext1
+                
+                node1Pre = node1 //保证nodePre不变
+            }
         } else {
             // 节点不相邻的情况
             node1Pre?.next = node2
@@ -606,38 +616,46 @@ func sortList(_ head: ListNode?) -> ListNode? {
             node1?.next = tmpNode2Next
         }
     }
-    
+    /// 返回Pivot指向的节点
     func partitionList(_ preLeft: ListNode?, _ afterRight: ListNode?) -> ListNode? {
-        // 选取第一个元素作为pivot，并将该元素放到最后
+        // 选取第一个元素作为pivot
         // 通过两个指针，将小于pivot的元素都归到左边，大于等于pivot的元素归到右边
-        // i从第二个元素开始，j从第三个元素开始
-        // 用j来遍历元素，当jValue < pivot时，则j和i进行交换，直到j遍历结束
-        // 遍历结束后，再pivot和i位置元素进行交换
+        // i从preLeft开始，i表示从i开始和之前的节点都是小于pivot的
+        // j从第一个元素开始，用j来遍历元素，当jValue < pivot时，则j和i进行交换，直到j遍历结束
+        // 遍历结束后，再将表示pivot的第一个元素和i位置元素进行交换
         // 只有一个元素时不需要划分
         if preLeft == nil { return nil }
         if preLeft?.next != nil, preLeft?.next?.next == nil {
             return preLeft?.next
         }
+        
         let pivot = preLeft?.next
         let pivotValue = pivot!.val
-        var preI = pivot
-        var preJ = preI
         
+        var preI = preLeft
+        var preJ = pivot
+        
+        // 等价于 j !== pivot
         while preJ?.next !== afterRight {
             if let jValue = preJ?.next?.val, jValue < pivotValue {
-                // 交换i和j位置的节点
-                swapNode(&preI, &preJ)
+                // 先移动i，是之到达需要进行交换的元素位置
                 preI = preI?.next
+                // 交换i和j位置的节点
+                if preI !== preJ {
+                    swapNode(&preI, &preJ)
+                }
             }
             preJ = preJ?.next
         }
         // pivot与i进行交换
-        
+        var prePivot = preLeft
+        swapNode(&preI, &prePivot)
         return pivot
     }
     
     func quickSortList(_ preLeft: ListNode?, _ afterRight: ListNode?) {
-        if preLeft?.next?.next === afterRight || preLeft?.next === afterRight {
+        if preLeft?.next?.next === afterRight || //1个节点
+            preLeft?.next === afterRight { //0个节点
             return
         }
         let pivotNode = partitionList(preLeft, afterRight)
@@ -768,4 +786,3 @@ func exchange(_ nums: [Int]) -> [Int] {
     }
     return newNums
 }
-
