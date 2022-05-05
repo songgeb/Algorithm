@@ -221,11 +221,6 @@ class BinarySearch {
         return [-1, -1]
     }
     
-    /// https://leetcode-cn.com/problems/sparse-array-search-lcci/
-//    func findString(_ words: [String], _ s: String) -> Int {
-//
-//    }
-    
     /// https://leetcode-cn.com/problems/peak-index-in-a-mountain-array/
     func peakIndexInMountainArray(_ arr: [Int]) -> Int {
         // 找山峰的关键在于：计算完middleValue后，看一下middleIndex的左右的元素
@@ -420,6 +415,31 @@ class BinarySearch {
                 left = middleIndex + 1
             } else {
                 right = middleIndex
+            }
+        }
+        return -1
+    }
+    
+    /// https://leetcode-cn.com/problems/sqrtx/
+    func mySqrt(_ x: Int) -> Int {
+        if x == 0 || x == 1 { return x }
+        var low = 1
+        var high = x-1
+        while low <= high {
+            let mid = low + (high - low) >> 1
+            let mid2 = mid * mid
+            if mid2 == x {
+                return mid
+            } else if mid2 > x {
+                high = mid - 1
+            } else {
+                // mid2 < x
+                // 需要判定mid是不是最后一个使得mid2 < x
+                if (mid + 1) * (mid + 1) > x {
+                    return mid
+                } else {
+                    low = mid + 1
+                }
             }
         }
         return -1
