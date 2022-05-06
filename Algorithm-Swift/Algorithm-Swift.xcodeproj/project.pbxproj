@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CC1463D7282375640018D6BB /* Hash.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1463D6282375640018D6BB /* Hash.swift */; };
 		CC177EF127BB66F400AEB661 /* IP.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC177EF027BB66F400AEB661 /* IP.swift */; };
 		CC317D262374384D0027B8D4 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC317D252374384D0027B8D4 /* Tree.swift */; };
 		CC3DE81727D9EA8D009E5FCE /* Pattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3DE81627D9EA8D009E5FCE /* Pattern.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CC1463D6282375640018D6BB /* Hash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hash.swift; sourceTree = "<group>"; };
 		CC177EF027BB66F400AEB661 /* IP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IP.swift; sourceTree = "<group>"; };
 		CC317D252374384D0027B8D4 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		CC3DE81627D9EA8D009E5FCE /* Pattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pattern.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				CC177EF027BB66F400AEB661 /* IP.swift */,
 				CC3DE81627D9EA8D009E5FCE /* Pattern.swift */,
 				CCA89051281BCBC00097FC77 /* BinarySearch.swift */,
+				CC1463D6282375640018D6BB /* Hash.swift */,
 			);
 			path = "Algorithm-Swift";
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				CCD2A3A624893F870088D296 /* Bit.swift in Sources */,
 				CCD2A3A424879C990088D296 /* AArray.swift in Sources */,
 				CCD2A3A22484AA410088D296 /* DynamicProgramming.swift in Sources */,
+				CC1463D7282375640018D6BB /* Hash.swift in Sources */,
 				CC3E4458246A556A00F0CA85 /* Recursion.swift in Sources */,
 				CC8C131622FBD21900C484CD /* Sort.swift in Sources */,
 				CC3E44562469865600F0CA85 /* Stack.swift in Sources */,
