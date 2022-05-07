@@ -105,7 +105,8 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
     - 当要存储的数据超过最大缓存空间时，要删掉最远访问的数据，此时如果是数组，仍需要移动元素，让空出来的空间可以被复用
     - 数组不擅长元素移动，不如用链表
 - 但链表查数据（O(n)）始终不如数组通过下标（O(1)）快，有没有办法让单链表查数据更快些呢？
-  - 用散列表？？？？？
+
+![](https://raw.githubusercontent.com/songgeb/Algorithm/master/Resources/LRU_implementation.png)
 
 ## 栈
 
@@ -398,6 +399,9 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
 - 深度：结合生活中水深，从水平面往下，最上面是0
 - 层数：从上往下，最上面层数是1
  
+- 完全二叉树 vs 满二叉树
+ 
+ 
 ### 二叉树
 
 #### 遍历二叉树时间复杂度
@@ -421,7 +425,7 @@ void insertNodeWithSentinelN(const pNode head, int pos, int value)
  
 #### 二叉搜索树
  
-二叉查找树
+又名二叉查找树
  
 - 因为二叉查找树每个节点的左子树所有节点都比根节点小，右子树总比根节点大；因为这样方便查询数据，所以叫做二叉搜索、查找树
 - 当中序打印二叉搜索树时，输出的节点就是排好序的，所以也叫二叉排序树

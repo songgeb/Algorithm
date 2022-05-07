@@ -236,17 +236,52 @@ class Hash {
     // https://leetcode-cn.com/problems/intersection-of-two-arrays/
     func intersection(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
         var hashMap: [Int: Int] = [:]
-        var result: Set<Int> = []
+        var result: [Int] = []
         for num in nums1 {
             hashMap[num] = 1
         }
         
         for num in nums2 {
             if hashMap[num] != nil {
-                result.insert(num)
+                result.append(num)
+                hashMap[num] = nil
             }
         }
-        return Array(result)
+        return result
+    }
+    // https://leetcode-cn.com/problems/intersection-of-multiple-arrays/
+    func intersection1(_ nums: [[Int]]) -> [Int] {
+        // K个数组寻找数组的交集
+        // 两个数组找完交集后，继续跟下一个数组找交集，直到找到最终的交集
+        // 最后对交集进行排序
+        //
+        // 两个数组找交集的思路是
+        // 将数组1中元素放入哈希表中，遍历数组2，如果遇到哈希表中存在的，说明是重复数据，则放入到结果集中
+        
+        if nums.isEmpty { return [] }
+        func intersection(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
+            var hashMap: [Int: Int] = [:]
+            var result: [Int] = []
+            for num in nums1 {
+                hashMap[num] = 1
+            }
+            
+            for num in nums2 {
+                if hashMap[num] != nil {
+                    result.append(num)
+                    hashMap[num] = nil
+                }
+            }
+            return result
+        }
+        
+        var result: [Int] = nums[0]
+        for i in 1..<nums.count {
+            // 从第2个数组开始
+            result = intersection(result, nums[i])
+        }
+        
+        return result.sorted()
     }
     
     // https://leetcode-cn.com/problems/relative-sort-array/
@@ -281,6 +316,67 @@ class Hash {
                 for _ in 0..<count {
                     result.append(num)
                 }
+            }
+        }
+        return result
+    }
+    
+    // https://leetcode-cn.com/problems/sum-swap-lcci/
+    func findSwapValues(_ array1: [Int], _ array2: [Int]) -> [Int] {
+            // 暴力解法是，两层循环遍历两个数组，时间复杂度为O(m*n)
+            // 假设array1的和为x，array2的和为y，假设y-x=m
+            // 根据题意有另一个推导公式：x - a b b = y - b + a，其中a就是从array1中取出的一个值，b是array2中的一个值
+            // 两个公式进行化简为：a - b = m / 2
+            // 那么该问题就变成了两数之和/之差类似的问题了
+            // 借助哈希表，将array2中的元素放入哈希表中，遍历array1中的元素，看哈希表中是否有a - m/2的值存在，有就返回
+            // 该思路算法时间复杂度降为O(m+n)
+            var sum1 = 0
+            var sum2 = 0
+            for num in array1 {
+                sum1 += num
+            }
+            for num in array2 {
+                sum2 += num
+            }
+            let m = sum1 - sum2
+            if abs(m) % 2 != 0 { return [] }
+            let halfM = m / 2
+            var hashMap: [Int: Int] = [:]
+            for num in array2 {
+                hashMap[num] = 1
+            }
+            
+            for num in array1 {
+                let target = num - halfM
+                if hashMap[target] != nil {
+                    return [num, target]
+                }
+            }
+            return []
+        }
+    
+    /// https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/
+    func intersect(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
+        // 用nums1构造哈希表，存储[num, num次数]
+        // 遍历nums2，如果哈希表中存在值，则加入到结果集中，并且哈希表中该值减一，减到0时在移除
+        var result: [Int] = []
+        var hashMap: [Int: Int] = [:]
+        for num in nums1 {
+            if let count = hashMap[num] {
+                hashMap[num] = count + 1
+            } else {
+                hashMap[num] = 1
+            }
+        }
+        
+        for num in nums2 {
+            if let count = hashMap[num] {
+                if count == 1 {
+                    hashMap[num] = nil
+                } else {
+                    hashMap[num] = count - 1
+                }
+                result.append(num)
             }
         }
         return result
@@ -379,5 +475,98 @@ class MyHashMap {
     
     private func hashFunction(key: Int) -> Int {
         return key % MyHashMap.slotCount
+    }
+}
+
+// https://leetcode-cn.com/problems/lru-cache/
+class LRUCache {
+    // 双向链表节点
+    class DListNode {
+        var key: Int
+        var val: Int
+        var next: DListNode?
+        var pre: DListNode?
+        
+        init(key: Int, val: Int) {
+            self.key = key
+            self.val = val
+            next = nil
+            pre = nil
+        }
+    }
+    /// 链表最后一个节点，表示最近使用的节点，头结点表示最久使用的节点
+    private var listTail: DListNode?
+    private var dummyHead = DListNode(key: Int.min, val: Int.min)
+    /// [Key: Node]
+    private var data: [Int: DListNode] = [:]
+    /// 容量
+    private var capacity: Int
+    /// 当前缓存的元素数量
+    private var count: Int = 0
+    
+    // 要求get和put的时间复杂度都是O(1)
+    init(_ capacity: Int) {
+        self.capacity = capacity
+        listTail = dummyHead
+    }
+    
+    func get(_ key: Int) -> Int {
+        // check当前key是否存在，若不存在则直接返回。否则继续
+        // 获取到对应的node，将node放到链表最后，更新tail，返回结果
+        guard let node = data[key] else {
+            return -1
+        }
+        moveNodeToTail(node)
+        
+        return node.val
+    }
+    
+    func put(_ key: Int, _ value: Int) {
+        // check当前key是否已经存在，若存在则更新node对应的内容。否则继续
+        // 再check缓存有没有满
+        // 若没有满，创建node，将node插入到链表尾部，更新tail，数据插入到哈希表中，count+1
+        // 若满了，先删除头结点，删除哈希表中的对应key的内容。再执行上面的操作
+        if let node = data[key] {
+            node.val = value
+            moveNodeToTail(node)
+            return
+        }
+        
+        if count == capacity {
+            // 删除最久远的节点，即头结点
+            if let deleteNode = dummyHead.next {
+                // check是否需要更新tail
+                if deleteNode === listTail {
+                    listTail = deleteNode.pre
+                }
+                dummyHead.next = deleteNode.next
+                deleteNode.next?.pre = dummyHead
+                data[deleteNode.key] = nil
+                count -= 1
+            }
+        }
+        
+        // 添加新数据
+        let newNode = DListNode(key: key, val: value)
+        newNode.pre = listTail
+        listTail?.next = newNode
+        listTail = newNode
+        
+        data[key] = newNode
+        count += 1
+    }
+    /// 将节点移到链表尾部，更新使用顺序
+    private func moveNodeToTail(_ node: DListNode) {
+        if node === listTail { return }
+        
+        let nodeNext = node.next
+        node.pre?.next = nodeNext
+        nodeNext?.pre = node.pre
+        
+        node.pre = listTail
+        node.next = listTail?.next
+        listTail?.next = node
+        
+        listTail = node
     }
 }

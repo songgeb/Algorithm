@@ -188,4 +188,6 @@ let sss = "A man, a plan, a canal: Panama"
 //BinarySearch().searchRange([1,4], 4)
 //BinarySearch().peakIndexInMountainArray([24,69,100,99,79,78,67,36,26,19])
 //BinarySearch().search1([1,3], 3)
-BinarySearch().findString(["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""], "ball")
+
+Hash().findSwapValues([4, 1, 2, 1, 1, 2],
+                      [3, 6, 3, 3])
