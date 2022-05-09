@@ -633,3 +633,145 @@ func verifyPostorder(_ postorder: [Int]) -> Bool {
     
     return split(pStart: 0, pEnd: postorder.count - 1, inStart: 0, inEnd: inorder.count - 1)
 }
+
+class BinaryTree {
+    
+     public class Node {
+         public var val: Int
+         public var children: [Node]
+         public init(_ val: Int) {
+             self.val = val
+             self.children = []
+         }
+     }
+    /// https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+    func preorderTraversal(_ root: TreeNode?) -> [Int] {
+        // 递归实现前序遍历
+        // 递归结束条件，当遍历到空节点是返回
+        var result: [Int] = []
+        func preorder_r(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            result.append(node.val)
+            preorder_r(node.left)
+            preorder_r(node.right)
+        }
+        preorder_r(root)
+        return result
+    }
+    
+    /// https://leetcode-cn.com/problems/n-ary-tree-preorder-traversal/
+    func preorder(_ root: Node?) -> [Int] {
+        // n叉树的前序遍历
+        // 递归实现，先将当前根节点的值放入结果集，再从左到右，前序遍历每个子树，递归每一步都在做该事情
+        // 递归结束条件：到叶子节点时，即节点为nil时
+        var result: [Int] = []
+        func preorder_r(_ node: Node?) {
+            guard let node = node else {
+                return
+            }
+            result.append(node.val)
+            for index in 0..<node.children.count {
+                preorder_r(node.children[index])
+            }
+        }
+        preorder_r(root)
+        return result
+    }
+    
+    /// https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/
+    func levelOrder(_ root: TreeNode?) -> [Int] {
+        // 定义一个levelNodes，同一时间只用于存放一层树种的节点
+        // 每次循环都是遍历levelNodes中的节点，放入结果集中，同时更新levelNodes
+        // 直到levelNodes为空
+        guard let root = root else {
+            return []
+        }
+        var levelNodes = [root]
+        var result: [Int] = []
+        while !levelNodes.isEmpty {
+            var tmpLevelNodes: [TreeNode] = []
+            for index in 0..<levelNodes.count {
+                let curNode = levelNodes[index]
+                result.append(curNode.val)
+                if let leftNode = curNode.left {
+                    tmpLevelNodes.append(leftNode)
+                }
+                if let rightNode = curNode.right {
+                    tmpLevelNodes.append(rightNode)
+                }
+            }
+            levelNodes = tmpLevelNodes
+        }
+        return result
+    }
+    
+    /// https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/
+    func levelOrder1(_ root: TreeNode?) -> [[Int]] {
+        // 按照之字，按层打印二叉树
+        // 总体按层遍历思想不变，只是添加一个标记变量，表示下一层按照顺序or逆序往leveNodes中添加
+        guard let root = root else {
+            return []
+        }
+        var levelNodes = [root]
+        var result: [[Int]] = []
+        var isReversedOrder = true //
+        while !levelNodes.isEmpty {
+            // 为了满足之字行打印，有一个可以提高性能的方法
+            // 使用栈结构，来存储下一层节点，每一次打印循环中，模拟栈的pop操作
+            var tmpLevelNodes: [TreeNode] = [] // 下一行要存储的节点
+            var tmpResult: [Int] = []
+            
+            for index in stride(from: levelNodes.count - 1, to: -1, by: -1) {
+                let curNode = levelNodes[index]
+                // 当前节点放入结果集
+                tmpResult.append(curNode.val)
+                // 下一层节点按照规定顺序进行存放
+                if isReversedOrder {
+                    if let ln = curNode.left { tmpLevelNodes.append(ln) }
+                    if let rn = curNode.right { tmpLevelNodes.append(rn) }
+                } else {
+                    if let rn = curNode.right { tmpLevelNodes.append(rn) }
+                    if let ln = curNode.left { tmpLevelNodes.append(ln) }
+                }
+            }
+            isReversedOrder = !isReversedOrder
+            result.append(tmpResult)
+            levelNodes = tmpLevelNodes
+        }
+        return result
+    }
+    
+    /// https://leetcode-cn.com/problems/find-bottom-left-tree-value/
+    func findBottomLeftValue(_ root: TreeNode?) -> Int {
+            // 可以递归实现,也可以非递归，通过按层遍历来实现
+            // 先用递归实现下
+            // 找树的最底层最左侧的节点，可以分解为：寻找根节点左子树中的最底左节点，右子树中的最底左节点，然后决断出两个节点哪个更合适。至于哪个更合适就看两个点的深度谁更大
+            // 递归停止条件：叶子节点
+
+            // 返回值第一个为value，第二个为height
+            func findBottomLeftValue_r(_ node: TreeNode?, _ height: Int) -> (Int, Int)? {
+                guard let node = node else {
+                    return nil
+                }
+                let left = findBottomLeftValue_r(node.left, height+1)
+                let right = findBottomLeftValue_r(node.right, height+1)
+                
+                if let left = left, let right = right {
+                    return left.1 >= right.1 ? left : right
+                } else if let left = left {
+                    return left
+                } else if let right = right {
+                    return right
+                } else {
+                    return (node.val, height)
+                }
+            }
+            if let x = findBottomLeftValue_r(root, 0) {
+                return x.0
+            } else {
+                return -1
+            }
+        }
+}
