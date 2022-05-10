@@ -635,7 +635,7 @@ func verifyPostorder(_ postorder: [Int]) -> Bool {
 }
 
 class BinaryTree {
-    
+    /// 用于多叉树的节点结构
      public class Node {
          public var val: Int
          public var children: [Node]
@@ -774,4 +774,315 @@ class BinaryTree {
                 return -1
             }
         }
+    /// https://leetcode.cn/problems/maximum-depth-of-binary-tree/
+    func maxDepth(_ root: TreeNode?) -> Int {
+        // 可以用递归实现
+        // 最大深度问题可以分解为，root的左右子树最大深度更大的值+1；
+        // root的子树的最大深度同样可以拆分成类似子问题
+        // 递归结束条件，当到达叶子节点时，由于叶子节点没有子节点，所有最大深度就为1，直接返回即可
+        guard let root = root else {
+            return 0
+        }
+        if root.left == nil && root.right == nil {
+            return 1
+        }
+        
+        return max(maxDepth(root.left), maxDepth(root.right)) + 1
+    }
+    
+    /// https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/
+    func maxDepth1(_ root: Node?) -> Int {
+        // 类似上面问题的递归思路
+        guard let root = root else {
+            return 0
+        }
+        
+        if root.children.isEmpty {
+            return 1
+        }
+        
+        var maxDepth = 0
+        for child in root.children {
+            let depth = maxDepth1(child)
+            if depth > maxDepth {
+                maxDepth = depth
+            }
+        }
+        return maxDepth + 1
+    }
+    
+    /// https://leetcode.cn/problems/ping-heng-er-cha-shu-lcof/
+    func isBalanced(_ root: TreeNode?) -> Bool {
+        // 尝试一下递归思路能不能解决
+        // 如果root的左子树和右子树之间的深度（最大深度）之差小于等于1，则说明是平衡二叉树
+        // 如果root的左子树是平衡二叉树，右子树也是平衡二叉树，则root也是平衡二叉树
+        // 如果root的其中一个子树不是平衡二叉树，则root也不是平衡二叉树
+        // 经过分析，可以用递归
+        // 每次递归做这样的事情：如果左右子树
+        
+        enum Status {
+            case balanced(Int) ///< 表示平衡的
+            case notBalanced   ///< 不平衡
+        }
+        
+        func isBalanced_r(_ node: TreeNode?) -> Status {
+            // 递归的判断node是不是平衡的
+            // 核心递归的工作：
+            // 递归结束条件，当遇到叶子节点时，就是平衡的，而且深度是1
+            guard let node = node else {
+                return .balanced(0)
+            }
+            
+            if node.left == nil && node.right == nil {
+                return .balanced(1)
+            }
+            
+            let leftTreeStatus = isBalanced_r(node.left)
+            let rightTreeStatus = isBalanced_r(node.right)
+            
+            switch (leftTreeStatus, rightTreeStatus) {
+            case (.balanced(let leftDepth), .balanced(let rightDepth)):
+                if abs(leftDepth - rightDepth) <= 1 {
+                    return .balanced(max(leftDepth, rightDepth) + 1)
+                } else {
+                    return .notBalanced
+                }
+            default:
+                return .notBalanced
+            }
+        }
+        
+        let status = isBalanced_r(root)
+        switch status {
+        case .balanced:
+            return true
+        case .notBalanced:
+            return false
+        }
+    }
+    
+    /// https://leetcode.cn/problems/balanced-binary-tree/
+    func isBalanced1(_ root: TreeNode?) -> Bool {
+        // 通过递归的求解树的高度，过程中判断一下高度是否满足平衡二叉树的条件，得到结果
+        // 求解树的高度，可以转化为子问题，max(左子树的高度，右子树的高度)+1
+        // 递归结束条件：当node==nil时，高度为0
+        var isBalanced = true
+        
+        func depth(_ node: TreeNode?) -> Int {
+            guard let node = node else {
+                return 0
+            }
+            
+            if !isBalanced { return 0 }
+            let leftDepth = depth(node.left)
+            let rightDepth = depth(node.right)
+            
+            if abs(leftDepth - rightDepth) > 1 {
+                isBalanced = false
+            }
+            
+            return max(leftDepth, rightDepth) + 1
+        }
+        
+        depth(root)
+        return isBalanced
+    }
+    
+    /// https://leetcode.cn/problems/merge-two-binary-trees/
+    func mergeTrees(_ root1: TreeNode?, _ root2: TreeNode?) -> TreeNode? {
+        // 递归思路
+        // 递归核心工作：两个节点的左子树进行合并，两个节点的右子树进行合并；完事后，两个根节点进行合并
+        // 递归结束条件：若两个节点都为空，则返回空；若其中一个为空，则返回另一个
+        
+        func mergeTrees(_ node1: TreeNode?, _ node2: TreeNode?) -> TreeNode? {
+            if node1 == nil, node2 == nil {
+                return nil
+            } else if node1 == nil {
+                return node2
+            } else if node2 == nil {
+                return node1
+            }
+            
+            let leftMergedTree = mergeTrees(node1?.left, node2?.left)
+            let rightMergedTree = mergeTrees(node1?.right, node2?.right)
+            
+            let newTreeNode = TreeNode(node1!.val + node2!.val)
+            newTreeNode.left = leftMergedTree
+            newTreeNode.right = rightMergedTree
+            
+            return newTreeNode
+        }
+        
+        return mergeTrees(root1, root2)
+    }
+    
+    /// https://leetcode.cn/problems/symmetric-tree/
+    func isSymmetric(_ root: TreeNode?) -> Bool {
+        // 对称二叉树
+        // 核心思想：该问题难点在于，将一棵树是否对称的问题，转为两棵树是否对称
+        // 如果root的左右子树是对称的，那总体就是对称的
+        // 那如何判断两棵树a、b是否对称呢
+        // 这就可以递归解决了：如果a的左子树与b的右子树对称，且a右子树与b的左子树对称，且a和b的根节点值相等
+        // 递归结束条件：a和b都为空，则返回true；a或b为空，则返回false
+        func isSymmetric_r(_ node1: TreeNode?, _ node2: TreeNode?) -> Bool {
+            if node1 == nil, node2 == nil {
+                return true
+            } else if node1 == nil || node2 == nil {
+                return false
+            }
+            
+            let isLeftTreeSymmetric = isSymmetric_r(node1?.left, node2?.right)
+            let isRightTreeSymmetric = isSymmetric_r(node1?.right, node2?.left)
+            if isLeftTreeSymmetric && isRightTreeSymmetric && node1!.val == node2!.val {
+                return true
+            }
+            return false
+        }
+        
+        guard let root = root else {
+            return true
+        }
+        return isSymmetric_r(root.left, root.right)
+    }
+    
+    /// https://leetcode.cn/problems/validate-binary-search-tree/
+    func isValidBST(_ root: TreeNode?) -> Bool {
+        // 递归思想
+        // 该问题核心点在于，如果只是左右子树是BST的话，没办法推导出整棵树是BST
+        // 左右子树必须是BST，同时当前根节点的值要大于左子树的最大值，同时小于右子树的最小值餐才可以
+        // 具体的实现代码如下：
+        // 记录左右子树递归过程中（两个变量），左子树的最大值和右子树的最小值
+        // 递归结束的条件：当递归到叶子节点时，认为是有效的BST，同时更新
+        /// 该方法做两件事情，判断node是否为BST，同时更新min和max，min和max分别表示node所表示的树中最小最大值
+        typealias TreeInfo = (isBST: Bool, max:Int, min: Int)
+        func isValidBST_r(_ node: TreeNode?) -> TreeInfo {
+            guard let node = node else {
+                return (true, Int.min, Int.max)
+            }
+            if node.left == nil && node.right == nil {
+                return (true, node.val, node.val)
+            }
+            
+            let leftInfo = isValidBST_r(node.left)
+            // 此处只用到左子树中的最大值，即max
+            if !leftInfo.isBST || node.val <= leftInfo.max {
+                return (false, Int.max, Int.min)
+            }
+            
+            let rightInfo = isValidBST_r(node.right)
+            // 此处只用到右子树中的最小值，即min
+            if !rightInfo.isBST || node.val >= rightInfo.min {
+                return (false, Int.max, Int.min)
+            }
+            return (true, max(rightInfo.max, node.val), min(leftInfo.min, node.val))
+        }
+        return isValidBST_r(root).isBST
+    }
+    /// https://leetcode.cn/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/
+    func kthLargest(_ root: TreeNode?, _ k: Int) -> Int {
+        // 按照中序遍历，得到一个排好序的数组，直接取值
+        var count = 0 // 记录元素个数
+        var array: [Int] = []
+        func inorder(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            inorder(node.left)
+            array.append(node.val)
+            count += 1
+            inorder(node.right)
+        }
+        
+        inorder(root)
+        if count == 0 { return -1 }
+        return array[count-k]
+    }
+    /// https://leetcode.cn/problems/convert-bst-to-greater-tree/
+    func convertBST(_ root: TreeNode?) -> TreeNode? {
+        // 中序遍历树，得到sum
+        // 有个变量记录pre值，默认为0
+        // 然后再中序遍历一遍进行赋值，node.val = sum - pre
+        guard let root = root else {
+            return root
+        }
+
+        var sum = 0
+        var pre = 0
+        
+        func inorder_sum(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            inorder_sum(node.left)
+            sum += node.val
+            inorder_sum(node.right)
+        }
+        
+        inorder_sum(root)
+        
+        func inorder_assignment(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            inorder_assignment(node.left)
+            node.val = sum - pre
+            pre += node.val
+            inorder_assignment(node.right)
+        }
+        inorder_assignment(root)
+        return root
+    }
+    
+    /// https://leetcode.cn/problems/binary-search-tree-to-greater-sum-tree/
+    func bstToGst(_ root: TreeNode?) -> TreeNode? {
+        // 和上题目一样，本次使用更高效的方式
+        // bst中序遍历后比如是这样[1,2,3,4,5]
+        // Gst也就是结果树对应的中序遍历是[15, 14, 12, 9, 5]
+        // 其实可以通过右子树->根节点->左子树的反向中序遍历顺序来遍历，一边遍历一遍来更新节点值
+        // 比如更新到第一个时，将值更新为bst[4]，更新到第二个就更新为bst[4]+bst[3]
+        
+        var sum = 0
+        func reverseInOrder(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            reverseInOrder(node.right)
+            sum += node.val
+            node.val = sum
+            reverseInOrder(node.left)
+        }
+        reverseInOrder(root)
+        return root
+    }
+    
+    /// https://leetcode.cn/problems/P5rCT8/
+    func inorderSuccessor(_ root: TreeNode?, _ p: TreeNode?) -> TreeNode? {
+        // 递归实现
+        // 添加一个全局变量，控制读取p下一个节点
+        var isComming = false
+        var finished = false
+        var targetNode: TreeNode?
+        func findSuccessorInorder(_ node: TreeNode?) {
+            if node == nil {
+                return
+            }
+            
+            findSuccessorInorder(node?.left)
+            if finished { return } // finished写在这一行很关键
+            
+            if isComming {
+                targetNode = node
+                finished = true
+                return
+            }
+            
+            if node === p {
+                isComming = true
+            }
+            
+            findSuccessorInorder(node?.right)
+        }
+        findSuccessorInorder(root)
+        return targetNode
+    }
 }
