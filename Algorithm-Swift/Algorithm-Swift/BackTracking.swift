@@ -608,3 +608,148 @@ func check2() {
     print(counter)
 }
 
+class BackTracking {
+    
+    /// https://leetcode.cn/problems/eight-queens-lcci/
+    func solveNQueens(_ n: Int) -> [[String]] {
+        // N皇后问题，经典回溯问题，多阶段决策
+        // 每次决定当前行需要往哪里放棋子
+        // 递归函数的参数有，当前进展到第几行了--row；当前的结果集是啥，即二维数组表示的棋盘
+        //
+        var result: [[String]] = []
+        // 可以复用的棋盘
+        var chars: [[Character]] = Array(repeating: Array(repeating: ".", count: n), count: n)
+        
+        func isOK(row: Int, col: Int, chars:[[Character]]) -> Bool {
+            // check 列、左上对角线、右上对角线
+            // 列方向
+            for i in 0..<row {
+                if chars[i][col] == "Q" {
+                    return false
+                }
+            }
+            
+            // 左上对角线
+            var i = row - 1
+            var j = col - 1
+            while i >= 0, j >= 0 {
+                if chars[i][j] == "Q" { return false }
+                i -= 1
+                j -= 1
+            }
+            
+            // 右上对角线
+            i = row - 1
+            j = col + 1
+            while i >= 0, j < n {
+                if chars[i][j] == "Q" { return false }
+                i -= 1
+                j += 1
+            }
+            return true
+        }
+        
+        func backtracking(row: Int, chars: inout [[Character]]) {
+            if row == n {
+                var tmpResult: [String] = []
+                for i in 0..<n {
+                    tmpResult.append(String(chars[i]))
+                }
+                result.append(tmpResult)
+            }
+            
+            // n个位置有可能防止棋子
+            for i in 0..<n {
+                if isOK(row: row, col: i, chars: chars) {
+                    chars[row][i] = "Q"
+                    backtracking(row: row + 1, chars: &chars)
+                    chars[row][i] = "."
+                }
+            }
+        }
+        backtracking(row: 0, chars: &chars)
+        return result
+    }
+    /// https://leetcode.cn/problems/sudoku-solver/
+    func solveSudoku(_ board: inout [[Character]]) {
+        // 该问题最关键的是，给定一个[row, col]，如何限定出这个元素所在的数独3*3区间
+        // 回溯结束的条件是有两个，1是发现已经过了最后一行，说明所有的空格子都填满了，问题解找到了，这是问题的解；2是任意一行在决策时，发现没有填满就可以退出了。
+        var solved = false
+        
+        func isOK(row: Int, col: Int, value: Character) -> Bool {
+            // 所在行不能有与value相等的值
+            for j in 0..<9 {
+                if board[row][j] == value { return false }
+            }
+            // 所在列不能有与value相等的值
+            for i in 0..<9 {
+                if board[i][col] == value { return false }
+            }
+            // row、col所在的3*3区域，不能有相等的值
+            var minI = 0
+            var minJ = 0
+            var maxI = 0
+            var maxJ = 0
+            if row > 5 {
+                minI = 6
+            } else if row > 2 {
+                minI = 3
+            } else {
+                minI = 0
+            }
+            maxI = minI + 2
+            
+            if col > 5 {
+                minJ = 6
+            } else if col > 2 {
+                minJ = 3
+            } else {
+                minJ = 0
+            }
+            maxJ = minJ + 2
+            
+            for i in minI...maxI {
+                for j in minJ...maxJ {
+                    if board[i][j] == value { return false }
+                }
+            }
+            return true
+        }
+        
+        func backtracking(row: Int, col: Int) {
+            // 先写核心骨架代码
+            // row和col表示上次填写内容的地方，本次依次为起点进行新的填写
+            // 算法总体思想是，将棋盘中的每个有空格的地方都看做回溯算法的一个决策阶段
+            // 找到一个未填充的地方
+            var i = row
+            var j = col
+            while i < 9, j < 9, board[i][j] != "." {
+                if j == 8 {
+                    j = 0
+                    i += 1
+                } else {
+                    j += 1
+                }
+            }
+            
+            if i >= 9 || j >= 9 {
+                // 已经没有需要填充的格子了，说明已经成功完成填充
+                solved = true
+                return
+            }
+            
+            // 为(i, j)位置填充元素
+            for guess in 1...9 {
+                let char = Character("\(guess)")
+                if isOK(row: i, col: j, value: char) {
+                    board[i][j] = char
+                    backtracking(row: i, col: j)
+                    if solved { return }
+                    board[i][j] = "."
+                }
+            }
+        }
+        backtracking(row: 0, col: 0)
+    }
+}
+
