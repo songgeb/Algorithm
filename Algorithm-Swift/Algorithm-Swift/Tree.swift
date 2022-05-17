@@ -1085,4 +1085,355 @@ class BinaryTree {
         findSuccessorInorder(root)
         return targetNode
     }
+    
+    /// https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+    func lowestCommonAncestor(_ root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) -> TreeNode? {
+        // 递归思路
+        // 将问题转化为，在一个树中寻找p或q的数量，如果左子树中p或q的数量为1，右子树中p或q的数量为1，则说明当前节点为最近公共祖先节点
+        // 每个节点都是做如上的工作
+        // 递归结束条件：node为空
+        var targetNode: TreeNode? = nil
+        func commonAncesstor(_ node: TreeNode?) -> Int {
+            guard let node = node else {
+                return 0
+            }
+            
+            let leftPQCount = commonAncesstor(node.left)
+            if targetNode != nil { return 2 }
+            let rightPQCount = commonAncesstor(node.right)
+            if targetNode != nil { return 2 }
+            
+            var count = leftPQCount + rightPQCount
+            if node === p || node === q {
+                count += 1
+            }
+            
+            if leftPQCount == 1 && rightPQCount == 1 {
+                // 找到最近公共最先了，即为node
+                targetNode = node
+            } else if (node === p || node === q) && (leftPQCount == 1 || rightPQCount == 1) {
+                // 也找到公共最先了，即为node
+                targetNode = node
+            }
+            
+            return count
+        }
+        
+        commonAncesstor(root)
+        return targetNode
+    }
+    /// https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
+    func flatten(_ root: TreeNode?) {
+        // 递归实现
+        // 递归的核心工作：将左子树和右子树和根节点搞成一个合理的链表
+        // 完成核心工作，需要返回链表的尾结点
+        // 递归结束条件：遇到叶子节点就可以停了
+        if root == nil { return }
+        func flatten_r(_ node: TreeNode?) -> TreeNode? {
+            guard let node = node else {
+                return nil
+            }
+
+            if node.left == nil && node.right == nil {
+                return node
+            }
+            
+            let leftTail = flatten_r(node.left)
+            let rightTail = flatten_r(node.right)
+            
+            if leftTail == nil {
+                return rightTail
+            }
+            
+            let tmpRightHead = node.right
+            node.right = node.left
+            leftTail?.right = tmpRightHead
+            
+            node.left = nil
+            return rightTail ?? leftTail
+        }
+        flatten_r(root)
+    }
+    /// https://leetcode.cn/problems/binode-lcci/
+    func convertBiNode(_ root: TreeNode?) -> TreeNode? {
+        // 递归实现
+        // 按照中序遍历的顺序，重组树成为链表
+        typealias ListInfo = (head: TreeNode?, tail: TreeNode?)
+        func convert_r(_ node: TreeNode?) -> ListInfo {
+            if node?.left == nil && node?.right == nil {
+                return (node, node)
+            }
+            
+            let leftListInfo = convert_r(node?.left)
+            let rightListInfo = convert_r(node?.right)
+            
+            // 关联成链表
+            leftListInfo.tail?.right = node
+            node?.right = rightListInfo.head
+            // 更新头和尾
+            let head = leftListInfo.head ?? node
+            let tail = rightListInfo.tail ?? node
+            // 数据清空
+            node?.left = nil
+            return (head, tail)
+        }
+        let listInfo = convert_r(root)
+        return listInfo.head
+    }
+    
+    /// https://leetcode.cn/problems/list-of-depth-lcci/
+    func listOfDepth(_ tree: TreeNode?) -> [ListNode?] {
+        // 按层遍历树
+        // 一个数组（队列），放当前层要遍历的节点
+        // 外层循环，只要数组不空就循环
+        // 内层循环中，创建一个临时数组，放置下一层节点
+        // 内层循环中，核心工作有2：填充下一层节点的数组；尾插法构建链表
+        // 尾插法构建链表的关键：一个假的头结点dummyNode和一个tail，构建完的链表放到结果数组中
+        guard let root = tree else {
+            return []
+        }
+        var result: [ListNode?] = []
+        var nodes: [TreeNode] = [root]
+        while !nodes.isEmpty {
+            var tmpNodes: [TreeNode] = []
+            let dummyHead = ListNode(-1)
+            var tail: ListNode? = dummyHead
+            
+            for node in nodes {
+                if let leftNode = node.left {
+                    tmpNodes.append(leftNode)
+                }
+                if let rightNode = node.right {
+                    tmpNodes.append(rightNode)
+                }
+                
+                let newNode = ListNode(node.val)
+                tail?.next = newNode
+                tail = newNode
+            }
+            nodes = tmpNodes
+            result.append(dummyHead.next)
+        }
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+    func buildTree(_ preorder: [Int], _ inorder: [Int]) -> TreeNode? {
+        // 递归思想
+        // 总问题是：知道整个树的前序和中序，构建整棵树
+        // 如果已经递归的构建好了根节点的左子树和右子树，如何构建整棵树呢？
+        // 为根节点创建一个节点，然后直接关联左右子树即可
+        // 递归结束条件：当前序和中序已经不存在时，直接返回
+        // 递归方法声明：参数是表示前序（起始和结束）、中序（起始和结束信息）,方法返回基于前面前序和中序顺序构建好的树的根节点
+        // 递归方法核心逻辑实现
+        // 先序第一个元素肯定是根节点
+        // 去中序数组中找到该根节点，左面的为左子树的中序序列，右面为右子树的中序序列
+        // 如何找到左子树和右子树的前序序列呢
+        // 前面可以知道左子树和右子树有多少个节点，那在前序序列中，就根据数量就可以确定左右子树的前序序列
+        
+        func buildTree_r(_ preStart: Int, _ preEnd: Int, _ inStart: Int, _ inEnd: Int) -> TreeNode? {
+            if preStart > preEnd || inStart > inEnd {
+                return nil
+            }
+            if preStart == preEnd && inStart == inEnd {
+                return TreeNode(preorder[preStart])
+            }
+            
+            let rootValue = preorder[preStart]
+            var inP = inStart
+            while inorder[inP] != rootValue {
+                inP += 1
+            }
+            // [inStart, inP - 1]为左子树中序序列
+            // [inP+1, inEnd]为右子树中序序列
+            // 根据前面可以知道左子树的元素个数--inP-inStart，右子树个数inEnd-inP
+            // 所以左子树的前序序列为，[preStart+1, preStart+(inP-inStart)]
+            // 右子树前序序列为，[preStart+(inP-inStart)+1, preEnd]
+            let leftRoot = buildTree_r(preStart + 1, preStart+(inP-inStart), inStart, inP-1)
+            let rightRoot = buildTree_r(preStart+(inP-inStart)+1, preEnd, inP+1, inEnd)
+            let root = TreeNode(rootValue)
+            root.left = leftRoot
+            root.right = rightRoot
+            return root
+        }
+        return buildTree_r(0, preorder.count - 1, 0, inorder.count - 1)
+    }
+    
+    /// https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/
+    func constructFromPrePost(_ preorder: [Int], _ postorder: [Int]) -> TreeNode? {
+        // 总体思路与上面题目类似
+        // 核心区别点在于，如何限定左子树和右子树的前序和后序序列
+        // 用先序序列中的第二个元素，在后序序列中寻找该元素假设位置为m,[postStart, m]为左子树的元素（当没有左子树的时候，那就是右子树）
+        // 右子树的后序序列区间是--[m+1, posterlast-1]
+        // 左右子树的先序序列仍然可以通过数量来选择
+        
+        func construct_r(_ preStart: Int, _ preEnd: Int, _ poStart: Int, _ poEnd: Int) -> TreeNode? {
+            if preStart > preEnd || poStart > poEnd {
+                return nil
+            }
+            
+            if preStart == preEnd, poStart == poEnd {
+                return TreeNode(preorder[preStart])
+            }
+            
+            // preorder中的第二个
+            let rootValue = preorder[preStart]
+            let subValue = preorder[preStart+1]
+            var postorderIndex = poStart
+            while postorder[postorderIndex] != subValue {
+                postorderIndex += 1
+            }
+            
+            let leftRoot = construct_r(preStart+1, preStart+1+postorderIndex-poStart, poStart, postorderIndex)
+            let rightRoot = construct_r(preStart+2+postorderIndex-poStart, preEnd, postorderIndex+1, poEnd-1)
+            let root = TreeNode(rootValue)
+            root.left = leftRoot
+            root.right = rightRoot
+            return root
+        }
+        return construct_r(0, preorder.count-1, 0, postorder.count-1)
+    }
+    
+    /// https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+    func buildTree1(_ inorder: [Int], _ postorder: [Int]) -> TreeNode? {
+        // 递归的核心工作
+        // 从后序中找到最后一个，则是当前root
+        // 然后到中序中寻找该元素，左边的是左子树的，右边的是右子树的
+        
+        func buildTree_r(_ inI: Int, _ inJ: Int, _ postI: Int, _ postJ: Int) -> TreeNode? {
+            if inI > inJ || postI > postJ {
+                return nil
+            }
+            
+            let rootValue = postorder[postJ]
+            var p = inI
+            while inorder[p] != rootValue {
+                p += 1
+            }
+            
+            // 中序区间，左子树[inI, p-1]，右子树[p+1, intJ]
+            // 后序区间，左子树[postI, postJ-inJ+p-1]，右子树[postJ-inJ+p,postJ-1]
+            let leftRoot = buildTree_r(inI, p-1, postI, postJ-inJ+p-1)
+            let rightRoot = buildTree_r(p+1, inJ, postJ-inJ+p, postJ-1)
+            let root = TreeNode(rootValue)
+            root.left = leftRoot
+            root.right = rightRoot
+            return root
+        }
+        return buildTree_r(0, inorder.count-1, 0, postorder.count-1)
+    }
+    
+    /// https://leetcode.cn/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/
+    func verifyPostorder(_ postorder: [Int]) -> Bool {
+        // 此题有点麻烦，且复杂度还挺高
+        // 仍然是递归思想
+        // 递归核心是：根据这个后序序列，将所有可能的左子树、右子树可能都列出来，然后一个个判断是否有可能是搜索二叉树
+        // 以[1,6,3,2,5]这个序列举例
+        // 5肯定是根节点，那左子树可能是[]、[1]、[1,6]。。。直到[1,6,3,2]等情况
+        // 整棵树是二叉搜索树的充要条件是，左右子树都是二叉搜索树，且左子树的最大值小于5，右子树最小值大于5
+        // 递归核心工作也就明确了：
+        // 1. 找出所有可能的左右子树后序序列
+        // 2. 如果左右子树中的最值不满足条件，直接返回false
+        // 3. 递归的判断左右子树是否满足1、2的条件
+        func verify_r(_ order: [Int]) -> Bool {
+            if order.isEmpty || order.count == 1 { return true }
+            // 左子树和右子树有order.count中情况
+            let count = order.count
+            let rootValue = order[count-1]
+            let leftTreeEndIndex = count - 2
+            for index in -1...leftTreeEndIndex {
+                var leftNodes: [Int] = []
+                var rightNodes: [Int] = []
+                var leftMax = Int.min
+                var rightMin = Int.max
+                
+                var p = 0
+                while p <= index {
+                    if order[p] > leftMax {
+                        leftMax = order[p]
+                    }
+                    leftNodes.append(order[p])
+                    p += 1
+                }
+                
+                while p <= count - 2 {
+                    if order[p] < rightMin {
+                        rightMin = order[p]
+                    }
+                    rightNodes.append(order[p])
+                    p += 1
+                }
+                
+                if rootValue < leftMax || rootValue > rightMin {
+                    continue
+                }
+                
+                if verify_r(leftNodes), verify_r(rightNodes) {
+                    return true
+                }
+            }
+            return false
+        }
+        return verify_r(postorder)
+    }
+    
+    /// https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/
+    func pathSum(_ root: TreeNode?, _ target: Int) -> [[Int]] {
+        // 递归思想来做
+        // 用先序（或者任意一个顺序）进行递归遍历树
+        // 有一个总结果集，开始递归时创建一个子结果集；每次递归进入时往子结果集中添加元素，出来时移除；还要有一个sum用来记录当前子结果集所有元素之和
+        // 递归结束条件
+        var sum = 0
+        var result: [[Int]] = []
+        var tmpResult: [Int] = []
+        func pathSum_r(_ node: TreeNode?) {
+            guard let node = node else {
+                return
+            }
+            tmpResult.append(node.val)
+            sum += node.val
+            if node.left == nil, node.right == nil, sum == target {
+                result.append(tmpResult)
+            }
+            pathSum_r(node.left)
+            pathSum_r(node.right)
+            sum -= node.val
+            tmpResult.removeLast()
+        }
+        pathSum_r(root)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/diameter-of-binary-tree/
+    func diameterOfBinaryTree(_ root: TreeNode?) -> Int {
+        // 该问题难点在于，很难直接求解问题，需要进行转化
+        // 直径问题可以转化为，如果直到经过每个节点的路径最大长度，那最大的那个路径长度即为树的直径
+        // 如何求解每个节点的路径最大长度
+        // 可以分解为求解左右子树的最大深度
+        // 注意路径长度和树的最大深度是不同的概念，树的深度指的是节点的个数，路径的长度则是边的个数
+        // 边的个数 = 节点的个数 - 1
+        // 所以每个节点的最大长度等于，每个节点的左子树最大深度+右子树的最大深度
+        // 那问题转化为求解每个节点的最大深度
+        // 在编写代码时，建议，将最大深度的逻辑和最大长度的逻辑分离开，逻辑清晰，不容易出错
+        // 根节点的最大深度=max(左子树节点最大深度，右子树最大深度) + 1
+        // 递归结束条件，当遇到空节点时，返回深度为0
+        var diameter = Int.min
+        @discardableResult
+        func maxDepath(_ node: TreeNode?) -> Int {
+            guard let node = node else {
+                return 0
+            }
+            let leftMaxDepath = maxDepath(node.left)
+            let rightMaxDepath = maxDepath(node.right)
+            
+            let length = leftMaxDepath + rightMaxDepath
+            if length > diameter {
+                diameter = length
+            }
+            
+            return max(leftMaxDepath, rightMaxDepath) + 1
+        }
+        maxDepath(root)
+        return diameter
+    }
 }
