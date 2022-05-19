@@ -1061,5 +1061,214 @@ class BackTracking {
         backtracking(step: 0, left: target, path: &path)
         return result
     }
+    
+    /// https://leetcode.cn/problems/combination-sum-iii/
+    func combinationSum3(_ k: Int, _ n: Int) -> [[Int]] {
+        // 分为k个阶段
+        // 每个阶段的可选列表需要仔细check下
+        // 可选列表的起点是path.last + 1，重点是min(left, 9)
+        // 递归结束条件，到达第k阶段同时left为0、left为0或达到第k阶段
+        
+        var result: [[Int]] = []
+        var path: [Int] = []
+        func backtracking(step: Int, left: Int, path: inout [Int]) {
+            if step == k, left == 0 {
+                result.append(path)
+                return
+            }
+            
+            if step == k || left == 0 {
+                return
+            }
+            
+            let start = path.last != nil ? path.last! + 1 : 1
+            let end = min(left, 9)
+            if start > end { return }
+            
+            for candidate in start...end {
+                path.append(candidate)
+                backtracking(step: step + 1, left: left - candidate, path: &path)
+                path.removeLast()
+            }
+        }
+        backtracking(step: 0, left: n, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/palindrome-partitioning/
+    func partition(_ s: String) -> [[String]] {
+        // 难点在于需要转化为多阶段决策模型
+        // 其实该题目描述并不清晰，比如描述中，对于输入"aab"，输出是[["a","a","b"],["aa","b"]]，不明白输出中为什么两个数组中都有"b"
+        // 以"aab"为例，首先把"a"单拎出来，这其中所有的组合情况放到一个子结果集中，比如[a,a,b]
+        // 再将"aa"单拎出来，后面所有的组合也放到一个子结果集
+        // 再将"aab"单拎出来，后面所有的组合放到一个子结果集
+        
+        // 下面来分一下阶段
+        // 有多少阶段？是s的长度
+        // 每个阶段的可选列表空间，[index, index], [index, index+1]...[index, n-1]
+        // 每个阶段的核心工作，如果发现可选列表中的子串是回文，则加入到path中
+        // 回溯结束条件是，阶段结束
+        
+        var result: [[String]] = []
+        var path: [String] = []
+        let sLength = s.count
+        
+        func isPalindroom(_ string: Substring) -> Bool {
+            // 进行回文判断
+            // 双指针判断
+            var pIndex = string.startIndex
+            var qIndex = string.index(string.endIndex, offsetBy: -1)
+            while pIndex < qIndex {
+                if string[pIndex] != string[qIndex] {
+                    return false
+                }
+                pIndex = string.index(pIndex, offsetBy: 1)
+                qIndex = string.index(qIndex, offsetBy: -1)
+            }
+            return true
+        }
+        
+        func backtracking(step: Int, path: inout [String]) {
+            if step == sLength {
+                result.append(path)
+                return
+            }
+            
+            for index in step..<sLength {
+                let delta = index - step
+                let start = s.index(s.startIndex, offsetBy: step)
+                let end = s.index(start, offsetBy: delta)
+                let subString = s[start...end]
+                let isPalindroom = isPalindroom(subString)
+                if isPalindroom {
+                    path.append(String(subString))
+                    backtracking(step: step + delta + 1, path: &path)
+                    path.removeLast()
+                }
+            }
+        }
+        backtracking(step: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/generate-parentheses/
+    func generateParenthesis(_ n: Int) -> [String] {
+        // 在2n个空间里填左右括号
+        // 填括号时并不是随意填写
+        // 回溯分阶段，分为2n个阶段，每次从2n个括号中选一个填path中
+        // 回溯结束条件，2n个阶段结束时结束，判断是否为有效括号，有效则加入结果集
+        // 回溯核心逻辑：
+        // 可选列表有左右括号两种，但受到总数量n限制
+        // 同时，当左括号数小于等于右括号数时，不能添加右括号
+        // 为实现回溯核心逻辑，回溯方法需要传入path中左括号的个数（右括号的个数通过path.count-左括号个数可以得出）
+        var result: [String] = []
+        var path: [Character] = []
+        
+        func isValidStr(_ chars: [Character]) -> Bool {
+            // 使用数组来模拟栈
+            var stack: [Character] = []
+            func matched(_ left: Character, _ right: Character) -> Bool {
+                switch (left, right) {
+                case ("(", ")"):
+                    return true
+                default:
+                    return false
+                }
+            }
+            for char in chars {
+                if let c = stack.last, matched(c, char) {
+                    stack.removeLast()
+                } else {
+                    stack.append(char)
+                }
+            }
+            return stack.isEmpty
+        }
+        
+        func backtracking(step: Int, leftParenthesisCount: Int, path: inout [Character]) {
+            if step == 2*n {
+                if isValidStr(path) {
+                    result.append(String(path))
+                }
+                return
+            }
+            
+            let rightParentthesisCount = path.count - leftParenthesisCount
+            // 尝试放左括号
+            if leftParenthesisCount < n {
+                path.append("(")
+                backtracking(step: step + 1, leftParenthesisCount: leftParenthesisCount + 1, path: &path)
+                path.removeLast()
+            }
+            
+            // 尝试放右括号
+            if rightParentthesisCount < n, leftParenthesisCount > rightParentthesisCount {
+                path.append(")")
+                backtracking(step: step + 1, leftParenthesisCount: leftParenthesisCount, path: &path)
+                path.removeLast()
+            }
+        }
+        backtracking(step: 0, leftParenthesisCount: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/restore-ip-addresses/
+    func restoreIpAddresses(_ s: String) -> [String] {
+        // 回溯分阶段，四个阶段，对应IP的四部分
+        // 回溯核心逻辑
+        // 找出所有可选项，
+        // 1. 如果初始index对应的字符为0，就只能选择自己作为唯一的有效值，然后继续
+        // 2. 如果初始index对应的字符不是0，从初始index开始找1个、2个等，直到找到的值大于255就停掉。然后作为有效值，继续回溯
+        // 回溯结束条件，step为4时，同时已经选择了所有元素时，说明找到了一个有效结果；除此之外，如果beginIndex还是有效值，则说明还有元素没有用完，说明不是有效结果，也需要结束回溯
+        // 回溯方法需要step，表示阶段，一个startIndex，表示进行有效元素判断的起始点
+        
+        var result: [String] = []
+        var path: [String] = [] // 存放数据类似这样["10", "2", "1", "3"]
+        let sLength = s.count
+        func backtracking(step: Int, startIndex: Int, path: inout [String]) {
+            if step == 4, startIndex >= sLength {
+                result.append(path.joined(separator: "."))
+                return
+            }
+            
+            if step == 4 || startIndex >= sLength {
+                return
+            }
+            
+            // 核心逻辑
+            if s[s.index(s.startIndex, offsetBy: startIndex)] == "0" {
+                // startIndex位置是0的话
+                path.append("0")
+                backtracking(step: step + 1, startIndex: startIndex + 1, path: &path)
+                path.removeLast()
+            } else {
+                // 从startIndex开始，找1个数、2个数，只要算下来整数值不大于255，就是有效的
+                var num = 0
+                var intValue = 0
+                let strStartIndex = s.index(s.startIndex, offsetBy: startIndex)
+                repeat {
+                    intValue = 0
+                    let strEndIndex = s.index(strStartIndex, offsetBy: num)
+                    if strEndIndex >= s.endIndex {
+                        return
+                    }
+                    let subString = s[strStartIndex...strEndIndex]
+                    for c in subString {
+                        intValue = intValue * 10 + c.wholeNumberValue!
+                    }
+                    
+                    if intValue <= 255 {
+                        path.append(String(subString))
+                        backtracking(step: step + 1, startIndex: startIndex + num + 1, path: &path)
+                        path.removeLast()
+                    }
+                    
+                    num  += 1
+                } while intValue <= 255
+            }
+        }
+        backtracking(step: 0, startIndex: 0, path: &path)
+        return result
+    }
 }
 
