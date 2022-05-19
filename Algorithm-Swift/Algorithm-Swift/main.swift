@@ -189,4 +189,7 @@ let sss = "A man, a plan, a canal: Panama"
 //BinarySearch().peakIndexInMountainArray([24,69,100,99,79,78,67,36,26,19])
 //BinarySearch().search1([1,3], 3)
 
-BinaryTree().verifyPostorder([1,3,2,6,5])
+//BinaryTree().verifyPostorder([1,3,2,6,5])
+//BackTracking().subsetsWithDup([1,2,2])
+//BackTracking().permuteUnique([1,1,2])
+BackTracking().combinationSum([2,3,6,7], 7)

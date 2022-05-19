@@ -751,5 +751,315 @@ class BackTracking {
         }
         backtracking(row: 0, col: 0)
     }
+    
+    /// https://leetcode.cn/problems/letter-combinations-of-a-phone-number/
+    func letterCombinations(_ digits: String) -> [String] {
+        // 输入的digits中，每个数字表示多阶段决策模型中的一个阶段
+        // 每个阶段可以选择的字符各不相同
+        // 回溯方法参数至少需要两个，阶段数（digits的索引）和当前路径
+        // 回溯结束条件，index == digits.count
+        if digits.isEmpty { return [] }
+        let dicts: [Character: [Character]] = [
+            "2" : ["a","b","c"],
+            "3" : ["d","e","f"],
+            "4" : ["g","h","i"],
+            "5" : ["j","k","l"],
+            "6" : ["m","n","o"],
+            "7" : ["p","q","r","s"],
+            "8" : ["t","u","v"],
+            "9" : ["w","x","y","z"]
+        ]
+        var result: [String] = []
+        var chars: [Character] = []
+        func backtracking(index: Int, chars: inout [Character]) {
+            // 核心逻辑，遍历可选择字符列表，从中选一个，继续递归
+            let strIndex = digits.index(digits.startIndex, offsetBy: index)
+            if strIndex == digits.endIndex {
+                // 结束了
+                result.append(String(chars))
+                return
+            }
+            guard let list = dicts[digits[strIndex]] else {
+                return
+            }
+            for tmpChar in list {
+                chars.append(tmpChar)
+                backtracking(index: index+1, chars: &chars)
+                chars.removeLast()
+            }
+        }
+        backtracking(index: 0, chars: &chars)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/subsets/
+    func subsets(_ nums: [Int]) -> [[Int]] {
+        // 分nums.count个阶段
+        // 对于nums中的每个元素，都有放与不放（放到结果集中）的选择，所有选择的组合就构成了所有子集
+        // 回溯方法有一个表示阶段（也可当做作nums下标取数据），和path
+        var result: [[Int]] = []
+        var path: [Int] = []
+        func backtracking(k: Int, path: inout [Int]) {
+            if k == nums.count {
+                result.append(path)
+                return
+            }
+            // 放
+            path.append(nums[k])
+            backtracking(k: k+1, path: &path)
+            path.removeLast()
+            // 不放
+            backtracking(k: k+1, path: &path)
+        }
+        backtracking(k: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/subsets-ii/
+    func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+        // 该问题不好想，如果按照普通子集的解法，最后进行去重，也可以工作，但效率会降低
+        // 本次实现一个一次性搞定的算法
+        // 关键点在于，先统计一下nums中每个数出现的次数
+        // 如[1,2,2,5]，统计结果为[1:1, 2,2, 5:1]
+        // 进行回溯时，分为1、2、5三个阶段，每个阶段要做的事情是，决定当前阶段的可选择值，放置0、1、2...还是多个
+        var hashMap: [Int: Int] = [:]
+        for num in nums {
+            if let count = hashMap[num] {
+                hashMap[num] = count + 1
+            } else {
+                hashMap[num] = 1
+            }
+        }
+        var newNums: [(Int, Int)] = []
+        for item in hashMap.enumerated() {
+            newNums.append((item.element.key, item.element.value))
+        }
+        
+        var result: [[Int]] = []
+        var path: [Int] = []
+        
+        func backtracking(k: Int, path: inout [Int]) {
+            if k == newNums.count {
+                result.append(path)
+                return
+            }
+            
+            // 不放
+            backtracking(k: k+1, path: &path)
+            
+            // 放1-n个
+            for count in 1...newNums[k].1 {
+                for _ in 0..<count {
+                    path.append(newNums[k].0)
+                }
+                backtracking(k: k+1, path: &path)
+                for _ in 0..<count {
+                    path.removeLast()
+                }
+            }
+        }
+        backtracking(k: 0, path: &path)
+        return result
+    }
+    /// https://leetcode.cn/problems/combinations/
+    func combine(_ n: Int, _ k: Int) -> [[Int]] {
+        // 最终要返回的是k个元素的集合，那就看做k个阶段的决策模型
+        // 每个阶段从1...n中选择一个数，不能重复
+        
+        var result: [[Int]] = []
+        var path: [Int] = []
+        
+        /// r从0开始
+        func backtracking(r: Int, path: inout [Int]) {
+            if r == k {
+                result.append(path)
+                return
+            }
+            // 另一个关键点在于
+            var begin = path.last != nil ? path.last! + 1 : 1
+            while begin <= n {
+                path.append(begin)
+                backtracking(r: r+1, path: &path)
+                path.removeLast()
+                begin += 1
+            }
+        }
+        backtracking(r: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/permutations/
+    func permute(_ nums: [Int]) -> [[Int]] {
+        var result: [[Int]] = []
+        var path: [Int] = []
+        
+        func backtracking(step: Int, path: inout [Int]) {
+            if step == nums.count {
+                result.append(path)
+                return
+            }
+            
+            for num in nums {
+                if path.contains(num) { continue }
+                path.append(num)
+                backtracking(step: step + 1, path: &path)
+                path.removeLast()
+            }
+        }
+        backtracking(step: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/permutations-ii/
+    func permuteUnique(_ nums: [Int]) -> [[Int]] {
+        // 该问题的关键在于剪枝
+        // 之前做过使用used数组进行剪枝的操作，但本次刷题时就已经忘了这种逻辑
+        // 但发现一种新去重逻辑，此处进行实现，估计以后还是会忘掉
+        // 使用哈希表进行去重
+        // 比如[1,1,2]这种数据，如果统计成哈希表的话，[1: 2, 2: 1]
+        // 进行回溯时，有1和2两种选择，比如第一次选择了1，继续选择时还有一个1和一个2可以选择。这样就把第一次选择两次1的情况过滤掉了
+        // 另外，当第一次选择2时，第二次选择的时候，其实就只能选择1个1，这就又把第2次选择时，选择两次1的情况过滤掉了
+        // 为了使用方便，其实存储下来并不是一个真正的哈希表，而是两个数组
+        
+        var hashMap: [Int: Int] = [:]
+        for num in nums {
+            if let count = hashMap[num] {
+                hashMap[num] = count + 1
+            } else {
+                hashMap[num] = 1
+            }
+        }
+        let newNums = hashMap.keys.map({ $0 })
+        var result: [[Int]] = []
+        var path: [Int] = []
+        func backtracking(step: Int, path: inout [Int]) {
+            if step == nums.count {
+                result.append(path)
+                return
+            }
+            
+            // 遍历newNums，如果能用就用
+            for num in newNums {
+                if hashMap[num]! <= 0 { continue }
+                path.append(num)
+                hashMap[num] = hashMap[num]! - 1
+                backtracking(step: step + 1, path: &path)
+                path.removeLast()
+                hashMap[num] = hashMap[num]! + 1
+            }
+        }
+        backtracking(step: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/permutations-ii/
+    func permuteUnique1(_ nums: [Int]) -> [[Int]] {
+        // 再使用used数组剪枝实现一次
+        // 该思路的核心是，在非重复数字全排列的骨架代码下加入剪枝逻辑
+        // 剪枝关键点有几个：排序
+        let newNums = nums.sorted()
+        var used = Array(repeating: false, count: nums.count)
+        var result: [[Int]] = []
+        var path: [Int] = []
+        
+        func backtracking(step: Int, path: inout [Int]) {
+            if step == newNums.count {
+                result.append(path)
+                return
+            }
+            
+            for i in 0..<newNums.count {
+                if used[i] { continue }
+                // 关键点
+                if i > 0, newNums[i] == newNums[i-1], !used[i-1] { continue }
+                path.append(newNums[i])
+                used[i] = true
+                backtracking(step: step + 1, path: &path)
+                used[i] = false
+                path.removeLast()
+            }
+        }
+        backtracking(step: 0, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/combination-sum/
+    func combinationSum(_ candidates: [Int], _ target: Int) -> [[Int]] {
+        // 多阶段
+        // 每个阶段在candidates中选取，但不能是用过的，否则结果会重复
+        // 就以[2,3,6,7]为例，我们分为4个阶段
+        // 第一个阶段，可以选择0、1、2、3个2；第二阶段根据第一阶段剩余的值，继续第三阶段，第四阶段
+        var result: [[Int]] = []
+        var path: [Int] = []
+        
+        func backtracking(step: Int, left: Int, path: inout [Int]) {
+            if left == 0 {
+                result.append(path)
+                return
+            }
+            
+            if step == candidates.count { return }
+            // 最多几个candidates[i]？left/candidates[i]
+            for i in 0...left/candidates[step] {
+                // 分别向path中添加i个元素
+                for _ in 0..<i {
+                    path.append(candidates[step])
+                }
+                backtracking(step: step+1, left: left - i*candidates[step], path: &path)
+                for _ in 0..<i {
+                    path.removeLast()
+                }
+            }
+        }
+        backtracking(step:0, left: target, path: &path)
+        return result
+    }
+    
+    /// https://leetcode.cn/problems/combination-sum-ii/
+    func combinationSum2(_ candidates: [Int], _ target: Int) -> [[Int]] {
+        // 将candidates进行哈希统计
+        // 以[2,5,2,1,2]为例，统计后[1:1, 2:3, 5:1]
+        // 分1、2、5三个阶段进行决策
+        // 递归结束条件，有两个，left为0时；step到达时
+        
+        var hashMap: [Int: Int] = [:]
+        for num in candidates {
+            if let count = hashMap[num] {
+                hashMap[num] = count + 1
+            } else {
+                hashMap[num] = 1
+            }
+        }
+        let candidates = hashMap.keys.map({ $0 })
+        
+        var result: [[Int]] = []
+        var path: [Int] = []
+        func backtracking(step: Int, left: Int, path: inout [Int]) {
+            if left == 0 {
+                result.append(path)
+                return
+            }
+            if step == candidates.count {
+                return
+            }
+            
+            // 判断可以选择几个当前阶段对应的candidate
+            let count = min(left/candidates[step], hashMap[candidates[step]]!)
+            let candidate = candidates[step]
+            for i in 0...count {
+                for _ in 0..<i {
+                    path.append(candidate)
+                    hashMap[candidate] = hashMap[candidate]! - 1
+                }
+                backtracking(step: step + 1, left: left - i*candidate, path: &path)
+                for _ in 0..<i {
+                    path.removeLast()
+                    hashMap[candidate] = hashMap[candidate]! + 1
+                }
+            }
+        }
+        backtracking(step: 0, left: target, path: &path)
+        return result
+    }
 }
 
