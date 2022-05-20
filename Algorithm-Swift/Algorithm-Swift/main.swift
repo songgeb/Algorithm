@@ -194,5 +194,25 @@ let sss = "A man, a plan, a canal: Panama"
 //BackTracking().permuteUnique([1,1,2])
 //BackTracking().combinationSum([2,3,6,7], 7)
 //BackTracking().combinationSum3(3, 7)
-let xx = BackTracking().restoreIpAddresses("25525511135")
-print(xx)
+//let xx = BackTracking().restoreIpAddresses("25525511135")
+//print(xx)
+
+
+var dicts = [1: 2, 3: 4]
+
+for dict in dicts {
+    print(dict)
+    dicts.removeValue(forKey: 1)
+}
+
+for dict in dicts {
+    print(dict)
+}
+
+var array = [1,2,3,4]
+
+var arr = NSMutableArray(array: array)
+
+for i in arr {
+    arr.remove(i)
+}
