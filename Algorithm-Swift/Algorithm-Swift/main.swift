@@ -198,21 +198,6 @@ let sss = "A man, a plan, a canal: Panama"
 //print(xx)
 
 
-var dicts = [1: 2, 3: 4]
-
-for dict in dicts {
-    print(dict)
-    dicts.removeValue(forKey: 1)
-}
-
-for dict in dicts {
-    print(dict)
-}
-
-var array = [1,2,3,4]
-
-var arr = NSMutableArray(array: array)
-
-for i in arr {
-    arr.remove(i)
-}
+//let xx = Graph().openLock(["0201","0101","0102","1212","2002"], "0202")
+//Graph().findWhetherExistsPath(3, [[0, 1], [0, 2], [1, 2], [1, 2]], 0, 2)
+Graph().movingCount(2, 3, 1)
