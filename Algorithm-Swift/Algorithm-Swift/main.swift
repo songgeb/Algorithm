@@ -200,4 +200,7 @@ let sss = "A man, a plan, a canal: Panama"
 
 //let xx = Graph().openLock(["0201","0101","0102","1212","2002"], "0202")
 //Graph().findWhetherExistsPath(3, [[0, 1], [0, 2], [1, 2], [1, 2]], 0, 2)
-Graph().movingCount(2, 3, 1)
+//Graph().movingCount(2, 3, 1)
+//print(BinarySearch().sqrt(6))
+//DynamicProgramming().coinChange2([2], 3)
+DynamicProgramming().uniquePathsWithObstacles([[0,0,0],[0,1,0],[0,0,0]])
