@@ -419,6 +419,174 @@ class DynamicProgramming {
         }
         return dp[rowCount-1][colCount-1]
     }
+    
+    /// https://leetcode.cn/problems/house-robber/
+    func rob(_ nums: [Int]) -> Int {
+        // count个阶段进行决策，但相邻阶段之间有关联关系
+        // 开辟一个n*2的二维数组,dp[i][0]表示第i个物品不偷的情况下的最大金额，dp[i][1]表示第i个物品偷的情况下的最大金额
+        // dp[0][0] = 0, dp[0][1] = nums[0]
+        // dp[i][0] = max(dp[i-1][0], dp[i-1][1]); dp[i][1] = dp[i-1][0]
+        let count = nums.count
+        var dp = Array(repeating: Array(repeating: 0, count: 2), count: count)
+        dp[0][0] = 0
+        dp[0][1] = nums[0]
+        for i in 1..<count {
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1])
+            dp[i][1] = dp[i-1][0] + nums[i]
+        }
+        
+        return max(dp[count-1][0], dp[count-1][1])
+    }
+    
+    /// https://leetcode.cn/problems/house-robber-ii/
+    func rob1(_ nums: [Int]) -> Int {
+        // 该问题是基于打家劫舍1进行的扩展
+        // 该题目可以进行拆分，自后用打家劫舍1来解决
+        // 分为两种情况
+        // 1. 偷第一家时，则第二家不能偷，同时最后一家不能偷。从第三家到倒数第二家的区间可以用打家劫舍1来解决
+        // 2. 不偷第一家时，则从第二家到最后一家的区间可以用打家劫舍1来解决
+        // 可以讲过打家劫舍1的方法抽取为一个方法
+        // 再回顾一遍打家劫舍1，
+        // 一个二维数组，只有2列，0表示不偷，1表示偷，dp[i][0]表示第i个房间不偷的话，最大金额
+        func rob(_ nums: [Int]) -> Int {
+            let count = nums.count
+            var dp = Array(repeating: Array(repeating: 0, count: 2), count: count)
+            dp[0][0] = 0
+            dp[0][1] = nums[0]
+            for i in 1..<count {
+                dp[i][0] = max(dp[i-1][0], dp[i-1][1])
+                dp[i][1] = dp[i-1][0] + nums[i]
+            }
+            return max(dp[count-1][0], dp[count-1][1])
+        }
+        
+        var maxValue = 0
+        let count = nums.count
+        // 偷第一家的情况
+        if count > 3 {
+            // 大于3家时，才有必要对第三家到倒数第二家进行打家劫舍1的必要
+            maxValue = max(maxValue, rob(Array(nums[2...count-2])))
+        }
+        maxValue += nums[0]
+        
+        // 不偷第一家的情况
+        if count > 1 {
+            maxValue = max(maxValue, rob(Array(nums[1...count-1])))
+        }
+        return maxValue
+    }
+    
+    /// https://leetcode.cn/problems/house-robber-iii/
+    func rob(_ root: TreeNode?) -> Int {
+        // 该方法提交到leetcode会超时，因为需要对数进行两次遍历
+        // 对于树的打家劫舍问题，整体使用递归思想
+        // 对于一棵树来说，如何才能做到偷的金额最大呢？
+        // 分两种情况
+        // 1. 根节点偷的情况下，maxValue = f(root.left.left) + f(root.left.right) + f(root.right.left) + f(root.right.right)) + rootValue
+        // 2. 根节点不偷的情况，maxValu = f(root.left) + f(root.right)
+        // 递归结束条件，node为空时返回0
+        
+        func rob_r(_ node: TreeNode?) -> Int {
+            guard let node = node else {
+                return 0
+            }
+            //偷node节点时
+            let maxValue1 = rob_r(node.left?.left) + rob_r(node.left?.right) +
+                       rob_r(node.right?.left) + rob_r(node.right?.right) +
+                       node.val
+            // 不偷node节点时
+            let maxValue2 = rob_r(node.left) + rob_r(node.right)
+            return max(maxValue1, maxValue2)
+        }
+        return rob_r(root)
+    }
+    
+    func rob1(_ root: TreeNode?) -> Int {
+        // 从树的底向上，逐渐产生结果
+        // 比如以1-4-3为例，1和3是4的左右子节点
+        // 那对于以4为根的数来说，最大金额：如果偷4的话，则金额为不偷左子树时的金额+不偷右子树的金额；
+        // 如果不偷4的话，则金额是左子节点的最大金额+右子节点的最大金额
+        // 当然，还是用递归来实现，但本次递归只会遍历一遍树
+        
+        func rob_r(_ node: TreeNode?) -> (Int, Int) {
+            guard let node = node else {
+                return (0,0)
+            }
+            // 先获取左右子树的数据
+            let leftInfo = rob_r(node.left)
+            let rightInfo = rob_r(node.right)
+            
+            // 如果不偷node的话
+            let maxValue1 = max(leftInfo.0, leftInfo.1) + max(rightInfo.0, rightInfo.1)
+            // 如果偷node的话
+            let maxValue2 = leftInfo.0 + rightInfo.0 + node.val
+            
+            return (maxValue1, maxValue2)
+        }
+        let rootInfo = rob_r(root)
+        return max(rootInfo.0, rootInfo.1)
+    }
+    
+    /// https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+    func maxProfit(_ prices: [Int], _ fee: Int) -> Int {
+        // 这个比较难，关键是状态不容易描述，得一点一点推
+        // 对股票有三种操作：买入、卖出、不操作，由此可以产生对股票的持有和不持有两种状态
+        // 我们可以定义二维数组dp，有两列dp[i][0]表示第i天结束后，不持有骨片状态下最大利润；dp[i][1]则表示持有股票状态下的最大理论
+        // dp[i][0]可以由前一天的状态推导过来，今天不持有股票，可能是前一天也不持有股票，今天什么都没做；也可能是前一天是持有股票的，但今天白天把股票卖掉了
+        // dp[i][1]同理，可能是前一天就持有股票，今天没操作；也可能是前一天没持有股票，今天刚买入了
+        let count = prices.count
+        var dp = Array(repeating: Array(repeating: 0, count: 2), count: count)
+        dp[0][0] = 0
+        dp[0][1] = -prices[0]
+        
+        for i in 1..<count {
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i] - fee)
+            dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+        }
+        return max(dp[count-1][0], dp[count-1][1])
+    }
+    
+    /// https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+    // 比没有冷冻期的股票问题要难不少
+    // 上一题是两个状态：持有股票和不持有股票
+    // 该题目要分成四个状态，知道分为四个状态并不重要，知道这四种状态如何产生的才重要
+    // 简言之，不管是上一题中的两个状态，还是本题的四状态，都是为了用若干独立的状态抽象出该问题，有了这些状态，我们才能套用到动态规划题套路中（状态转移过程）去
+    // 不论多少状态，不是凭空产生的，是为了完整、清晰地描述求解的问题
+    // 笔者在做本题时，会自然的使用持有、不持有两种状态尝试解决，结果在思考解题思路过程中，发现状态表填起来特别费劲。这就说明这两种状态很难完整准确且清晰的描述该问题
+    // 那如何才能找到完整清晰的思路呢？
+    // 需将该问题进行拆分，就本题而言就是将所有的“操作”（买入、卖出、什么都不做）列出来
+    // 重点关注1. 什么情况下可以执行哪些操作；2. 执行完这些操作后的情况是什么样的
+    // 其实如果你有学习过设计模式中的状态模式，就更容易理解了---一个状态经过某个操作后会转为另一种状态
+    // 上面要关注的两个问题，其实就是某状态下可以做哪些操作，做了某个操作后可以到达哪一个新状态
+    // 我用这种思考方式，就逐渐摸索出来需要四种状态（当然，一开始只想到了三种，后来填状态表时发现三种不够）
+    // 操作1：买入；操作2：卖出；操作3：什么都不做
+    // 状态1：持有股票状态（该状态可以通过前一天的状态1+操作3得出；也可以昨天状态2、4+操作1得出）
+    // 状态2：普通不持有股票状态（昨天的状态2+操作3；昨天状态4+操作3）
+    // 状态3：今天卖了股票，今天白天结束后，进入冷冻期（昨天状态1+操作2）
+    // 状态4：今天是冷冻期的一天，结束后就解封了（昨天状态3+操作3）
+    // 多说一句，可以看出来，状态2、3、4其实都是不持有股票的状态，但必须细分出来，否则无法进行状态转移
+    func maxProfit(_ prices: [Int]) -> Int {
+        let count = prices.count
+        var dp = Array(repeating: Array(repeating: 0, count: 4), count: count)
+        dp[0][0] = -prices[0]
+        for i in 1..<count {
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] - prices[i])
+            dp[i][0] = max(dp[i][0], dp[i-1][3] - prices[i])
+            
+            dp[i][1] = max(dp[i-1][1], dp[i-1][3])
+            
+            dp[i][2] = dp[i-1][0] + prices[i]
+            
+            dp[i][3] = dp[i-1][2]
+        }
+        var maxValue = Int.min
+        for i in 0..<4 {
+            if dp[count-1][i] > maxValue {
+                maxValue = dp[count-1][i]
+            }
+        }
+        return maxValue
+    }
 }
 // MARK: - 找零钱
 

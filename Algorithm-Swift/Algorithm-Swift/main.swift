@@ -203,4 +203,7 @@ let sss = "A man, a plan, a canal: Panama"
 //Graph().movingCount(2, 3, 1)
 //print(BinarySearch().sqrt(6))
 //DynamicProgramming().coinChange2([2], 3)
-DynamicProgramming().uniquePathsWithObstacles([[0,0,0],[0,1,0],[0,0,0]])
+//DynamicProgramming().uniquePathsWithObstacles([[0,0,0],[0,1,0],[0,0,0]])
+//DynamicProgramming().rob1([1,2,3,1])
+let xx = DynamicProgramming().maxProfit([1,2,3,0,2])
+print(xx)
