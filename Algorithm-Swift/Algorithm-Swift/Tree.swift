@@ -1122,6 +1122,34 @@ class BinaryTree {
         commonAncesstor(root)
         return targetNode
     }
+    
+    func lowestCommonAncestor1(_ root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) ->TreeNode? {
+        // 如果左子树包含p或q，且右子树也包含p或q，则说明当前节点就是公共祖先节点
+        // 如果当前节点等于p或q，则当前节点就是公共祖先节点
+        var targetNode: TreeNode?
+        func contains(root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) -> Bool {
+            if root == nil { return false }
+            if targetNode != nil { return true }
+            // 左子树有没有，右子树有没有
+            let inLeft = contains(root: root?.left, p, q)
+            let inRight = contains(root: root?.right, p, q)
+            // 左子树有且右子树有，则返回root
+            // 左子树有或右子树有，且root为p或q，则root就是
+            // 否则的话，看下root是p还是q
+            var isIn = false
+            if inLeft, inRight {
+                targetNode = root
+                isIn = true
+            } else if (inLeft || inRight) && (root === p || root === q) {
+                targetNode = root
+                isIn = true
+            } else {
+                isIn = root === p || root === q
+            }
+            return isIn
+        }
+        return targetNode
+    }
     /// https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
     func flatten(_ root: TreeNode?) {
         // 递归实现

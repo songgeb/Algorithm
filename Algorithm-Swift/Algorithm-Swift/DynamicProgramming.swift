@@ -587,6 +587,198 @@ class DynamicProgramming {
         }
         return maxValue
     }
+    
+    /// https://leetcode.cn/problems/climbing-stairs/
+    func climbStairs(_ n: Int) -> Int {
+        // 动态规划做法搞定
+        // 爬到第n个台阶可以由爬到第n-1和爬到第n-2个台阶得到，即f(n) = f(n-1) + f(n-2)
+        // f(1) = 1，f(2) = 2
+        // 没必要完整地画状态表，因为只需要直到第n个元素的值，只要能保存f(n-1)和f(n-2)的值即可
+        var pre = 2
+        var prepre = 1
+        if n == 1 { return prepre }
+        if n == 2 { return pre }
+        var cur = 0
+        var i = 3
+        while i <= n {
+            // 计算一次出一个结果，从f(3)开始
+            cur = pre + prepre
+            prepre = pre
+            pre = cur
+            i += 1
+        }
+        return cur
+    }
+    
+    /// https://leetcode.cn/problems/coin-change-2/
+    func change1(_ amount: Int, _ coins: [Int]) -> Int {
+        // 换一种动态规划思路
+        // f(amount) = f(amount-coin[0]) + f(amount-coin[1]) + ... + f(amount-coin[k])
+        // 把上面的翻译一下
+        // 搞一个一维数组，然后从f(0)开始计算，f(1)。。。一直到f(amount)
+        // f(0) = 1
+        var dp = Array(repeating: 0, count: amount + 1)
+        // 初始化，遍历一遍coins
+        dp[0] = 1
+        // 从1到amount
+        for i in 1...amount {
+            var sum = 0
+            for coin in coins {
+                if i - coin < 0 { continue }
+                sum += dp[i-coin]
+            }
+            dp[i] = sum
+        }
+        return dp[amount]
+    }
+    
+    /// https://leetcode.cn/problems/jian-sheng-zi-lcof/
+    func cuttingRope(_ n: Int) -> Int {
+        // dp[i]表示长度为n的绳子，进行切剪裁后得到的最大乘积
+        // dp[i] = max(dp[i-1], 1 * (i-1), dp[i-2] * 2, 2 * (i-2), dp[i-3] * 3, 3 * (i-3), dp[i-k] * k, k * (i-k)), k=i-1
+        // 理解上面的状态转移逻辑很关键
+        var dp = Array(repeating: 0, count: n+1)
+        dp[1] = 1
+        for i in 2...n {
+            // j 从1到i-1
+            for j in 1...(i-1) {
+                dp[i] = max(dp[i], dp[i-j] * j)
+                dp[i] = max(dp[i], j * (i-j))
+            }
+        }
+        return dp[n]
+    }
+    
+    /// https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
+    func translateNum(_ num: Int) -> Int {
+        // 以12258为例，从1225到12258
+        // 多了一个8，那多了几种翻译方法呢？
+        // 1. 如果拿1225的所有组合+8的话，就是1225的组合数；
+        // 2. 还有一种情况，可能5+8也是一种组合，那就是122+58的组合形式，此时就是122的组合数
+        // 所以,f(i) = f(i-1) + if(i和i-1组合符合条件) f(i-2)
+        // 特别要注意，必须让f(0) = 1才行，否则可以试一下12这种情况的结果有问题
+        let chars = Array("\(num)")
+        let count = chars.count
+        var dp = Array(repeating: 0, count: count + 1)
+        dp[0] = 1
+        
+        // 判断char1和char2组合起来是否为可进行翻译的数字（是否0-25之间）
+        // 且char1和char2表示的数字都只有1位
+        func isOK(char1: Character, char2: Character) -> Bool {
+            if char1 == "0" { return false }
+            guard let num1 = char1.wholeNumberValue, let num2 = char2.wholeNumberValue else {
+                return false
+            }
+            let result = num1 * 10 + num2
+            return 0 <= result && result <= 25
+        }
+        
+        for i in 1...count {
+            dp[i] = dp[i-1]
+            if i-2 >= 0, isOK(char1: chars[i-2], char2: chars[i-1]) {
+                dp[i] += dp[i-2]
+            }
+        }
+        return dp[count]
+    }
+    
+    /// https://leetcode.cn/problems/word-break/
+    func wordBreak(_ s: String, _ wordDict: [String]) -> Bool {
+        // 转换成爬楼梯模型的过程比较难，对于没做过类似题目的可能很难想到
+        // 把s比作楼梯，比如"leetcode"，每一次能爬的台阶个数要看wordDict中的值
+        // dp[i]表示长度为i的字符串可以通过wordDidct中的单词拼接出来
+        // dp[i]可以通过dp[i-len1]、dp[i-len2]。。。这些个可能，再加上len对应的单词
+        // dp[i] = dp[i-len1] || dp[i-len2] || 。。。
+        // 代码写起来不是很容易哈
+        let count = s.count
+        var dp = Array(repeating: false, count: count+1)
+        dp[0] = true
+        // 对于s中的每一个位置i，check下[i-len1 + 1, i]这个区间的单词是否和word中匹配
+        // 如果匹配，则dp[i-len1]可以使用，如果此时dp[i-len1]为true，则第i个位置的赋值流程可以完成了
+        // 如果dp[i-len1]不为true，则wordDict需要继续遍历
+        // 所有循环结束后，check下dp[count]
+        for i in 1...count {
+            for word in wordDict {
+                let wordLength = word.count
+                if i - wordLength < 0 { continue }
+                // 注意，i表示的是dp数组的下标，转成字符串中的下标时需要-1
+                let startIndex = s.index(s.startIndex, offsetBy: i-wordLength)
+                let endIndex = s.index(s.startIndex, offsetBy: i-1)
+                let checkStr = s[startIndex...endIndex]
+                if checkStr == word, dp[i-wordLength] {
+                    dp[i] = true
+                    break
+                }
+            }
+        }
+        return dp[count]
+    }
+    
+    /// https://leetcode.cn/problems/longest-common-subsequence/
+    func longestCommonSubsequence(_ text1: String, _ text2: String) -> Int {
+        // 二维数组dp
+        // dp[i][j] = if text1[i] != text[j]，则等于max(dp[i-1][j], dp[i][j-1])
+        // if text1[i] == text2[j], 等于max(dp[i-1][j]+1, dp[i][j-1]+1)
+        let chars1 = Array(text1)
+        let chars2 = Array(text2)
+        let count1 = chars1.count
+        let count2 = chars2.count
+        var dp = Array(repeating: Array(repeating: 0, count: count2 + 1), count: count1 + 1)
+        for i in 0...count1 {
+            dp[i][0] = 0
+        }
+        for j in 0...count2 {
+            dp[0][j] = 0
+        }
+        
+        for i in 1...count1 {
+            for j in 1...count2 {
+                // 注意i-1位置才是字符串对应的位置
+                if chars1[i-1] == chars2[j-1] {
+                    dp[i][j] = dp[i-1][j-1] + 1
+                } else {
+                    if i - 1 >= 0 {
+                        dp[i][j] = dp[i-1][j]
+                    }
+                    if j - 1 >= 0 {
+                        dp[i][j] = max(dp[i][j], dp[i][j-1])
+                    }
+                }
+            }
+        }
+        return dp[count1][count2]
+    }
+    
+    /// https://leetcode.cn/problems/edit-distance/
+    func minDistance(_ word1: String, _ word2: String) -> Int {
+        // 画出矩阵图比较好理解
+        let chars1 = Array(word1)
+        let chars2 = Array(word2)
+        let count1 = chars1.count
+        let count2 = chars2.count
+        if count1 == 0 { return count2 }
+        if count2 == 0 { return count1 }
+        // 数组长度是count+1的原因是，要将空字符串加入
+        var dp = Array(repeating: Array(repeating: 0, count: count2 + 1), count: count1 + 1)
+        // 初始化
+        for i in 0...count1 {
+            dp[i][0] = i
+        }
+        for j in 0...count2 {
+            dp[0][j] = j
+        }
+        
+        for i in 1...count1 {
+            for j in 1...count2 {
+                if chars1[i-1] == chars2[j-1] {
+                    dp[i][j] = min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1])
+                } else {
+                    dp[i][j] = min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + 1)
+                }
+            }
+        }
+        return dp[count1][count2]
+    }
 }
 // MARK: - 找零钱
 

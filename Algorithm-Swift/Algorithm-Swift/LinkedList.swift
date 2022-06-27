@@ -461,3 +461,29 @@ func reversePrint(_ head: ListNode?) -> [Int] {
     return result
 }
 
+/// https://leetcode.cn/problems/swap-nodes-in-pairs/
+func swapPairs(_ head: ListNode?) -> ListNode? {
+    // main idea: iterate over the list, use 2 pointters, pre, cur to finish swap
+    // stopping condition is cur.next == nil
+    // initial value: pre = dummyNode, cur = head
+    // edge case: empty list--ok, one node list--ok
+    let dummyHead = ListNode(-1)
+    dummyHead.next = head
+    var pre: ListNode? = dummyHead
+    var cur = head
+    while cur?.next != nil {
+        let latter = cur?.next
+        let latterNext = latter?.next
+        
+        // swap
+        latter?.next = cur
+        pre?.next = latter
+        cur?.next = latterNext
+        
+        // update pointer
+        pre = cur
+        cur = latterNext
+    }
+    return dummyHead.next
+}
+

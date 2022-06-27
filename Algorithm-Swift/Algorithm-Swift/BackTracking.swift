@@ -1270,5 +1270,34 @@ class BackTracking {
         backtracking(step: 0, startIndex: 0, path: &path)
         return result
     }
+    
+    /// https://leetcode.cn/problems/word-break/submissions/
+    func wordBreak(_ s: String, _ wordDict: [String]) -> [[String]] {
+        // 用回溯，求出所有可能的组合形式
+        // 每次递归要做的核心动作：遍历wordDict中的每一个单词，如果从index开始匹配上一个单词，就加入结果集
+        // 结束条件: 如果匹配上了，则最终会到达endIndex
+        var result: [[String]] = []
+        var path: [String] = []
+        func backtracking(index: String.Index, path: inout [String]) {
+            if index == s.endIndex {
+                result.append(path)
+                return
+            }
+            
+            for word in wordDict {
+                guard let endIndex = s.index(index, offsetBy: word.count, limitedBy: s.endIndex) else {
+                    continue
+                }
+                let checkStr = s[index..<endIndex]
+                if checkStr == word {
+                    path.append(word)
+                    backtracking(index: endIndex, path: &path)
+                    path.removeLast()
+                }
+            }
+        }
+        backtracking(index: s.startIndex, path: &path)
+        return result
+    }
 }
 
